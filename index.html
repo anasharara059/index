@@ -1,4 +1,16 @@
-<!DOCTYPE html>
+<!DOC,
+                deepFocusTitle: "وضع التركيز العميق",
+                deepFocusLocked: "تم قفل التركيز",
+                deepFocusStay: "ابقَ مركزاً!",
+                deepFocusAway: "ابتعدت لمدة",
+                deepFocusReturn: "رجعت — استئناف التركيز",
+                deepFocusPaused: "متوقف مؤقتاً",
+                deepFocusRunning: "قيد التشغيل",
+                deepFocusExitHint: "ESC للخروج من وضع التركيز",
+                focusBroken: "⚠️ تم كسر التركيز!",
+                focusBrokenMsg: "ابتعدت عن جلستك. التركيز مهم لتحقيق أهدافك.",
+                focusBackBtn: "رجعت — استئناف التركيز"
+            TYPE html>
 <html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
@@ -406,7 +418,158 @@
         .user-badge:hover .account-dropdown-hint {
             opacity: 1;
         }
-                @media (max-width: 768px) { .header-navigation { padding: 12px 16px; flex-wrap: wrap; gap: 10px; } .nav-tabs { order: 3; width: 100%; justify-content: center; } .timer-circle-widget { width: 280px; height: 280px; } .timer-digits { font-size: 56px; } .metrics-cards-grid { grid-template-columns: 1fr; } .charts-double-column { grid-template-columns: 1fr; } .goals-cards-grid, .habits-cards-grid { grid-template-columns: 1fr; } .shortcuts-hint { display: none; } }
+                
+        /* ========== DEEP FOCUS MODE ========== */
+        .deep-focus-overlay {
+            position: fixed;
+            inset: 0;
+            background: #08090d;
+            z-index: 999999;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            animation: fadeIn 0.6s ease-out;
+            cursor: default;
+        }
+        .deep-focus-overlay.is-active {
+            display: flex;
+        }
+        .deep-focus-overlay::before {
+            content: '';
+            position: absolute;
+            inset: 20px;
+            border: 1px solid rgba(217, 165, 74, 0.08);
+            border-radius: 24px;
+            pointer-events: none;
+        }
+        .deep-focus-timer {
+            font-family: 'Digital-7 Mono', 'Courier New', Courier, monospace;
+            font-size: clamp(100px, 22vw, 240px);
+            font-weight: 400;
+            color: var(--accent-orange);
+            letter-spacing: 12px;
+            text-shadow: 0 0 60px rgba(217, 165, 74, 0.15);
+            line-height: 1;
+            user-select: none;
+            transition: all 0.3s ease;
+        }
+        .deep-focus-timer.paused {
+            color: var(--warning);
+            text-shadow: 0 0 60px rgba(243, 156, 18, 0.15);
+        }
+        .deep-focus-session-info {
+            font-size: 14px;
+            color: var(--text-gray);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 600;
+            text-align: center;
+            opacity: 0.7;
+        }
+        .deep-focus-controls {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .deep-focus-btn {
+            background: transparent;
+            border: 1.5px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-gray);
+            padding: 14px 36px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: system-ui, sans-serif;
+        }
+        .deep-focus-btn:hover {
+            border-color: var(--accent-orange);
+            color: var(--accent-orange);
+            transform: translateY(-2px);
+        }
+        .deep-focus-btn.danger:hover {
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+        .deep-focus-hint {
+            position: fixed;
+            bottom: 30px;
+            font-size: 11px;
+            color: rgba(122, 127, 145, 0.4);
+            letter-spacing: 1px;
+            font-family: system-ui, sans-serif;
+        }
+        .deep-focus-lock-indicator {
+            position: fixed;
+            top: 30px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            color: rgba(217, 165, 74, 0.5);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 700;
+            font-family: system-ui, sans-serif;
+        }
+        .deep-focus-lock-indicator::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-orange);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+        /* Tab switch warning overlay */
+        .tab-switch-warning {
+            position: fixed;
+            inset: 0;
+            background: rgba(8, 9, 13, 0.98);
+            z-index: 1000000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            text-align: center;
+            padding: 40px;
+        }
+        .tab-switch-warning.is-visible {
+            display: flex;
+        }
+        .tab-switch-warning h2 {
+            font-size: 28px;
+            color: var(--danger);
+            font-weight: 800;
+        }
+        .tab-switch-warning p {
+            font-size: 14px;
+            color: var(--text-gray);
+            max-width: 400px;
+            line-height: 1.6;
+        }
+        .tab-switch-warning button {
+            background: var(--accent-orange);
+            border: none;
+            color: #000;
+            padding: 14px 40px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+@media (max-width: 768px) { .header-navigation { padding: 12px 16px; flex-wrap: wrap; gap: 10px; } .nav-tabs { order: 3; width: 100%; justify-content: center; } .timer-circle-widget { width: 280px; height: 280px; } .timer-digits { font-size: 56px; } .metrics-cards-grid { grid-template-columns: 1fr; } .charts-double-column { grid-template-columns: 1fr; } .goals-cards-grid, .habits-cards-grid { grid-template-columns: 1fr; } .shortcuts-hint { display: none; } }
     </style>
 <base target="_blank">
 </head>
@@ -572,10 +735,72 @@
                         <div class="analytics-tag-distribution" id="bars-dynamic-wrapper"></div>
                     </div>
                 </div>
+                <!-- 📉 Break Analysis -->
+                <div class="charts-container-box" style="margin-top:10px;">
+                    <div class="charts-box-title" id="break-analysis-title">📉 Break Analysis</div>
+                    <div class="break-metrics-row" id="break-metrics-wrapper" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 20px;">
+                        <!-- Metrics injected by JS -->
+                    </div>
+                    <div style="position: relative; height: 220px;">
+                        <canvas id="break-histogram-chart"></canvas>
+                    </div>
+                </div>
+
+                <!-- 🔥 Study Consistency Score -->
+                <div class="charts-container-box" style="margin-top:10px;">
+                    <div class="charts-box-title" id="consistency-title">🔥 Study Consistency</div>
+                    <div id="consistency-wrapper" style="display: flex; flex-direction: column; gap: 20px;">
+                        <!-- Injected by JS -->
+                    </div>
+                </div>
+
                 <div class="charts-container-box" style="margin-top:10px;">
                     <div class="charts-box-title">📅 Study Heatmap (Last 365 Days)</div>
                     <div id="study-heatmap" style="overflow-x:auto;padding:4px;"></div>
                 </div>
+
+                <!-- 📈 Study Trend Line Chart -->
+                <div class="charts-container-box" style="margin-top:10px;">
+                    <div class="charts-box-title" id="chart-trend-title">📈 Study Trend</div>
+                    <div style="position: relative; height: 320px;">
+                        <canvas id="study-trend-chart"></canvas>
+                    </div>
+                    <div style="display: flex; justify-content: center; gap: 20px; margin-top: 12px; flex-wrap: wrap;">
+                        <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-gray);">
+                            <span style="width: 12px; height: 3px; background: var(--accent-orange); border-radius: 2px;"></span>
+                            <span id="trend-legend-daily">Daily</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-gray);">
+                            <span style="width: 12px; height: 3px; background: var(--accent-purple); border-radius: 2px;"></span>
+                            <span id="trend-legend-avg">7-Day Avg</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 🕒 Productivity Hours (24h Heat Timeline) -->
+                <div class="charts-container-box" style="margin-top:10px;">
+                    <div class="charts-box-title" id="chart-productivity-title">🕒 Productivity Hours</div>
+                    <div style="margin-bottom: 12px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <span style="font-size: 11px; color: var(--text-gray); font-weight: 600;" id="productivity-subtitle">When you study most during the day</span>
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <span style="font-size: 10px; color: var(--text-gray);">Less</span>
+                                <div style="display: flex; gap: 2px;">
+                                    <div style="width: 14px; height: 14px; border-radius: 3px; background: rgba(217,165,74,0.15);"></div>
+                                    <div style="width: 14px; height: 14px; border-radius: 3px; background: rgba(217,165,74,0.35);"></div>
+                                    <div style="width: 14px; height: 14px; border-radius: 3px; background: rgba(217,165,74,0.55);"></div>
+                                    <div style="width: 14px; height: 14px; border-radius: 3px; background: rgba(217,165,74,0.75);"></div>
+                                    <div style="width: 14px; height: 14px; border-radius: 3px; background: rgba(217,165,74,0.95);"></div>
+                                </div>
+                                <span style="font-size: 10px; color: var(--text-gray);">More</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="productivity-heatmap-container" style="overflow-x: auto; padding: 4px;">
+                        <!-- 24h heat timeline will be rendered here -->
+                    </div>
+                </div>
+
                 <div>
                     <div class="dash-section-header" id="hist-header-title" style="margin-top:25px;">Recent Sessions & Lectures Log</div>
                     <button class="add-item-pill-btn" onclick="openManualSessionModal()" id="add-manual-session-btn" style="margin-bottom: 15px;">+ <span id="add-manual-btn-txt">Add Past Session</span></button>
@@ -795,7 +1020,66 @@
                 addSessionBtn: "Add Session",
                 sessionUpdated: "Session updated!",
                 sessionAdded: "Session added successfully!",
-                addManualBtn: "+ Add Past Session"
+                addManualBtn: "+ Add Past Session",
+                trendTitle: "📈 Study Trend",
+                trendDaily: "Daily",
+                trendAvg: "7-Day Avg",
+                productivityTitle: "🕒 Productivity Hours",
+                productivitySubtitle: "When you study most during the day",
+                productivityNight: "Night",
+                productivityMorning: "Morning",
+                productivityAfternoon: "Afternoon",
+                productivityEvening: "Evening",
+                productivityPeakHour: "Peak Hour",
+                productivityActiveHours: "Active Hours",
+                productivityAvgPerHour: "Avg/Hour",
+                productivitySession: "session",
+                productivitySessions: "sessions",
+                productivityOfTotal: "of total",
+                productivityPerActiveHr: "per active hr",
+                productivityHours: "hour",
+                productivityHrs: "hours",
+                breakTitle: "📉 Break Analysis",
+                breakAvg: "Average Break",
+                breakLongest: "Longest Break",
+                breakTotal: "Total Break Time",
+                breakFrequency: "Break Frequency",
+                breakBreaks: "break",
+                breakBreaksPlural: "breaks",
+                breakSingle: "single occurrence",
+                breakSinceStart: "since start",
+                breakBreaksTotal: "breaks total",
+                breakNoData: "Not enough data for break analysis",
+                breakCount: "Break Count",
+                breakPeriod: "break",
+                breakPeriods: "breaks",
+                consistencyTitle: "🔥 Study Consistency",
+                consistencyScore: "Consistency Score",
+                consistencyExcellent: "Excellent!",
+                consistencyGood: "Good",
+                consistencyFair: "Fair",
+                consistencyNeedsImprovement: "Needs Improvement",
+                consistencyActiveDays: "Active Days",
+                consistencyCurrentStreak: "Current Streak",
+                consistencyBestStreak: "Best Streak",
+                consistencyDailyAvg: "Daily Average",
+                consistencyWeeklyPattern: "Weekly Pattern",
+                consistencyBestDay: "Best day",
+                consistency30DayActivity: "30-Day Activity",
+                consistencyDay: "day",
+                consistencyDays: "days",
+                deepFocusTitle: "Deep Focus Mode",
+                deepFocusLocked: "Focus Locked",
+                deepFocusStay: "Stay Focused!",
+                deepFocusAway: "You were away for",
+                deepFocusReturn: "I'm Back — Resume Focus",
+                deepFocusPaused: "Paused",
+                deepFocusRunning: "Running",
+                deepFocusExitHint: "ESC to exit focus mode",
+                focusBroken: "⚠️ Focus Broken!",
+                focusBrokenMsg: "You switched away from your study session. Staying focused is key to achieving your goals.",
+                focusBackBtn: "I'm Back — Resume Focus"
+            
             },
             ar: {
                 logo: "إندكس", navTimer: "المؤقت", navAnalysis: "التحليلات والإحصائيات", navGoals: "الأهداف", navHabits: "العادات",
@@ -840,7 +1124,54 @@
                 addSessionBtn: "إضافة الجلسة",
                 sessionUpdated: "تم تحديث الجلسة!",
                 sessionAdded: "تم إضافة الجلسة بنجاح!",
-                addManualBtn: "+ إضافة جلسة سابقة"
+                addManualBtn: "+ إضافة جلسة سابقة",
+                trendTitle: "📈 اتجاه الدراسة",
+                trendDaily: "الدراسة اليومية",
+                trendAvg: "المتوسط 7 أيام",
+                productivityTitle: "🕒 ساعات الإنتاجية",
+                productivitySubtitle: "متى تدرس أكثر خلال اليوم",
+                productivityNight: "ليلاً",
+                productivityMorning: "صباحاً",
+                productivityAfternoon: "ظهراً",
+                productivityEvening: "مساءً",
+                productivityPeakHour: "أكثر ساعة نشاطاً",
+                productivityActiveHours: "ساعات النشاط",
+                productivityAvgPerHour: "المتوسط/ساعة",
+                productivitySession: "جلسة",
+                productivitySessions: "جلسات",
+                productivityOfTotal: "من الإجمالي",
+                productivityPerActiveHr: "لكل ساعة نشطة",
+                productivityHours: "ساعة",
+                productivityHrs: "ساعات",
+                breakTitle: "📉 تحليل فترات الراحة",
+                breakAvg: "متوسط الراحة",
+                breakLongest: "أطول راحة",
+                breakTotal: "إجمالي وقت الراحة",
+                breakFrequency: "تكرار الراحة",
+                breakBreaks: "فترة راحة",
+                breakBreaksPlural: "فترات راحة",
+                breakSingle: "مرة واحدة",
+                breakSinceStart: "منذ البداية",
+                breakBreaksTotal: "فترة راحة",
+                breakNoData: "لا توجد بيانات كافية لتحليل فترات الراحة",
+                breakCount: "عدد فترات الراحة",
+                breakPeriod: "فترة",
+                breakPeriods: "فترات",
+                consistencyTitle: "🔥 استمرارية الدراسة",
+                consistencyScore: "درجة الاستمرارية",
+                consistencyExcellent: "ممتاز!",
+                consistencyGood: "جيد",
+                consistencyFair: "متوسط",
+                consistencyNeedsImprovement: "يحتاج تحسين",
+                consistencyActiveDays: "الأيام النشطة",
+                consistencyCurrentStreak: "السلسلة الحالية",
+                consistencyBestStreak: "أفضل سلسلة",
+                consistencyDailyAvg: "المتوسط اليومي",
+                consistencyWeeklyPattern: "نمط أيام الأسبوع",
+                consistencyBestDay: "أفضل يوم",
+                consistency30DayActivity: "نشاط 30 يوم",
+                consistencyDay: "يوم",
+                consistencyDays: "أيام"
             }
         };
 
@@ -1243,6 +1574,10 @@
                 recalculateAndRenderDashboard();
                 renderHistoryGridWithPagination();
                 renderHeatmap();
+                renderStudyTrendChart();
+                renderProductivityHeatTimeline();
+                renderBreakAnalysis();
+                renderStudyConsistency();
                 updateFilterOptions();
             }
             if (screenId === 'screen-goals') { document.getElementById('nav-btn-goals').classList.add('active'); renderGoalsScreen(); }
@@ -1417,6 +1752,10 @@
                 dbSet('sessions', archivedSessionsArray);
                 const d = languageDictionary[currentSystemLanguage];
                 showToast(d.toastSessionSaved, `${rawSessionTitle} — ${minutesFormattedString}`, 'success');
+                renderStudyTrendChart();
+                renderProductivityHeatTimeline();
+                renderBreakAnalysis();
+                renderStudyConsistency();
             }
             totalElapsedSecondsTracked = 0;
             currentSessionStartTimeStamp = null;
@@ -2520,6 +2859,10 @@
             recalculateAndRenderDashboard();
             renderHistoryGridWithPagination();
             renderHeatmap();
+            renderStudyTrendChart();
+            renderProductivityHeatTimeline();
+            renderBreakAnalysis();
+            renderStudyConsistency();
             updateQuickStats();
             closeEditSessionModal();
 
@@ -2578,6 +2921,10 @@
             recalculateAndRenderDashboard();
             renderHistoryGridWithPagination();
             renderHeatmap();
+            renderStudyTrendChart();
+            renderProductivityHeatTimeline();
+            renderBreakAnalysis();
+            renderStudyConsistency();
             updateQuickStats();
             closeManualSessionModal();
 
@@ -2607,6 +2954,24 @@
             document.getElementById('manual-cancel-btn').innerText = d.modalCancel;
             document.getElementById('manual-save-btn').innerText = d.addSessionBtn;
             document.getElementById('add-manual-btn-txt').innerText = d.addManualBtn;
+
+            // New analytics labels
+            const trendTitle = document.getElementById('chart-trend-title');
+            if (trendTitle) trendTitle.innerText = d.trendTitle || '📈 Study Trend';
+            const trendLegendDaily = document.getElementById('trend-legend-daily');
+            if (trendLegendDaily) trendLegendDaily.innerText = d.trendDaily || 'Daily';
+            const trendLegendAvg = document.getElementById('trend-legend-avg');
+            if (trendLegendAvg) trendLegendAvg.innerText = d.trendAvg || '7-Day Avg';
+            const prodTitle = document.getElementById('chart-productivity-title');
+            if (prodTitle) prodTitle.innerText = d.productivityTitle || '🕒 Productivity Hours';
+            const prodSubtitle = document.getElementById('productivity-subtitle');
+            if (prodSubtitle) prodSubtitle.innerText = d.productivitySubtitle || 'When you study most during the day';
+
+            // Break Analysis & Consistency labels
+            const breakTitle = document.getElementById('break-analysis-title');
+            if (breakTitle) breakTitle.innerText = d.breakTitle || '📉 Break Analysis';
+            const consistencyTitle = document.getElementById('consistency-title');
+            if (consistencyTitle) consistencyTitle.innerText = d.consistencyTitle || '🔥 Study Consistency';
         }
 
 
@@ -2715,6 +3080,767 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
+
+
+        // ========== 📈 STUDY TREND LINE CHART ==========
+        let studyTrendChartInstance = null;
+
+        function renderStudyTrendChart() {
+            const canvas = document.getElementById('study-trend-chart');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            // Get last 30 days of data
+            const days = 30;
+            const labels = [];
+            const dailyData = [];
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            for (let i = days - 1; i >= 0; i--) {
+                const d = new Date(today);
+                d.setDate(d.getDate() - i);
+                const iso = getLocalISODate(d);
+                labels.push(d.toLocaleDateString(currentSystemLanguage === 'ar' ? 'ar-EG' : 'en-US', { month: 'short', day: 'numeric' }));
+
+                const dayMinutes = archivedSessionsArray
+                    .filter(s => s.date === iso)
+                    .reduce((sum, s) => sum + (parseInt(s.duration) || 0), 0);
+                dailyData.push(dayMinutes / 60); // convert to hours
+            }
+
+            // Calculate 7-day moving average
+            const avgData = [];
+            for (let i = 0; i < dailyData.length; i++) {
+                let sum = 0;
+                let count = 0;
+                for (let j = Math.max(0, i - 6); j <= i; j++) {
+                    sum += dailyData[j];
+                    count++;
+                }
+                avgData.push(count > 0 ? sum / count : 0);
+            }
+
+            if (studyTrendChartInstance) {
+                studyTrendChartInstance.destroy();
+            }
+
+            studyTrendChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: currentSystemLanguage === 'ar' ? 'الدراسة اليومية' : 'Daily Study',
+                            data: dailyData,
+                            borderColor: 'rgba(217, 165, 74, 0.9)',
+                            backgroundColor: 'rgba(217, 165, 74, 0.08)',
+                            borderWidth: 2,
+                            tension: 0.4,
+                            fill: true,
+                            pointRadius: 3,
+                            pointBackgroundColor: 'rgba(217, 165, 74, 1)',
+                            pointBorderColor: '#08090d',
+                            pointBorderWidth: 2,
+                            pointHoverRadius: 6,
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgba(217, 165, 74, 1)',
+                            pointHoverBorderWidth: 3
+                        },
+                        {
+                            label: currentSystemLanguage === 'ar' ? 'المتوسط 7 أيام' : '7-Day Average',
+                            data: avgData,
+                            borderColor: 'rgba(62, 92, 138, 0.9)',
+                            backgroundColor: 'transparent',
+                            borderWidth: 2,
+                            borderDash: [6, 4],
+                            tension: 0.4,
+                            fill: false,
+                            pointRadius: 0,
+                            pointHoverRadius: 4,
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgba(62, 92, 138, 1)'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(8, 9, 13, 0.95)',
+                            titleColor: '#d9a54a',
+                            bodyColor: '#fff',
+                            borderColor: 'rgba(217, 165, 74, 0.3)',
+                            borderWidth: 1,
+                            cornerRadius: 10,
+                            padding: 12,
+                            displayColors: true,
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.parsed.y.toFixed(1) + ' ' + (currentSystemLanguage === 'ar' ? 'ساعة' : 'hrs');
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.03)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: 'rgba(122, 127, 145, 0.7)',
+                                font: { size: 10, weight: '600' },
+                                maxTicksLimit: 10
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.03)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: 'rgba(122, 127, 145, 0.7)',
+                                font: { size: 10, weight: '600' },
+                                callback: function(value) {
+                                    return value.toFixed(1) + 'h';
+                                }
+                            },
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // ========== 🕒 PRODUCTIVITY HOURS (24h HEAT TIMELINE) ==========
+        function renderProductivityHeatTimeline() {
+            const container = document.getElementById('productivity-heatmap-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            // Aggregate study minutes by hour of day
+            const hourMinutes = new Array(24).fill(0);
+            const hourSessionCounts = new Array(24).fill(0);
+
+            archivedSessionsArray.forEach(session => {
+                const range = session.range || '';
+                // Try to extract start hour from range like "14:00 - 15:30"
+                const match = range.match(/(\d{1,2}):\d{2}/);
+                if (match) {
+                    const hour = parseInt(match[1]);
+                    if (hour >= 0 && hour < 24) {
+                        hourMinutes[hour] += parseInt(session.duration) || 0;
+                        hourSessionCounts[hour]++;
+                    }
+                }
+            });
+
+            const maxMinutes = Math.max(...hourMinutes, 1);
+            const totalMinutes = hourMinutes.reduce((a, b) => a + b, 0);
+
+            // Create the 24h timeline
+            const wrapper = document.createElement('div');
+            wrapper.style.cssText = 'display: flex; flex-direction: column; gap: 8px;';
+
+            // Hour labels row
+            const labelsRow = document.createElement('div');
+            labelsRow.style.cssText = 'display: flex; gap: 2px; padding-left: 50px;';
+
+            for (let h = 0; h < 24; h++) {
+                const label = document.createElement('div');
+                label.style.cssText = 'flex: 1; text-align: center; font-size: 9px; color: var(--text-gray); font-weight: 600; min-width: 22px;';
+                label.innerText = h.toString().padStart(2, '0');
+                labelsRow.appendChild(label);
+            }
+            wrapper.appendChild(labelsRow);
+
+            // Main heat row
+            const heatRow = document.createElement('div');
+            heatRow.style.cssText = 'display: flex; gap: 2px; align-items: stretch; height: 48px;';
+
+            // Time period label
+            const periodLabel = document.createElement('div');
+            periodLabel.style.cssText = 'width: 48px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--text-gray); font-weight: 700; flex-shrink: 0;';
+            periodLabel.innerText = currentSystemLanguage === 'ar' ? '24س' : '24h';
+            heatRow.appendChild(periodLabel);
+
+            for (let h = 0; h < 24; h++) {
+                const mins = hourMinutes[h];
+                const sessions = hourSessionCounts[h];
+                const intensity = maxMinutes > 0 ? mins / maxMinutes : 0;
+
+                const cell = document.createElement('div');
+                cell.style.cssText = `
+                    flex: 1;
+                    min-width: 22px;
+                    border-radius: 6px;
+                    transition: all 0.3s ease;
+                    cursor: pointer;
+                    position: relative;
+                    display: flex;
+                    align-items: flex-end;
+                    justify-content: center;
+                    padding-bottom: 4px;
+                `;
+
+                // Color based on intensity
+                const alpha = 0.1 + (intensity * 0.85);
+                const bgColor = intensity > 0 
+                    ? `rgba(217, 165, 74, ${alpha})`
+                    : 'rgba(255, 255, 255, 0.03)';
+
+                cell.style.background = bgColor;
+                cell.style.border = intensity > 0.7 
+                    ? '1px solid rgba(217, 165, 74, 0.5)' 
+                    : '1px solid transparent';
+
+                // Height indicator bar inside cell
+                if (intensity > 0) {
+                    const bar = document.createElement('div');
+                    bar.style.cssText = `
+                        position: absolute;
+                        bottom: 0;
+                        left: 2px;
+                        right: 2px;
+                        height: ${Math.max(4, intensity * 100)}%;
+                        background: linear-gradient(to top, rgba(217, 165, 74, 0.6), rgba(217, 165, 74, 0.1));
+                        border-radius: 0 0 4px 4px;
+                        transition: height 0.5s ease;
+                    `;
+                    cell.appendChild(bar);
+                }
+
+                // Session count badge
+                if (sessions > 0) {
+                    const badge = document.createElement('div');
+                    badge.style.cssText = `
+                        position: absolute;
+                        top: 2px;
+                        right: 2px;
+                        background: rgba(8, 9, 13, 0.8);
+                        color: var(--accent-orange);
+                        font-size: 8px;
+                        font-weight: 800;
+                        width: 14px;
+                        height: 14px;
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        z-index: 2;
+                    `;
+                    badge.innerText = sessions;
+                    cell.appendChild(badge);
+                }
+
+                // Tooltip
+                cell.addEventListener('mouseenter', (e) => {
+                    const existing = document.getElementById('prod-tooltip');
+                    if (existing) existing.remove();
+
+                    const tooltip = document.createElement('div');
+                    tooltip.id = 'prod-tooltip';
+                    tooltip.style.cssText = `
+                        position: fixed;
+                        z-index: 10000;
+                        background: rgba(8, 9, 13, 0.98);
+                        color: #fff;
+                        padding: 10px 16px;
+                        border-radius: 12px;
+                        font-size: 12px;
+                        border: 1px solid rgba(217, 165, 74, 0.3);
+                        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+                        pointer-events: none;
+                        white-space: nowrap;
+                        backdrop-filter: blur(10px);
+                    `;
+
+                    const timeLabel = `${h.toString().padStart(2, '0')}:00 - ${((h + 1) % 24).toString().padStart(2, '0')}:00`;
+                    const pct = totalMinutes > 0 ? Math.round((mins / totalMinutes) * 100) : 0;
+                    tooltip.innerHTML = `
+                        <div style="font-weight: 800; color: var(--accent-orange); margin-bottom: 4px;">${timeLabel}</div>
+                        <div style="color: var(--text-light); font-weight: 600;">${formatMinutesToHM(mins)}</div>
+                        <div style="color: var(--text-gray); font-size: 11px; margin-top: 2px;">${sessions} ${currentSystemLanguage === 'ar' ? 'جلسة' : 'session' + (sessions !== 1 ? 's' : '')} · ${pct}% ${currentSystemLanguage === 'ar' ? 'من الإجمالي' : 'of total'}</div>
+                    `;
+
+                    document.body.appendChild(tooltip);
+                    const rect = cell.getBoundingClientRect();
+                    tooltip.style.left = Math.max(10, rect.left + rect.width / 2 - tooltip.offsetWidth / 2) + 'px';
+                    tooltip.style.top = Math.max(10, rect.top - tooltip.offsetHeight - 10) + 'px';
+                });
+
+                cell.addEventListener('mouseleave', () => {
+                    const tt = document.getElementById('prod-tooltip');
+                    if (tt) tt.remove();
+                });
+
+                heatRow.appendChild(cell);
+            }
+            wrapper.appendChild(heatRow);
+
+            // Time period markers
+            const markersRow = document.createElement('div');
+            markersRow.style.cssText = 'display: flex; gap: 2px; padding-left: 50px; margin-top: 4px;';
+
+            const periods = [
+                { start: 0, end: 5, label: currentSystemLanguage === 'ar' ? 'ليلاً' : 'Night', color: 'rgba(62, 92, 138, 0.6)' },
+                { start: 6, end: 11, label: currentSystemLanguage === 'ar' ? 'صباحاً' : 'Morning', color: 'rgba(217, 165, 74, 0.6)' },
+                { start: 12, end: 17, label: currentSystemLanguage === 'ar' ? 'ظهراً' : 'Afternoon', color: 'rgba(0, 210, 106, 0.6)' },
+                { start: 18, end: 23, label: currentSystemLanguage === 'ar' ? 'مساءً' : 'Evening', color: 'rgba(155, 89, 182, 0.6)' }
+            ];
+
+            periods.forEach(period => {
+                const marker = document.createElement('div');
+                const width = ((period.end - period.start + 1) / 24) * 100;
+                marker.style.cssText = `
+                    width: calc(${width}% - 2px);
+                    text-align: center;
+                    font-size: 9px;
+                    color: ${period.color};
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                    padding: 4px 0;
+                    border-radius: 4px;
+                    background: ${period.color.replace('0.6', '0.08')};
+                    border: 1px solid ${period.color.replace('0.6', '0.2')};
+                `;
+                marker.innerText = period.label;
+                markersRow.appendChild(marker);
+            });
+            wrapper.appendChild(markersRow);
+
+            // Summary stats
+            const summaryRow = document.createElement('div');
+            summaryRow.style.cssText = 'display: flex; gap: 16px; margin-top: 16px; flex-wrap: wrap; justify-content: center;';
+
+            const peakHour = hourMinutes.indexOf(Math.max(...hourMinutes));
+            const peakMinutes = Math.max(...hourMinutes);
+            const activeHours = hourMinutes.filter(m => m > 0).length;
+            const avgPerActiveHour = activeHours > 0 ? Math.round(totalMinutes / activeHours) : 0;
+
+            const stats = [
+                { 
+                    label: currentSystemLanguage === 'ar' ? 'أكثر ساعة نشاطاً' : 'Peak Hour', 
+                    value: peakMinutes > 0 ? `${peakHour.toString().padStart(2, '0')}:00` : '--:--',
+                    sub: peakMinutes > 0 ? formatMinutesToHM(peakMinutes) : '--'
+                },
+                { 
+                    label: currentSystemLanguage === 'ar' ? 'ساعات النشاط' : 'Active Hours', 
+                    value: `${activeHours}/24`,
+                    sub: currentSystemLanguage === 'ar' ? 'ساعة' : 'hours'
+                },
+                { 
+                    label: currentSystemLanguage === 'ar' ? 'المتوسط/ساعة' : 'Avg/Hour', 
+                    value: formatMinutesToHM(avgPerActiveHour),
+                    sub: currentSystemLanguage === 'ar' ? 'لكل ساعة نشطة' : 'per active hr'
+                }
+            ];
+
+            stats.forEach(stat => {
+                const statBox = document.createElement('div');
+                statBox.style.cssText = `
+                    background: rgba(255, 255, 255, 0.03);
+                    border: 1px solid var(--border-soft);
+                    border-radius: 12px;
+                    padding: 10px 18px;
+                    text-align: center;
+                    min-width: 100px;
+                `;
+                statBox.innerHTML = `
+                    <div style="font-size: 10px; color: var(--text-gray); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">${stat.label}</div>
+                    <div style="font-size: 18px; font-weight: 800; color: var(--accent-orange);">${stat.value}</div>
+                    <div style="font-size: 10px; color: var(--text-gray); margin-top: 2px;">${stat.sub}</div>
+                `;
+                summaryRow.appendChild(statBox);
+            });
+            wrapper.appendChild(summaryRow);
+
+            container.appendChild(wrapper);
+        }
+
+
+
+        // ========== 📉 BREAK ANALYSIS ==========
+        let breakHistogramChartInstance = null;
+
+        function calculateBreakAnalysis() {
+            if (archivedSessionsArray.length < 2) return null;
+
+            // Build session timeline: each session has a start and end timestamp
+            const sessionsWithTimes = archivedSessionsArray.map(s => {
+                const dateStr = s.date || getLocalISODate(new Date());
+                const durationMin = parseInt(s.duration) || 0;
+
+                // Try to parse start time from range
+                let startTime = null;
+                if (s.range && s.range.includes(' - ')) {
+                    const startMatch = s.range.match(/(\d{1,2}):(\d{2})/);
+                    if (startMatch) {
+                        startTime = new Date(dateStr + 'T' + startMatch[1].padStart(2, '0') + ':' + startMatch[2] + ':00');
+                    }
+                }
+
+                // Fallback: if no start time, assume 09:00 as default
+                if (!startTime || isNaN(startTime.getTime())) {
+                    startTime = new Date(dateStr + 'T09:00:00');
+                }
+
+                const endTime = new Date(startTime.getTime() + durationMin * 60000);
+
+                return {
+                    ...s,
+                    startTime,
+                    endTime,
+                    durationMin
+                };
+            });
+
+            // Sort by end time
+            const sorted = sessionsWithTimes.sort((a, b) => a.endTime - b.endTime);
+
+            const breaks = [];
+            for (let i = 1; i < sorted.length; i++) {
+                const prev = sorted[i - 1];
+                const curr = sorted[i];
+
+                const diffMinutes = Math.round((curr.startTime - prev.endTime) / (1000 * 60));
+
+                // Only count as a break if it's between 5 min and 48 hours
+                // (negative = overlap, skip it)
+                if (diffMinutes >= 5 && diffMinutes <= 2880) {
+                    breaks.push(diffMinutes);
+                }
+            }
+
+            if (breaks.length === 0) return null;
+
+            const totalBreak = breaks.reduce((a, b) => a + b, 0);
+            const avgBreak = Math.round(totalBreak / breaks.length);
+            const longestBreak = Math.max(...breaks);
+            const frequency = breaks.length;
+
+            // Histogram bins (in minutes)
+            const bins = [
+                { label: '< 15m', min: 0, max: 15, count: 0 },
+                { label: '15-30m', min: 15, max: 30, count: 0 },
+                { label: '30-60m', min: 30, max: 60, count: 0 },
+                { label: '1-2h', min: 60, max: 120, count: 0 },
+                { label: '2-4h', min: 120, max: 240, count: 0 },
+                { label: '4-8h', min: 240, max: 480, count: 0 },
+                { label: '8-24h', min: 480, max: 1440, count: 0 },
+                { label: '> 24h', min: 1440, max: Infinity, count: 0 }
+            ];
+
+            breaks.forEach(b => {
+                const bin = bins.find(bin => b >= bin.min && b < bin.max);
+                if (bin) bin.count++;
+            });
+
+            return { avgBreak, longestBreak, totalBreak, frequency, bins, breaks };
+        }
+
+        function renderBreakAnalysis() {
+            const container = document.getElementById('break-metrics-wrapper');
+            const canvas = document.getElementById('break-histogram-chart');
+            if (!container || !canvas) return;
+
+            const data = calculateBreakAnalysis();
+
+            if (!data) {
+                container.innerHTML = `
+                    <div style="text-align:center; padding:30px; color:var(--text-gray); font-size:13px; grid-column: 1 / -1;">
+                        <div style="font-size: 24px; margin-bottom: 8px;">📊</div>
+                        <div style="font-weight: 600; margin-bottom: 6px;">${currentSystemLanguage === 'ar' ? 'لا توجد بيانات كافية' : 'Not enough data'}</div>
+                        <div style="font-size: 11px; opacity: 0.7;">${currentSystemLanguage === 'ar' ? 'يلزم جلستان على الأقل بتواريخ مختلفة لحساب فترات الراحة' : 'Need at least 2 sessions on different dates to calculate breaks'}</div>
+                    </div>
+                `;
+                if (breakHistogramChartInstance) {
+                    breakHistogramChartInstance.destroy();
+                    breakHistogramChartInstance = null;
+                }
+                return;
+            }
+
+            const d = languageDictionary[currentSystemLanguage];
+
+            // Render metrics cards
+            container.innerHTML = `
+                <div style="background: linear-gradient(160deg, rgba(15,17,26,0.8), rgba(18,20,32,0.6)); border: 1px solid var(--border-soft); padding: 18px; border-radius: 16px; text-align: center; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.borderColor='rgba(217,165,74,0.2)';" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='var(--border-soft)';">
+                    <div style="font-size: 11px; color: var(--text-gray); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">${currentSystemLanguage === 'ar' ? 'متوسط الراحة' : 'Average Break'}</div>
+                    <div style="font-size: 28px; font-weight: 800; color: var(--accent-orange);">${formatMinutesToHM(data.avgBreak)}</div>
+                    <div style="font-size: 10px; color: var(--text-gray); margin-top: 4px;">${data.frequency} ${currentSystemLanguage === 'ar' ? 'فترة راحة' : 'breaks'}</div>
+                </div>
+                <div style="background: linear-gradient(160deg, rgba(15,17,26,0.8), rgba(18,20,32,0.6)); border: 1px solid var(--border-soft); padding: 18px; border-radius: 16px; text-align: center; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.borderColor='rgba(231,76,60,0.2)';" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='var(--border-soft)';">
+                    <div style="font-size: 11px; color: var(--text-gray); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">${currentSystemLanguage === 'ar' ? 'أطول راحة' : 'Longest Break'}</div>
+                    <div style="font-size: 28px; font-weight: 800; color: var(--danger);">${formatMinutesToHM(data.longestBreak)}</div>
+                    <div style="font-size: 10px; color: var(--text-gray); margin-top: 4px;">${currentSystemLanguage === 'ar' ? 'مرة واحدة' : 'single occurrence'}</div>
+                </div>
+                <div style="background: linear-gradient(160deg, rgba(15,17,26,0.8), rgba(18,20,32,0.6)); border: 1px solid var(--border-soft); padding: 18px; border-radius: 16px; text-align: center; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.borderColor='rgba(0,210,106,0.2)';" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='var(--border-soft)';">
+                    <div style="font-size: 11px; color: var(--text-gray); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">${currentSystemLanguage === 'ar' ? 'إجمالي وقت الراحة' : 'Total Break Time'}</div>
+                    <div style="font-size: 28px; font-weight: 800; color: var(--success);">${formatMinutesToHM(data.totalBreak)}</div>
+                    <div style="font-size: 10px; color: var(--text-gray); margin-top: 4px;">${currentSystemLanguage === 'ar' ? 'منذ البداية' : 'since start'}</div>
+                </div>
+                <div style="background: linear-gradient(160deg, rgba(15,17,26,0.8), rgba(18,20,32,0.6)); border: 1px solid var(--border-soft); padding: 18px; border-radius: 16px; text-align: center; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.borderColor='rgba(62,92,138,0.2)';" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='var(--border-soft)';">
+                    <div style="font-size: 11px; color: var(--text-gray); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">${currentSystemLanguage === 'ar' ? 'تكرار الراحة' : 'Break Frequency'}</div>
+                    <div style="font-size: 28px; font-weight: 800; color: var(--accent-purple);">${data.frequency}</div>
+                    <div style="font-size: 10px; color: var(--text-gray); margin-top: 4px;">${currentSystemLanguage === 'ar' ? 'فترة راحة' : 'breaks total'}</div>
+                </div>
+            `;
+
+            // Render histogram using Chart.js
+            const ctx = canvas.getContext('2d');
+            if (breakHistogramChartInstance) breakHistogramChartInstance.destroy();
+
+            const maxCount = Math.max(...data.bins.map(b => b.count), 1);
+
+            breakHistogramChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.bins.map(b => b.label),
+                    datasets: [{
+                        label: currentSystemLanguage === 'ar' ? 'عدد فترات الراحة' : 'Break Count',
+                        data: data.bins.map(b => b.count),
+                        backgroundColor: data.bins.map((_, i) => {
+                            const intensity = 0.2 + (data.bins[i].count / maxCount) * 0.75;
+                            return `rgba(217, 165, 74, ${intensity})`;
+                        }),
+                        borderColor: data.bins.map((_, i) => {
+                            const intensity = data.bins[i].count / maxCount;
+                            return intensity > 0.3 ? 'rgba(217, 165, 74, 0.6)' : 'transparent';
+                        }),
+                        borderWidth: 1,
+                        borderRadius: 8,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(8, 9, 13, 0.95)',
+                            titleColor: '#d9a54a',
+                            bodyColor: '#fff',
+                            borderColor: 'rgba(217, 165, 74, 0.3)',
+                            borderWidth: 1,
+                            cornerRadius: 10,
+                            padding: 12,
+                            callbacks: {
+                                label: function(context) {
+                                    const pct = Math.round((context.parsed.y / data.frequency) * 100);
+                                    return `${context.parsed.y} ${currentSystemLanguage === 'ar' ? 'فترة' : 'breaks'} (${pct}%)`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false, drawBorder: false },
+                            ticks: {
+                                color: 'rgba(122, 127, 145, 0.7)',
+                                font: { size: 10, weight: '600' }
+                            }
+                        },
+                        y: {
+                            grid: { color: 'rgba(255, 255, 255, 0.03)', drawBorder: false },
+                            ticks: {
+                                color: 'rgba(122, 127, 145, 0.7)',
+                                font: { size: 10, weight: '600' },
+                                stepSize: 1,
+                                precision: 0
+                            },
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // ========== 🔥 STUDY CONSISTENCY SCORE ==========
+        function calculateConsistencyScore() {
+            if (archivedSessionsArray.length === 0) return null;
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            // Get last 30 days
+            const daysData = [];
+            for (let i = 29; i >= 0; i--) {
+                const d = new Date(today);
+                d.setDate(d.getDate() - i);
+                const iso = getLocalISODate(d);
+                const mins = archivedSessionsArray
+                    .filter(s => s.date === iso)
+                    .reduce((sum, s) => sum + (parseInt(s.duration) || 0), 0);
+                daysData.push({ date: iso, minutes: mins, studied: mins > 0 });
+            }
+
+            // Calculate metrics
+            const studiedDays = daysData.filter(d => d.studied).length;
+            const totalMinutes = daysData.reduce((sum, d) => sum + d.minutes, 0);
+            const avgMinutes = studiedDays > 0 ? Math.round(totalMinutes / studiedDays) : 0;
+
+            // Streak calculation (current + best)
+            let currentStreak = 0;
+            let bestStreak = 0;
+            let tempStreak = 0;
+
+            for (let i = daysData.length - 1; i >= 0; i--) {
+                if (daysData[i].studied) {
+                    tempStreak++;
+                    if (i === daysData.length - 1) currentStreak = tempStreak;
+                } else {
+                    if (tempStreak > bestStreak) bestStreak = tempStreak;
+                    tempStreak = 0;
+                }
+            }
+            if (tempStreak > bestStreak) bestStreak = tempStreak;
+
+            // Consistency score (0-100)
+            // Based on: studied days % (40%) + streak bonus (30%) + avg daily time (30%)
+            const daysScore = (studiedDays / 30) * 40;
+            const streakScore = Math.min((currentStreak / 7) * 30, 30);
+            const timeScore = Math.min((avgMinutes / 120) * 30, 30);
+            const score = Math.round(daysScore + streakScore + timeScore);
+
+            // Weekly pattern (which days of week are most consistent)
+            const dayOfWeekCounts = [0, 0, 0, 0, 0, 0, 0]; // Sun-Sat
+            const dayOfWeekTotals = [0, 0, 0, 0, 0, 0, 0];
+
+            daysData.forEach(d => {
+                const date = new Date(d.date + 'T00:00:00');
+                const dow = date.getDay();
+                if (d.studied) {
+                    dayOfWeekCounts[dow]++;
+                    dayOfWeekTotals[dow] += d.minutes;
+                }
+            });
+
+            const dayNames = currentSystemLanguage === 'ar' 
+                ? ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت']
+                : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+            const bestDayIndex = dayOfWeekTotals.indexOf(Math.max(...dayOfWeekTotals));
+
+            return {
+                score,
+                studiedDays,
+                totalDays: 30,
+                currentStreak,
+                bestStreak,
+                avgMinutes,
+                dayOfWeekCounts,
+                dayOfWeekTotals,
+                dayNames,
+                bestDay: dayNames[bestDayIndex],
+                daysData
+            };
+        }
+
+        function renderStudyConsistency() {
+            const container = document.getElementById('consistency-wrapper');
+            if (!container) return;
+
+            const data = calculateConsistencyScore();
+            if (!data) {
+                container.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-gray); font-size:13px;">${currentSystemLanguage === 'ar' ? 'لا توجد بيانات كافية' : 'Not enough data'}</div>`;
+                return;
+            }
+
+            const d = languageDictionary[currentSystemLanguage];
+
+            // Score color based on value
+            let scoreColor = 'var(--danger)';
+            let scoreLabel = currentSystemLanguage === 'ar' ? 'يحتاج تحسين' : 'Needs Improvement';
+            if (data.score >= 80) { scoreColor = 'var(--success)'; scoreLabel = currentSystemLanguage === 'ar' ? 'ممتاز!' : 'Excellent!'; }
+            else if (data.score >= 60) { scoreColor = 'var(--accent-orange)'; scoreLabel = currentSystemLanguage === 'ar' ? 'جيد' : 'Good'; }
+            else if (data.score >= 40) { scoreColor = '#f39c12'; scoreLabel = currentSystemLanguage === 'ar' ? 'متوسط' : 'Fair'; }
+
+            // Build day-of-week mini bars
+            const maxDow = Math.max(...data.dayOfWeekTotals, 1);
+            const dowBars = data.dayNames.map((name, i) => {
+                const pct = (data.dayOfWeekTotals[i] / maxDow) * 100;
+                const isBest = i === data.dayOfWeekTotals.indexOf(Math.max(...data.dayOfWeekTotals));
+                return `
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px;">
+                        <div style="font-size: 10px; color: ${isBest ? 'var(--accent-orange)' : 'var(--text-gray)'}; font-weight: ${isBest ? '800' : '600'};">${name}</div>
+                        <div style="width: 100%; height: 60px; background: rgba(255,255,255,0.03); border-radius: 8px; position: relative; overflow: hidden;">
+                            <div style="position: absolute; bottom: 0; left: 2px; right: 2px; height: ${Math.max(4, pct)}%; background: ${isBest ? 'linear-gradient(to top, var(--accent-orange), rgba(217,165,74,0.3))' : 'linear-gradient(to top, rgba(62,92,138,0.6), rgba(62,92,138,0.1))'}; border-radius: 0 0 6px 6px; transition: height 0.5s ease;"></div>
+                        </div>
+                        <div style="font-size: 10px; color: var(--text-gray); font-weight: 600;">${data.dayOfWeekCounts[i]}/${Math.ceil(30/7)}</div>
+                    </div>
+                `;
+            }).join('');
+
+            // 30-day dots
+            const dotsHtml = data.daysData.map((day, i) => {
+                const intensity = day.minutes > 0 ? Math.min(1, day.minutes / 180) : 0;
+                const alpha = 0.1 + intensity * 0.85;
+                const bg = day.minutes > 0 ? `rgba(217, 165, 74, ${alpha})` : 'rgba(255,255,255,0.03)';
+                const border = intensity > 0.5 ? '1px solid rgba(217,165,74,0.4)' : '1px solid transparent';
+                const dateObj = new Date(day.date + 'T00:00:00');
+                const dayLabel = dateObj.getDate();
+                return `<div style="width: 22px; height: 22px; border-radius: 6px; background: ${bg}; border: ${border}; display: flex; align-items: center; justify-content: center; font-size: 8px; color: ${intensity > 0.5 ? '#fff' : 'var(--text-gray)'}; font-weight: 700; cursor: pointer; transition: all 0.2s;" title="${day.date}: ${formatMinutesToHM(day.minutes)}">${dayLabel}</div>`;
+            }).join('');
+
+            container.innerHTML = `
+                <div style="display: flex; gap: 24px; align-items: center; flex-wrap: wrap;">
+                    <!-- Big Score Ring -->
+                    <div style="position: relative; width: 140px; height: 140px; flex-shrink: 0; margin: 0 auto;">
+                        <svg viewBox="0 0 140 140" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform: rotate(-90deg);">
+                            <circle fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="10" cx="70" cy="70" r="60"/>
+                            <circle fill="none" stroke="${scoreColor}" stroke-width="10" stroke-linecap="round" stroke-dasharray="377" stroke-dashoffset="${377 - (data.score / 100) * 377}" cx="70" cy="70" r="60" style="filter: drop-shadow(0 0 8px ${scoreColor.replace('var(--success)', 'rgba(0,210,106,0.4)').replace('var(--accent-orange)', 'rgba(217,165,74,0.4)').replace('var(--danger)', 'rgba(231,76,60,0.4)')}); transition: stroke-dashoffset 1s ease;"/>
+                        </svg>
+                        <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                            <div style="font-size: 36px; font-weight: 800; color: ${scoreColor};">${data.score}</div>
+                            <div style="font-size: 10px; color: var(--text-gray); font-weight: 600;">${scoreLabel}</div>
+                        </div>
+                    </div>
+
+                    <!-- Stats Grid -->
+                    <div style="flex: 1; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; min-width: 200px;">
+                        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-soft); border-radius: 12px; padding: 14px; text-align: center;">
+                            <div style="font-size: 10px; color: var(--text-gray); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">${currentSystemLanguage === 'ar' ? 'الأيام النشطة' : 'Active Days'}</div>
+                            <div style="font-size: 22px; font-weight: 800; color: var(--text-light);">${data.studiedDays}<span style="font-size: 12px; color: var(--text-gray);">/30</span></div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-soft); border-radius: 12px; padding: 14px; text-align: center;">
+                            <div style="font-size: 10px; color: var(--text-gray); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">${currentSystemLanguage === 'ar' ? 'السلسلة الحالية' : 'Current Streak'}</div>
+                            <div style="font-size: 22px; font-weight: 800; color: var(--accent-orange);">${data.currentStreak}<span style="font-size: 12px; color: var(--text-gray);"> ${currentSystemLanguage === 'ar' ? 'يوم' : 'days'}</span></div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-soft); border-radius: 12px; padding: 14px; text-align: center;">
+                            <div style="font-size: 10px; color: var(--text-gray); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">${currentSystemLanguage === 'ar' ? 'أفضل سلسلة' : 'Best Streak'}</div>
+                            <div style="font-size: 22px; font-weight: 800; color: var(--success);">${data.bestStreak}<span style="font-size: 12px; color: var(--text-gray);"> ${currentSystemLanguage === 'ar' ? 'يوم' : 'days'}</span></div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-soft); border-radius: 12px; padding: 14px; text-align: center;">
+                            <div style="font-size: 10px; color: var(--text-gray); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">${currentSystemLanguage === 'ar' ? 'المتوسط اليومي' : 'Daily Average'}</div>
+                            <div style="font-size: 22px; font-weight: 800; color: var(--accent-purple);">${formatMinutesToHM(data.avgMinutes)}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Day of Week Pattern -->
+                <div>
+                    <div style="font-size: 12px; color: var(--text-gray); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">${currentSystemLanguage === 'ar' ? 'نمط أيام الأسبوع' : 'Weekly Pattern'} · <span style="color: var(--accent-orange);">${currentSystemLanguage === 'ar' ? 'أفضل يوم' : 'Best day'}: ${data.bestDay}</span></div>
+                    <div style="display: flex; gap: 8px;">${dowBars}</div>
+                </div>
+
+                <!-- 30-Day Activity Dots -->
+                <div>
+                    <div style="font-size: 12px; color: var(--text-gray); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">${currentSystemLanguage === 'ar' ? 'نشاط 30 يوم' : '30-Day Activity'}</div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 4px;">${dotsHtml}</div>
+                </div>
+            `;
+        }
+
 let appHasBooted = false;
         async function bootApp() {
             if (appHasBooted) return;
@@ -2732,26 +3858,294 @@ let appHasBooted = false;
             updateQuickStats();
             renderHeatmap();
             renderWeeklySegmentedChart();
+            renderStudyTrendChart();
+            renderProductivityHeatTimeline();
+            renderBreakAnalysis();
+            renderStudyConsistency();
         }
     </script>
 <script>
-        if ("serviceWorker" in navigator) {
-            const swCode = `self.addEventListener("install",e=>{e.waitUntil(caches.open("index-v1").then(c=>c.addAll(["/"])));self.skipWaiting()});self.addEventListener("fetch",e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)))});`;
-            const swBlob = new Blob([swCode], {type: "application/javascript"});
-            const swUrl = URL.createObjectURL(swBlob);
-            navigator.serviceWorker.register(swUrl).catch(()=>{});
+       
+    <!-- Deep Focus Mode Overlay -->
+    <div class="deep-focus-overlay" id="deep-focus-overlay">
+        <div class="deep-focus-lock-indicator" id="deep-focus-lock-indicator">
+            <span id="lock-indicator-text">Focus Locked</span>
+        </div>
+        <div class="deep-focus-session-info" id="deep-focus-session-info">
+            Medicine · Preparing Clinical Session
+        </div>
+        <div class="deep-focus-timer" id="deep-focus-timer">25:00</div>
+        <div class="deep-focus-controls">
+            <button class="deep-focus-btn" onclick="deepFocusPause()" id="deep-focus-pause-btn">Pause</button>
+            <button class="deep-focus-btn danger" onclick="deepFocusStop()">Stop & Save</button>
+        </div>
+        <div class="deep-focus-hint">
+            ESC to exit focus mode · Space to pause/resume
+        </div>
+    </div>
+
+    <!-- Tab Switch Warning -->
+    <div class="tab-switch-warning" id="tab-switch-warning">
+        <div style="font-size: 48px; margin-bottom: 10px;">⚠️</div>
+        <h2 id="tab-warning-title">Focus Broken!</h2>
+        <p id="tab-warning-message">You switched away from your study session. Stay focused to achieve your goals.</p>
+        <button onclick="dismissTabWarning()" id="tab-warning-btn">I'm Back — Resume Focus</button>
+    </div>
+
+
+        // ========== DEEP FOCUS MODE ==========
+        let deepFocusActive = false;
+        let tabSwitchCount = 0;
+        let lastVisibilityHidden = null;
+        let focusSessionPausedByTab = false;
+
+        function enterDeepFocus() {
+            deepFocusActive = true;
+
+            // Request fullscreen
+            const elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen().catch(() => {});
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
+            }
+
+            // Show deep focus overlay
+            const overlay = document.getElementById('deep-focus-overlay');
+            overlay.classList.add('is-active');
+
+            // Update session info
+            updateDeepFocusInfo();
+
+            // Update timer display
+            updateDeepFocusTimer();
+
+            // Hide header
+            document.querySelector('.header-navigation').style.display = 'none';
+            document.querySelector('.screens-container').style.display = 'none';
+            document.getElementById('shortcuts-hint').style.display = 'none';
+
+            // Show toast
+            const d = languageDictionary[currentSystemLanguage];
+            showToast(
+                currentSystemLanguage === 'ar' ? 'وضع التركيز العميق' : 'Deep Focus Mode',
+                currentSystemLanguage === 'ar' ? 'تم قفل التركيز. لا يمكنك مغادرة هذه الصفحة.' : 'Focus locked. You cannot leave this page.',
+                'warning',
+                4000
+            );
         }
-        let deferredPrompt;
-        window.addEventListener("beforeinstallprompt", e => {
-            e.preventDefault();
-            deferredPrompt = e;
-            setTimeout(() => {
-                if (confirm("Install INDEX as an app on your device?")) {
-                    deferredPrompt.prompt();
-                    deferredPrompt.userChoice.then(() => { deferredPrompt = null; });
+
+        function exitDeepFocus() {
+            deepFocusActive = false;
+
+            // Exit fullscreen
+            if (document.exitFullscreen) {
+                document.exitFullscreen().catch(() => {});
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+
+            // Hide deep focus overlay
+            document.getElementById('deep-focus-overlay').classList.remove('is-active');
+            document.getElementById('tab-switch-warning').classList.remove('is-visible');
+
+            // Show header and content
+            document.querySelector('.header-navigation').style.display = '';
+            document.querySelector('.screens-container').style.display = '';
+            document.getElementById('shortcuts-hint').style.display = '';
+        }
+
+        function updateDeepFocusTimer() {
+            const timerEl = document.getElementById('deep-focus-timer');
+            const fsTimerEl = document.getElementById('fs-timer-numbers');
+            const mainTimerEl = document.getElementById('timer-numbers');
+
+            // Get current time from main timer
+            const timeText = mainTimerEl ? mainTimerEl.innerText : '25:00';
+            if (timerEl) timerEl.innerText = timeText;
+
+            // Update pause state styling
+            if (timerEl) {
+                if (isClockRunning) {
+                    timerEl.classList.remove('paused');
+                } else {
+                    timerEl.classList.add('paused');
                 }
-            }, 3000);
-        });
-    </script>
-</body>
-</html>
+            }
+
+            // Update pause button text
+            const pauseBtn = document.getElementById('deep-focus-pause-btn');
+            if (pauseBtn) {
+                const d = languageDictionary[currentSystemLanguage];
+                pauseBtn.innerText = isClockRunning ? (d.btnPause || 'Pause') : (d.btnStart || 'Resume');
+            }
+        }
+
+        function updateDeepFocusInfo() {
+            const infoEl = document.getElementById('deep-focus-session-info');
+            const title = document.getElementById('session-current-title')?.value || '';
+            if (infoEl) {
+                infoEl.innerText = `${currentlySelectedTag} · ${title}`;
+            }
+        }
+
+        function deepFocusPause() {
+            if (isClockRunning) {
+                pauseClock();
+            } else {
+                startClock();
+            }
+            updateDeepFocusTimer();
+        }
+
+        function deepFocusStop() {
+            exitDeepFocus();
+            stopAndSaveClock();
+        }
+
+        // Tab switch detection
+        function handleVisibilityChange() {
+            if (!deepFocusActive) return;
+
+            if (document.hidden || document.visibilityState === 'hidden') {
+                // User switched away
+                lastVisibilityHidden = Date.now();
+                focusSessionPausedByTab = true;
+
+                // Pause the timer
+                if (isClockRunning) {
+                    pauseClock();
+                }
+
+                tabSwitchCount++;
+
+                // Show warning when they come back
+            } else {
+                // User came back
+                if (focusSessionPausedByTab) {
+                    const awayTime = lastVisibilityHidden ? Math.round((Date.now() - lastVisibilityHidden) / 1000) : 0;
+                    showTabSwitchWarning(awayTime);
+                    focusSessionPausedByTab = false;
+                }
+            }
+        }
+
+        function showTabSwitchWarning(awaySeconds) {
+            const warning = document.getElementById('tab-switch-warning');
+            const title = document.getElementById('tab-warning-title');
+            const msg = document.getElementById('tab-warning-message');
+            const btn = document.getElementById('tab-warning-btn');
+
+            const d = languageDictionary[currentSystemLanguage];
+            const awayMin = Math.floor(awaySeconds / 60);
+            const awaySec = awaySeconds % 60;
+            const awayTimeStr = awayMin > 0 ? `${awayMin}m ${awaySec}s` : `${awaySec}s`;
+
+            if (currentSystemLanguage === 'ar') {
+                title.innerText = '⚠️ تم كسر التركيز!';
+                msg.innerText = `ابتعدت عن جلستك لمدة ${awayTimeStr}. التركيز مهم لتحقيق أهدافك. عد الآن واستمر!`;
+                btn.innerText = 'رجعت — استئناف التركيز';
+            } else {
+                title.innerText = '⚠️ Focus Broken!';
+                msg.innerText = `You were away for ${awayTimeStr}. Staying focused is key to achieving your goals. Come back and keep going!`;
+                btn.innerText = "I'm Back — Resume Focus";
+            }
+
+            warning.classList.add('is-visible');
+        }
+
+        function dismissTabWarning() {
+            document.getElementById('tab-switch-warning').classList.remove('is-visible');
+            // Auto-resume
+            if (!isClockRunning) {
+                startClock();
+            }
+            updateDeepFocusTimer();
+        }
+
+        // Window blur/focus detection (backup for visibilitychange)
+        function handleWindowBlur() {
+            if (!deepFocusActive) return;
+            if (isClockRunning) {
+                pauseClock();
+                focusSessionPausedByTab = true;
+                lastVisibilityHidden = Date.now();
+            }
+        }
+
+        function handleWindowFocus() {
+            if (!deepFocusActive) return;
+            if (focusSessionPausedByTab && !document.getElementById('tab-switch-warning').classList.contains('is-visible')) {
+                const awayTime = lastVisibilityHidden ? Math.round((Date.now() - lastVisibilityHidden) / 1000) : 0;
+                if (awayTime > 2) {
+                    showTabSwitchWarning(awayTime);
+                }
+                focusSessionPausedByTab = false;
+            }
+        }
+
+        // Prevent keyboard shortcuts that could navigate away
+        function handleDeepFocusKeydown(e) {
+            if (!deepFocusActive) return;
+
+            // Allow: Space (pause/resume), ESC (exit)
+            if (e.code === 'Space' || e.code === 'Escape') return;
+
+            // Prevent: Tab switching shortcuts, navigation, etc.
+            if (e.code.startsWith('Digit') || e.code === 'KeyF' || e.code === 'KeyS') {
+                // These are our app shortcuts, allow them
+                return;
+            }
+
+            // Prevent Alt+Tab simulation and other navigation
+            if (e.altKey || e.metaKey || e.ctrlKey) {
+                e.preventDefault();
+                showToast(
+                    currentSystemLanguage === 'ar' ? 'ممنوع!' : 'Not Allowed!',
+                    currentSystemLanguage === 'ar' ? 'لا يمكنك مغادرة وضع التركيز.' : 'You cannot leave focus mode.',
+                    'error',
+                    2000
+                );
+            }
+        }
+
+        // Setup event listeners
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        window.addEventListener('blur', handleWindowBlur);
+        window.addEventListener('focus', handleWindowFocus);
+        document.addEventListener('keydown', handleDeepFocusKeydown);
+
+        // Modify startClock to auto-enter deep focus
+        const originalStartClock = startClock;
+        startClock = function() {
+            originalStartClock();
+            // Auto-enter deep focus on first start
+            if (!deepFocusActive && totalElapsedSecondsTracked === 0) {
+                setTimeout(() => enterDeepFocus(), 300);
+            }
+        };
+
+        // Modify refreshTimerDisplay to update deep focus timer
+        const originalRefreshTimerDisplay = refreshTimerDisplay;
+        refreshTimerDisplay = function() {
+            originalRefreshTimerDisplay();
+            if (deepFocusActive) {
+                updateDeepFocusTimer();
+            }
+        };
+
+        // Modify the existing toggleFocusMode to use deep focus
+        const originalToggleFocusMode = toggleFocusMode;
+        toggleFocusMode = function(activate) {
+            if (activate) {
+                enterDeepFocus();
+            } else {
+                exitDeepFocus();
+            }
+        };
+
+ 
