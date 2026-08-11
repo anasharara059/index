@@ -80,6 +80,26 @@
         .screen-view { display: none; animation: fadeIn 0.5s ease-out forwards; }
         .screen-view.active-view { display: block; }
         .timer-screen-layout { display: flex; flex-direction: column; align-items: center; gap: 28px; text-align: center; animation: fadeIn 0.6s ease-out; }
+        .timer-3col-grid { display: grid; grid-template-columns: 230px minmax(0, 1fr) 260px; gap: 24px; align-items: start; }
+        .timer-side-panel { background: linear-gradient(160deg, rgba(15, 17, 26, 0.65), rgba(18, 20, 32, 0.4)); border: 1px solid var(--border-soft); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px; position: sticky; top: 24px; animation: fadeIn 0.6s ease-out; max-height: calc(100vh - 140px); }
+        .timer-side-panel-header { display: flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-gray); }
+        .timer-side-panel-divider { height: 1px; background: var(--border-soft); margin: 4px 0; }
+        .timer-notes-textarea { flex: 1; min-height: 260px; resize: vertical; background: rgba(0, 0, 0, 0.25); border: 1px solid var(--border-soft); color: var(--text-light); padding: 14px; border-radius: 14px; font-size: 13px; line-height: 1.6; outline: none; font-family: inherit; transition: all 0.3s; }
+        .timer-notes-textarea:focus { border-color: var(--accent-orange); box-shadow: 0 0 15px rgba(217, 165, 74, 0.12); }
+        .timer-notes-textarea::placeholder { color: var(--text-gray); }
+        .timer-current-subject-pill { background: rgba(217, 165, 74, 0.12); border: 1px solid rgba(217, 165, 74, 0.3); color: var(--accent-orange); font-weight: 800; font-size: 14px; padding: 10px 14px; border-radius: 12px; text-align: center; }
+        .timer-tasks-panel-list { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; padding-right: 2px; }
+        .timer-task-item { display: flex; align-items: flex-start; gap: 9px; background: rgba(255, 255, 255, 0.025); border: 1px solid var(--border-soft); border-radius: 10px; padding: 9px 10px; text-align: left; transition: all 0.2s ease; }
+        html[dir="rtl"] .timer-task-item { text-align: right; }
+        .timer-task-item.is-matching { border-color: rgba(217, 165, 74, 0.35); background: rgba(217, 165, 74, 0.06); }
+        .timer-task-item.is-done { opacity: 0.5; }
+        .timer-task-item .goal-task-checkbox { margin-top: 1px; }
+        .timer-task-info { flex: 1; min-width: 0; }
+        .timer-task-text { font-size: 12px; color: var(--text-light); word-break: break-word; }
+        .timer-task-item.is-done .timer-task-text { text-decoration: line-through; color: var(--text-gray); }
+        .timer-task-goal-src { font-size: 10px; color: var(--accent-purple); font-weight: 700; margin-top: 3px; }
+        .timer-tasks-empty { font-size: 11.5px; color: var(--text-gray); text-align: center; padding: 20px 8px; border: 1.5px dashed var(--border-soft); border-radius: 12px; }
+        @media (max-width: 1150px) { .timer-3col-grid { grid-template-columns: 1fr; } .timer-side-panel { position: static; max-height: none; order: 2; } .timer-side-panel-right { order: 2; } .timer-screen-layout { order: 1; } .timer-notes-textarea { min-height: 140px; } }
         .session-title-field { background: transparent; border: none; border-bottom: 2px dashed var(--border-soft); color: var(--text-light); font-size: 22px; font-weight: 700; text-align: center; width: 80%; max-width: 500px; padding: 10px; outline: none; transition: all 0.3s; }
         .session-title-field:focus { border-bottom-color: var(--accent-orange); border-bottom-style: solid; }
         .session-title-field::placeholder { color: var(--text-gray); }
@@ -519,45 +539,58 @@
     </div>
     <div class="screens-container">
         <div class="screen-view glass-card active-view" id="screen-timer">
-            <div class="timer-screen-layout">
-                <input type="text" class="session-title-field" id="session-current-title" value="Preparing Clinical Session" placeholder="Enter session title...">
-                <div class="timer-mode-selector">
-                    <button class="mode-button" onclick="switchMode('timer')" id="mb-timer">Timer</button>
-                    <button class="mode-button" onclick="switchMode('stopwatch')" id="mb-stopwatch">Stopwatch</button>
-                    <button class="mode-button active" onclick="switchMode('pomodoro')" id="mb-pomo">Pomodoro</button>
+            <div class="timer-3col-grid">
+                <div class="timer-side-panel timer-side-panel-left">
+                    <div class="timer-side-panel-header"><span>📝</span><span id="timer-notes-header">Quick Notes</span></div>
+                    <textarea class="timer-notes-textarea" id="timer-quick-notes" placeholder="Jot down anything about this study session..." oninput="saveTimerQuickNotes()"></textarea>
                 </div>
-                <div class="timer-circle-widget" onclick="openTimeEditModal()" id="main-timer-trigger" title="Click to edit duration">
-                    <svg class="timer-svg" viewBox="0 0 360 360">
-                        <circle class="rail" cx="180" cy="180" r="174"></circle>
-                        <circle class="fill-progress" id="ring-filler" cx="180" cy="180" r="174"></circle>
-                    </svg>
-                    <div class="timer-digits" id="timer-numbers">25:00</div>
+                <div class="timer-screen-layout">
+                    <input type="text" class="session-title-field" id="session-current-title" value="Preparing Clinical Session" placeholder="Enter session title...">
+                    <div class="timer-mode-selector">
+                        <button class="mode-button" onclick="switchMode('timer')" id="mb-timer">Timer</button>
+                        <button class="mode-button" onclick="switchMode('stopwatch')" id="mb-stopwatch">Stopwatch</button>
+                        <button class="mode-button active" onclick="switchMode('pomodoro')" id="mb-pomo">Pomodoro</button>
+                    </div>
+                    <div class="timer-circle-widget" onclick="openTimeEditModal()" id="main-timer-trigger" title="Click to edit duration">
+                        <svg class="timer-svg" viewBox="0 0 360 360">
+                            <circle class="rail" cx="180" cy="180" r="174"></circle>
+                            <circle class="fill-progress" id="ring-filler" cx="180" cy="180" r="174"></circle>
+                        </svg>
+                        <div class="timer-digits" id="timer-numbers">25:00</div>
+                    </div>
+                    <div class="session-info-badge" id="session-info-badge" style="display:none;">
+                        <div class="badge-item"><span>⏱</span><span>Elapsed: <strong id="badge-elapsed">0:00</strong></span></div>
+                        <div class="badge-item"><span>🏷</span><span>Tag: <strong id="badge-tag">Medicine</strong></span></div>
+                        <div class="badge-item"><span>📅</span><span>Started: <strong id="badge-start">--:--</strong></span></div>
+                    </div>
+                    <div class="controls-button-group">
+                        <button class="word-control-btn btn-start" onclick="startClock()" id="ctrl-start">Start</button>
+                        <button class="word-control-btn btn-pause" onclick="pauseClock()" id="ctrl-pause">Pause</button>
+                        <button class="word-control-btn btn-stop" onclick="stopAndSaveClock()" id="ctrl-stop">Stop</button>
+                        <button class="word-control-btn btn-full" onclick="toggleFocusMode(true)" id="ctrl-full">Focus</button>
+                    </div>
+                    <div class="quick-stats-row" id="quick-stats">
+                        <div class="quick-stat-chip"><span class="stat-icon">🔥</span><span>Today: <strong id="qs-today">0.0h</strong></span></div>
+                        <div class="quick-stat-chip"><span class="stat-icon">📊</span><span>Week: <strong id="qs-week">0.0h</strong></span></div>
+                        <div class="quick-stat-chip"><span class="stat-icon">🎯</span><span>Sessions: <strong id="qs-sessions">0</strong></span></div>
+                        <div class="quick-stat-chip"><span class="stat-icon">🏆</span><span>Streak: <strong id="qs-streak">0</strong> days</span></div>
+                    </div>
+                    <div class="tags-management-section">
+                        <div class="tags-label" id="tags-section-header">Subjects & Preparations (Click to select):</div>
+                        <div class="tags-list" id="tags-box-wrapper"></div>
+                    </div>
                 </div>
-                <div class="session-info-badge" id="session-info-badge" style="display:none;">
-                    <div class="badge-item"><span>⏱</span><span>Elapsed: <strong id="badge-elapsed">0:00</strong></span></div>
-                    <div class="badge-item"><span>🏷</span><span>Tag: <strong id="badge-tag">Medicine</strong></span></div>
-                    <div class="badge-item"><span>📅</span><span>Started: <strong id="badge-start">--:--</strong></span></div>
-                </div>
-                <div class="linked-goal-chip" id="linked-goal-chip">
-                    <span>🎯</span>
-                    <span id="linked-goal-chip-text"><strong id="lg-chip-title"></strong> · <span id="lg-chip-progress"></span></span>
-                    <div class="lg-mini-bar"><div class="lg-mini-fill" id="lg-chip-fill" style="width:0%;"></div></div>
-                </div>
-                <div class="controls-button-group">
-                    <button class="word-control-btn btn-start" onclick="startClock()" id="ctrl-start">Start</button>
-                    <button class="word-control-btn btn-pause" onclick="pauseClock()" id="ctrl-pause">Pause</button>
-                    <button class="word-control-btn btn-stop" onclick="stopAndSaveClock()" id="ctrl-stop">Stop</button>
-                    <button class="word-control-btn btn-full" onclick="toggleFocusMode(true)" id="ctrl-full">Focus</button>
-                </div>
-                <div class="quick-stats-row" id="quick-stats">
-                    <div class="quick-stat-chip"><span class="stat-icon">🔥</span><span>Today: <strong id="qs-today">0.0h</strong></span></div>
-                    <div class="quick-stat-chip"><span class="stat-icon">📊</span><span>Week: <strong id="qs-week">0.0h</strong></span></div>
-                    <div class="quick-stat-chip"><span class="stat-icon">🎯</span><span>Sessions: <strong id="qs-sessions">0</strong></span></div>
-                    <div class="quick-stat-chip"><span class="stat-icon">🏆</span><span>Streak: <strong id="qs-streak">0</strong> days</span></div>
-                </div>
-                <div class="tags-management-section">
-                    <div class="tags-label" id="tags-section-header">Subjects & Preparations (Click to select):</div>
-                    <div class="tags-list" id="tags-box-wrapper"></div>
+                <div class="timer-side-panel timer-side-panel-right">
+                    <div class="timer-side-panel-header"><span>🏷</span><span id="timer-current-subject-lbl">Current Subject</span></div>
+                    <div class="timer-current-subject-pill" id="timer-current-subject-pill">Medicine</div>
+                    <div class="linked-goal-chip" id="linked-goal-chip">
+                        <span>🎯</span>
+                        <span id="linked-goal-chip-text"><strong id="lg-chip-title"></strong> · <span id="lg-chip-progress"></span></span>
+                        <div class="lg-mini-bar"><div class="lg-mini-fill" id="lg-chip-fill" style="width:0%;"></div></div>
+                    </div>
+                    <div class="timer-side-panel-divider"></div>
+                    <div class="timer-side-panel-header"><span>📋</span><span id="timer-tasks-header">Study Tasks</span></div>
+                    <div class="timer-tasks-panel-list" id="timer-tasks-panel-list"></div>
                 </div>
             </div>
         </div>
@@ -883,6 +916,9 @@
                 goalAutoTrackedTxt: "Auto-tracked", goalManualTxt: "Manual",
                 goalTasksHeader: "Study Tasks", goalTaskPlaceholder: "e.g. Review chapter 3...",
                 goalTasksEmptyHint: "No study tasks yet — add one below.",
+                timerNotesHeader: "Quick Notes", timerNotesPlaceholder: "Jot down anything about this study session...",
+                timerCurrentSubjectLbl: "Current Subject", timerTasksHeader: "Study Tasks",
+                timerTasksEmptyState: "No study tasks yet. Add some from the Goals tab.",
                 habitsHeaderTitle: "Habits", habitsAddBtnTxt: "New Habit", habitsEmptyState: "No habits yet — start tracking one!",
                 habitDeleteConfirm: "Do you want to delete this habit?", habitStreakTxt: "day streak",
                 habitMarkDoneTxt: "Mark Today Done", habitDoneTxt: "Done Today ✓",
@@ -980,6 +1016,9 @@
                 goalAutoTrackedTxt: "تتبع تلقائي", goalManualTxt: "يدوي",
                 goalTasksHeader: "المهام الدراسية", goalTaskPlaceholder: "مثال: مراجعة الفصل الثالث...",
                 goalTasksEmptyHint: "لسه مفيش مهام دراسية — ضيف واحدة تحت.",
+                timerNotesHeader: "ملاحظات سريعة", timerNotesPlaceholder: "دوّن أي حاجة عن الجلسة الدراسية دي...",
+                timerCurrentSubjectLbl: "المادة الحالية", timerTasksHeader: "المهام الدراسية",
+                timerTasksEmptyState: "لسه مفيش مهام دراسية. ضيف شوية من تبويب الأهداف.",
                 habitsHeaderTitle: "العادات", habitsAddBtnTxt: "عادة جديدة", habitsEmptyState: "لسه معملتش أي عادة — ابدأ بتتبع واحدة!",
                 habitDeleteConfirm: "هل تريد حذف هذه العادة؟", habitStreakTxt: "يوم متتالي",
                 habitMarkDoneTxt: "تسجيل إنجاز اليوم", habitDoneTxt: "تم اليوم ✓",
@@ -1076,6 +1115,7 @@
         let habitsArray = [];
         let filteredSessions = [];
         let studyGoals = { daily: 4, weekly: 28, monthly: 120 };
+        let timerQuickNotesText = '';
         let timerWorker = null;
         let currentViewedWeekOffset = 0;
         let archivedWeeks = {};
@@ -1392,6 +1432,8 @@
                 const savedStudyGoals = await dbGet('studyGoals');
                 if (savedStudyGoals !== undefined) studyGoals = { ...studyGoals, ...savedStudyGoals };
                 else await dbSet('studyGoals', studyGoals);
+                const savedQuickNotes = await dbGet('timerQuickNotes');
+                if (savedQuickNotes !== undefined) timerQuickNotesText = savedQuickNotes;
                 const savedSelectedTag = await dbGet('selectedTag');
                 if (savedSelectedTag !== undefined && currentTagsList.includes(savedSelectedTag)) currentlySelectedTag = savedSelectedTag;
                 else { currentlySelectedTag = currentTagsList[0] || currentlySelectedTag; await dbSet('selectedTag', currentlySelectedTag); }
@@ -1557,8 +1599,16 @@
             if (goalTypeCountOpt) goalTypeCountOpt.innerText = d.goalTypeCountOpt;
             const goalTypeTimeOpt = document.getElementById('goal-modal-type-time');
             if (goalTypeTimeOpt) goalTypeTimeOpt.innerText = d.goalTypeTimeOpt;
+            const timerNotesHeader = document.getElementById('timer-notes-header');
+            if (timerNotesHeader) timerNotesHeader.innerText = d.timerNotesHeader;
+            const timerNotesArea = document.getElementById('timer-quick-notes');
+            if (timerNotesArea) timerNotesArea.placeholder = d.timerNotesPlaceholder;
+            const timerSubjectLbl = document.getElementById('timer-current-subject-lbl');
+            if (timerSubjectLbl) timerSubjectLbl.innerText = d.timerCurrentSubjectLbl;
+            const timerTasksHeader = document.getElementById('timer-tasks-header');
+            if (timerTasksHeader) timerTasksHeader.innerText = d.timerTasksHeader;
             renderGoalsScreen();
-            renderLinkedGoalChip();
+            refreshTimerSidebar();
             document.getElementById('habits-header-title').innerText = d.habitsHeaderTitle;
             document.getElementById('habits-add-btn-txt').innerText = d.habitsAddBtnTxt;
             document.getElementById('habits-empty-state').innerText = d.habitsEmptyState;
@@ -1683,7 +1733,7 @@
                     if (goalsUpdated) {
                         dbSet('goals', goalsArray);
                         renderGoalsScreen();
-                        renderLinkedGoalChip();
+                        refreshTimerSidebar();
                     }
                 }
                 const d = languageDictionary[currentSystemLanguage];
@@ -1821,7 +1871,7 @@
             wrapper.appendChild(addBtnCircle);
         }
 
-        function selectActiveTag(tag) { currentlySelectedTag = tag; dbSet('selectedTag', currentlySelectedTag); renderTagsChips(); renderLinkedGoalChip(); }
+        function selectActiveTag(tag) { currentlySelectedTag = tag; dbSet('selectedTag', currentlySelectedTag); renderTagsChips(); refreshTimerSidebar(); }
         function deleteTagFromSystem(tag) {
             currentTagsList = currentTagsList.filter(t => t !== tag);
             if (currentlySelectedTag === tag && currentTagsList.length > 0) currentlySelectedTag = currentTagsList[0];
@@ -2593,7 +2643,7 @@
             });
             dbSet('goals', goalsArray);
             renderGoalsScreen();
-            renderLinkedGoalChip();
+            refreshTimerSidebar();
             closeGoalModal();
             const d = languageDictionary[currentSystemLanguage];
             showToast(d.toastGoalAdded, title, 'success');
@@ -2697,6 +2747,7 @@
                     </div>`;
                 grid.appendChild(card);
             });
+            refreshTimerSidebar();
         }
         function toggleGoalTasksPanel(goalId) {
             if (expandedGoalTasksSet.has(goalId)) expandedGoalTasksSet.delete(goalId);
@@ -2741,9 +2792,10 @@
             renderGoalsScreen();
         }
         function renderLinkedGoalChip() {
+            const subjectPill = document.getElementById('timer-current-subject-pill');
+            if (subjectPill) subjectPill.innerText = currentlySelectedTag;
             const chip = document.getElementById('linked-goal-chip');
             if (!chip) return;
-            const d = languageDictionary[currentSystemLanguage];
             const linkedGoal = goalsArray.find(g => g.goalType === 'time' && g.linkedTag === currentlySelectedTag && g.current < g.target);
             if (!linkedGoal) { chip.classList.remove('is-visible'); return; }
             const pct = linkedGoal.target > 0 ? Math.min(100, Math.round((linkedGoal.current / linkedGoal.target) * 100)) : 0;
@@ -2751,6 +2803,49 @@
             document.getElementById('lg-chip-progress').innerText = `${linkedGoal.current}/${linkedGoal.target} ${linkedGoal.unit || 'min'} (${pct}%)`;
             document.getElementById('lg-chip-fill').style.width = pct + '%';
             chip.classList.add('is-visible');
+        }
+        function renderTimerTasksPanel() {
+            const listEl = document.getElementById('timer-tasks-panel-list');
+            if (!listEl) return;
+            const d = languageDictionary[currentSystemLanguage];
+            let allTasks = [];
+            goalsArray.forEach(goal => {
+                (goal.tasks || []).forEach(task => {
+                    allTasks.push({
+                        goalId: goal.id, goalTitle: goal.title, taskId: task.id, text: task.text, done: task.done,
+                        matchesTag: !!(goal.linkedTag && goal.linkedTag === currentlySelectedTag)
+                    });
+                });
+            });
+            if (allTasks.length === 0) {
+                listEl.innerHTML = `<div class="timer-tasks-empty">${d.timerTasksEmptyState || 'No study tasks yet. Add some from the Goals tab.'}</div>`;
+                return;
+            }
+            allTasks.sort((a, b) => {
+                if (a.done !== b.done) return a.done ? 1 : -1;
+                if (a.matchesTag !== b.matchesTag) return a.matchesTag ? -1 : 1;
+                return 0;
+            });
+            listEl.innerHTML = allTasks.map(t => `
+                <div class="timer-task-item ${t.done ? 'is-done' : ''} ${t.matchesTag ? 'is-matching' : ''}">
+                    <div class="goal-task-checkbox ${t.done ? 'checked' : ''}" onclick="toggleGoalTaskDone('${t.goalId}','${t.taskId}')">${t.done ? '✓' : ''}</div>
+                    <div class="timer-task-info">
+                        <div class="timer-task-text">${escapeGoalHtml(t.text)}</div>
+                        <div class="timer-task-goal-src">🎯 ${escapeGoalHtml(t.goalTitle)}</div>
+                    </div>
+                </div>`).join('');
+        }
+        function refreshTimerSidebar() {
+            renderLinkedGoalChip();
+            renderTimerTasksPanel();
+        }
+        let quickNotesSaveTimer = null;
+        function saveTimerQuickNotes() {
+            const el = document.getElementById('timer-quick-notes');
+            if (!el) return;
+            timerQuickNotesText = el.value;
+            clearTimeout(quickNotesSaveTimer);
+            quickNotesSaveTimer = setTimeout(() => { dbSet('timerQuickNotes', timerQuickNotesText); }, 500);
         }
 
         function openHabitModal() {
@@ -3995,10 +4090,12 @@ let appHasBooted = false;
             await checkAndArchivePreviousWeek();
             renderTagsChips();
             refreshTimerDisplay();
+            const notesEl = document.getElementById('timer-quick-notes');
+            if (notesEl) notesEl.value = timerQuickNotesText || '';
             recalculateAndRenderDashboard();
             renderHistoryGridWithPagination();
             renderGoalsScreen();
-            renderLinkedGoalChip();
+            refreshTimerSidebar();
             renderHabitsScreen();
             syncLanguageInterfaceStrings();
             updateQuickStats();
