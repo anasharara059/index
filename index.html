@@ -247,6 +247,38 @@
         .stepper-btn { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border-soft); background: rgba(255, 255, 255, 0.03); color: #fff; cursor: pointer; font-size: 18px; font-weight: 700; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
         .stepper-btn:hover { border-color: var(--accent-orange); color: var(--accent-orange); background: rgba(217, 165, 74, 0.1); transform: scale(1.1); }
         .stepper-value { min-width: 90px; text-align: center; font-weight: 700; font-size: 13px; color: var(--text-light); }
+        .goal-type-badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 9px; border-radius: 7px; font-size: 10px; font-weight: 700; margin-top: 6px; letter-spacing: 0.2px; }
+        .goal-type-badge.time-type { background: rgba(62, 92, 138, 0.22); color: #8fb0e8; }
+        .goal-type-badge.count-type { background: rgba(255, 255, 255, 0.06); color: var(--text-gray); }
+        .goal-linked-tag-pill { color: var(--accent-purple); font-size: 11px; font-weight: 700; }
+        .goal-tasks-toggle { display: flex; align-items: center; justify-content: space-between; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-soft); border-radius: 12px; padding: 9px 14px; cursor: pointer; font-size: 12px; font-weight: 700; color: var(--text-gray); transition: all 0.25s ease; }
+        .goal-tasks-toggle:hover { border-color: rgba(217, 165, 74, 0.3); color: var(--text-light); }
+        .goal-tasks-toggle .gt-count { color: var(--accent-orange); font-weight: 800; }
+        .goal-tasks-toggle .gt-chevron { transition: transform 0.3s ease; font-size: 10px; }
+        .goal-tasks-toggle.is-open .gt-chevron { transform: rotate(180deg); }
+        .goal-tasks-panel { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+        .goal-tasks-panel.is-open { max-height: 600px; }
+        .goal-tasks-list { display: flex; flex-direction: column; gap: 6px; padding-top: 10px; }
+        .goal-task-item { display: flex; align-items: center; gap: 10px; background: rgba(255, 255, 255, 0.025); border: 1px solid var(--border-soft); border-radius: 10px; padding: 8px 10px; animation: fadeIn 0.3s ease-out; }
+        .goal-task-item.is-done { opacity: 0.55; }
+        .goal-task-checkbox { width: 19px; height: 19px; min-width: 19px; border-radius: 6px; border: 1.5px solid var(--border-soft); background: rgba(0,0,0,0.25); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #000; transition: all 0.2s ease; }
+        .goal-task-checkbox.checked { background: var(--success, #00d26a); border-color: transparent; box-shadow: 0 0 8px rgba(0, 210, 106, 0.4); }
+        .goal-task-text { flex: 1; font-size: 12.5px; color: var(--text-light); text-align: left; word-break: break-word; }
+        html[dir="rtl"] .goal-task-text { text-align: right; }
+        .goal-task-item.is-done .goal-task-text { text-decoration: line-through; color: var(--text-gray); }
+        .goal-task-delete { background: transparent; border: none; color: var(--text-gray); cursor: pointer; font-size: 13px; opacity: 0.5; transition: all 0.2s; padding: 2px 4px; }
+        .goal-task-delete:hover { opacity: 1; color: var(--danger); }
+        .goal-task-add-row { display: flex; gap: 8px; padding-top: 8px; }
+        .goal-task-input { flex: 1; background: rgba(0,0,0,0.3); border: 1px solid var(--border-soft); color: #fff; padding: 9px 12px; border-radius: 10px; font-size: 12.5px; outline: none; transition: all 0.3s; }
+        .goal-task-input:focus { border-color: var(--accent-orange); box-shadow: 0 0 12px rgba(217, 165, 74, 0.12); }
+        .goal-task-add-confirm { background: var(--accent-orange); border: none; color: #000; width: 34px; min-width: 34px; border-radius: 10px; font-size: 16px; font-weight: 800; cursor: pointer; transition: all 0.2s; }
+        .goal-task-add-confirm:hover { transform: scale(1.08); }
+        .goal-tasks-empty-hint { font-size: 11px; color: var(--text-gray); text-align: center; padding: 6px 0 2px; opacity: 0.7; }
+        .linked-goal-chip { display: none; align-items: center; gap: 10px; background: linear-gradient(160deg, rgba(217, 165, 74, 0.1), rgba(62, 92, 138, 0.08)); border: 1px solid rgba(217, 165, 74, 0.25); border-radius: 14px; padding: 10px 18px; font-size: 12px; color: var(--text-gray); animation: fadeIn 0.4s ease-out; }
+        .linked-goal-chip.is-visible { display: flex; }
+        .linked-goal-chip strong { color: var(--accent-orange); }
+        .linked-goal-chip .lg-mini-bar { width: 60px; height: 5px; border-radius: 3px; background: rgba(255,255,255,0.08); overflow: hidden; }
+        .linked-goal-chip .lg-mini-fill { height: 100%; background: var(--accent-orange); border-radius: 3px; transition: width 0.6s ease; }
         .habit-card { background: linear-gradient(160deg, rgba(15, 17, 26, 0.8), rgba(18, 20, 32, 0.6)); border: 1px solid var(--border-soft); border-radius: 22px; padding: 22px 24px; display: flex; flex-direction: column; gap: 16px; transition: all 0.3s ease; position: relative; overflow: hidden; }
         .habit-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent-orange); opacity: 0; transition: opacity 0.3s; }
         .habit-card:hover { transform: translateY(-6px); border-color: rgba(62, 92, 138, 0.3); box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4); }
@@ -504,23 +536,12 @@
                 <div class="session-info-badge" id="session-info-badge" style="display:none;">
                     <div class="badge-item"><span>⏱</span><span>Elapsed: <strong id="badge-elapsed">0:00</strong></span></div>
                     <div class="badge-item"><span>🏷</span><span>Tag: <strong id="badge-tag">Medicine</strong></span></div>
-                    <div class="badge-item" id="badge-task-wrap" style="display:none;"><span>✅</span><span>Task: <strong id="badge-task">-</strong></span></div>
                     <div class="badge-item"><span>📅</span><span>Started: <strong id="badge-start">--:--</strong></span></div>
                 </div>
-                <div class="task-selector-wrapper" id="task-selector-wrapper" style="display:none; width:100%; max-width:600px;">
-                    <div class="tags-label" id="task-selector-label">Working on which task? (optional):</div>
-                    <select id="active-task-select" class="filter-select" style="width:100%; margin-top:8px;" onchange="setActiveTaskSelection()">
-                        <option value="">— No specific task —</option>
-                    </select>
-                </div>
-                <div id="timer-tasklist-wrapper" style="display:none; width:100%; max-width:600px; text-align:left; border-top:1px solid var(--border-soft); padding-top:16px;">
-                    <div class="tags-label" id="timer-tasklist-header">Tasks for this subject:</div>
-                    <div id="timer-tasklist-items" style="display:flex; flex-direction:column; gap:8px; margin-top:10px;"></div>
-                    <div class="input-row-split" style="margin-top:10px;">
-                        <input type="text" id="timer-quick-task-title" placeholder="Task / lecture title..." style="flex:2;">
-                        <input type="number" id="timer-quick-task-est" placeholder="min" min="1" value="30" style="flex:1;">
-                        <button class="stepper-btn" style="width:44px; height:44px; font-size:20px;" onclick="addTaskQuickFromTimer()" title="Add">+</button>
-                    </div>
+                <div class="linked-goal-chip" id="linked-goal-chip">
+                    <span>🎯</span>
+                    <span id="linked-goal-chip-text"><strong id="lg-chip-title"></strong> · <span id="lg-chip-progress"></span></span>
+                    <div class="lg-mini-bar"><div class="lg-mini-fill" id="lg-chip-fill" style="width:0%;"></div></div>
                 </div>
                 <div class="controls-button-group">
                     <button class="word-control-btn btn-start" onclick="startClock()" id="ctrl-start">Start</button>
@@ -537,7 +558,6 @@
                 <div class="tags-management-section">
                     <div class="tags-label" id="tags-section-header">Subjects & Preparations (Click to select):</div>
                     <div class="tags-list" id="tags-box-wrapper"></div>
-                    <div id="active-tag-goal-progress" style="display:none; margin-top:4px;"></div>
                 </div>
             </div>
         </div>
@@ -588,11 +608,6 @@
                         <div class="charts-box-title" id="chart-distribution-title">Tag Relative Distribution</div>
                         <div class="analytics-tag-distribution" id="bars-dynamic-wrapper"></div>
                     </div>
-                </div>
-                <!-- 🎯 Tag Time Goals & Tasks -->
-                <div class="charts-container-box" style="margin-top:10px;">
-                    <div class="charts-box-title" id="tag-goals-title">🎯 Tag Time Goals & Tasks</div>
-                    <div id="tag-goals-tasks-wrapper" style="display:flex; flex-direction:column; gap:16px;"></div>
                 </div>
                 <!-- 📉 Break Analysis -->
                 <div class="charts-container-box" style="margin-top:10px;">
@@ -678,7 +693,7 @@
                     </div>
                     <div class="sessions-table-wrapper">
                         <table class="sessions-history-table">
-                            <thead><tr><th id="th-date">Date</th><th id="th-title">Session / Lecture Title</th><th id="th-tag">Tag</th><th id="th-task">Task</th><th id="th-dur">Duration</th><th id="th-range">Time Frame</th><th id="th-action">Action</th></tr></thead>
+                            <thead><tr><th id="th-date">Date</th><th id="th-title">Session / Lecture Title</th><th id="th-tag">Tag</th><th id="th-dur">Duration</th><th id="th-range">Time Frame</th><th id="th-action">Action</th></tr></thead>
                             <tbody id="table-history-body"></tbody>
                         </table>
                     </div>
@@ -748,6 +763,15 @@
             </div>
             <label class="field-label" id="goal-modal-deadline-lbl">Deadline (optional)</label>
             <input type="date" id="modal-goal-deadline">
+            <label class="field-label" id="goal-modal-tag-lbl">Linked Subject (optional)</label>
+            <select id="modal-goal-tag">
+                <option value="">-- None --</option>
+            </select>
+            <label class="field-label" id="goal-modal-type-lbl">Goal Type</label>
+            <select id="modal-goal-type">
+                <option value="count" id="goal-modal-type-count">Count-based (manual)</option>
+                <option value="time" id="goal-modal-type-time">Time-based (auto-tracked from sessions)</option>
+            </select>
             <div class="modal-buttons">
                 <button class="modal-btn cancel" onclick="closeGoalModal()" id="goal-modal-cancel">Cancel</button>
                 <button class="modal-btn confirm" onclick="saveGoalFromModal()" id="goal-modal-save">Add</button>
@@ -845,11 +869,7 @@
                 chartWeeklyTitle: "Weekly Subject Breakdown", chartDistTitle: "Tag Relative Distribution",
                 dayLbl: "Daily Study", weekLbl: "Current Week Progress", monthLbl: "Monthly Statistics",
                 unitHrs: "Hrs", daySubTxt: "Daily progress up by 12%", monthSubTxt: "19 days active streak",
-                histTitle: "Recent Sessions & Lectures Log", thDate: "Date", thTitle: "Session / Lecture Title", thTag: "Tag", thTask: "Task", thDur: "Duration", thRange: "Time Frame", thAction: "Action",
-                taskSelectorLbl: "Working on which task? (optional):", noSpecificTask: "No specific task", tagGoalsTitle: "🎯 Tag Time Goals & Tasks",
-                tagSettingsHeading: "Tag Settings", weeklyGoalLbl: "Weekly time goal (hours) — leave empty for no goal", tasksForTagLbl: "Tasks for this tag",
-                addTaskBtn: "Add Task", saveCloseBtn: "Save & Close", noTasksYet: "No tasks yet", noGoalsTasksYet: "No goals or tasks set yet. Right-click (or long-press) any tag above to add a weekly goal or tasks.",
-                taskCompletedToast: "🎉 Task completed!", weeklyGoalReachedToast: "🎯 Weekly goal reached!", tagSettingsSavedToast: "Tag settings saved!", timerTasklistHeader: "Tasks for this subject:",
+                histTitle: "Recent Sessions & Lectures Log", thDate: "Date", thTitle: "Session / Lecture Title", thTag: "Tag", thDur: "Duration", thRange: "Time Frame", thAction: "Action",
                 modalTitle: "Edit Session Duration (Minutes)", modalCancel: "Cancel", modalSave: "Confirm",
                 tagModalTitle: "Add New Subject", tagModalPlace: "Subject Name...", tagModalCancel: "Cancel", tagModalSave: "Add",
                 clearConfirm: "Are you sure you want to delete all study data?", deleteConfirm: "Do you want to delete this session?", modeSwitchConfirm: "You have an active/unfinished session. Switching mode now will save it as a completed session first. Continue?",
@@ -858,6 +878,11 @@
                 goalModalHeading: "Add New Goal", goalModalTitleLbl: "Goal Title", goalModalTitlePlace: "e.g. Finish Anatomy Atlas",
                 goalModalTargetLbl: "Target", goalModalUnitLbl: "Unit", goalModalUnitPlace: "pages, hrs...",
                 goalModalDeadlineLbl: "Deadline (optional)", goalModalCancel: "Cancel", goalModalSave: "Add",
+                goalModalTagLbl: "Linked Subject (optional)", goalModalTypeLbl: "Goal Type",
+                goalTypeCountOpt: "Count-based (manual)", goalTypeTimeOpt: "Time-based (auto-tracked from sessions)",
+                goalAutoTrackedTxt: "Auto-tracked", goalManualTxt: "Manual",
+                goalTasksHeader: "Study Tasks", goalTaskPlaceholder: "e.g. Review chapter 3...",
+                goalTasksEmptyHint: "No study tasks yet — add one below.",
                 habitsHeaderTitle: "Habits", habitsAddBtnTxt: "New Habit", habitsEmptyState: "No habits yet — start tracking one!",
                 habitDeleteConfirm: "Do you want to delete this habit?", habitStreakTxt: "day streak",
                 habitMarkDoneTxt: "Mark Today Done", habitDoneTxt: "Done Today ✓",
@@ -939,11 +964,7 @@
                 chartWeeklyTitle: "توزيع الجهد الدراسي الأسبوعي", chartDistTitle: "توزيع المواد النسبي",
                 dayLbl: "الدراسة اليومية", weekLbl: "تقدم الأسبوع الحالي", monthLbl: "إجمالي هذا الشهر",
                 unitHrs: "ساعة", daySubTxt: "ارتفع بنسبة 12% عن أمس", monthSubTxt: "تم إنجاز 19 يوم دراسة متتالي",
-                histTitle: "سجل الجلسات والمحاضرات الأخيرة", thDate: "التاريخ", thTitle: "اسم الجلسة / المحاضرة", thTag: "التاج المخصص", thTask: "المهمة", thDur: "المدة المنقضية", thRange: "النطاق الزمني والوقت", thAction: "حذف الجلسة",
-                taskSelectorLbl: "شغال على أنهي مهمة؟ (اختياري):", noSpecificTask: "من غير مهمة محددة", tagGoalsTitle: "🎯 أهداف ومهام التاج",
-                tagSettingsHeading: "إعدادات التاج", weeklyGoalLbl: "هدف الوقت الأسبوعي (ساعات) — اسيبه فاضي لو مفيش هدف", tasksForTagLbl: "المهام الفرعية لهذا التاج",
-                addTaskBtn: "إضافة مهمة", saveCloseBtn: "حفظ وإغلاق", noTasksYet: "لا توجد مهام بعد", noGoalsTasksYet: "مفيش أهداف أو مهام متضافة لأي تاج لسه. دوس يمين (أو اضغط مطول) على أي تاج فوق عشان تضيف هدف أو مهام.",
-                taskCompletedToast: "🎉 المهمة اتخلصت!", weeklyGoalReachedToast: "🎯 تم تحقيق الهدف الأسبوعي!", tagSettingsSavedToast: "تم حفظ إعدادات التاج!", timerTasklistHeader: "مهام هذه المادة:",
+                histTitle: "سجل الجلسات والمحاضرات الأخيرة", thDate: "التاريخ", thTitle: "اسم الجلسة / المحاضرة", thTag: "التاج المخصص", thDur: "المدة المنقضية", thRange: "النطاق الزمني والوقت", thAction: "حذف الجلسة",
                 modalTitle: "تعديل مدة الجلسة (بالدقائق)", modalCancel: "إلغاء", modalSave: "تأكيد",
                 tagModalTitle: "إضافة مادة دراسية جديدة", tagModalPlace: "اسم المادة...", tagModalCancel: "إلغاء", tagModalSave: "إضافة",
                 clearConfirm: "هل أنت متأكد تماماً من حذف كافة البيانات المخزنة وتصفير السجل والتحليلات؟",
@@ -954,6 +975,11 @@
                 goalModalHeading: "إضافة هدف جديد", goalModalTitleLbl: "عنوان الهدف", goalModalTitlePlace: "مثال: إنهاء أطلس التشريح",
                 goalModalTargetLbl: "الهدف الرقمي", goalModalUnitLbl: "الوحدة", goalModalUnitPlace: "صفحة، ساعة...",
                 goalModalDeadlineLbl: "الموعد النهائي (اختياري)", goalModalCancel: "إلغاء", goalModalSave: "إضافة",
+                goalModalTagLbl: "ربط بمادة دراسية (اختياري)", goalModalTypeLbl: "نوع الهدف",
+                goalTypeCountOpt: "بالعدد (يدوي)", goalTypeTimeOpt: "بالوقت (تتبع تلقائي من الجلسات)",
+                goalAutoTrackedTxt: "تتبع تلقائي", goalManualTxt: "يدوي",
+                goalTasksHeader: "المهام الدراسية", goalTaskPlaceholder: "مثال: مراجعة الفصل الثالث...",
+                goalTasksEmptyHint: "لسه مفيش مهام دراسية — ضيف واحدة تحت.",
                 habitsHeaderTitle: "العادات", habitsAddBtnTxt: "عادة جديدة", habitsEmptyState: "لسه معملتش أي عادة — ابدأ بتتبع واحدة!",
                 habitDeleteConfirm: "هل تريد حذف هذه العادة؟", habitStreakTxt: "يوم متتالي",
                 habitMarkDoneTxt: "تسجيل إنجاز اليوم", habitDoneTxt: "تم اليوم ✓",
@@ -1050,13 +1076,6 @@
         let habitsArray = [];
         let filteredSessions = [];
         let studyGoals = { daily: 4, weekly: 28, monthly: 120 };
-        // 🎯 Per-tag weekly time goals: { "Medicine": 6 (hours/week), ... }
-        let tagWeeklyGoals = {};
-        // ✅ Per-tag task lists: { "Medicine": [ { id, title, estMinutes, loggedMinutes, done } ] }
-        let tagTasksMap = {};
-        // Task currently linked to the running/next session (task id string, or "" for none)
-        let currentlySelectedTaskId = "";
-        let tagGoalToastFiredThisWeek = {}; // { "Medicine": "2026-W32" } prevents repeat celebration toasts
         let timerWorker = null;
         let currentViewedWeekOffset = 0;
         let archivedWeeks = {};
@@ -1373,12 +1392,6 @@
                 const savedStudyGoals = await dbGet('studyGoals');
                 if (savedStudyGoals !== undefined) studyGoals = { ...studyGoals, ...savedStudyGoals };
                 else await dbSet('studyGoals', studyGoals);
-                const savedTagGoals = await dbGet('tagWeeklyGoals');
-                if (savedTagGoals !== undefined) tagWeeklyGoals = savedTagGoals;
-                else await dbSet('tagWeeklyGoals', tagWeeklyGoals);
-                const savedTagTasks = await dbGet('tagTasksMap');
-                if (savedTagTasks !== undefined) tagTasksMap = savedTagTasks;
-                else await dbSet('tagTasksMap', tagTasksMap);
                 const savedSelectedTag = await dbGet('selectedTag');
                 if (savedSelectedTag !== undefined && currentTagsList.includes(savedSelectedTag)) currentlySelectedTag = savedSelectedTag;
                 else { currentlySelectedTag = currentTagsList[0] || currentlySelectedTag; await dbSet('selectedTag', currentlySelectedTag); }
@@ -1469,7 +1482,6 @@
             recalculateAndRenderDashboard();
             renderHistoryGridWithPagination();
             renderHeatmap();
-            renderTagsChips();
         }
 
         function syncLanguageInterfaceStrings() {
@@ -1499,10 +1511,6 @@
             document.getElementById('th-date').innerText = d.thDate;
             document.getElementById('th-title').innerText = d.thTitle;
             document.getElementById('th-tag').innerText = d.thTag;
-            const thTaskEl = document.getElementById('th-task'); if (thTaskEl) thTaskEl.innerText = d.thTask;
-            const taskSelLbl = document.getElementById('task-selector-label'); if (taskSelLbl) taskSelLbl.innerText = d.taskSelectorLbl;
-            const tasklistHeaderEl = document.getElementById('timer-tasklist-header'); if (tasklistHeaderEl) tasklistHeaderEl.innerText = d.timerTasklistHeader;
-            const tagGoalsTitleEl = document.getElementById('tag-goals-title'); if (tagGoalsTitleEl) tagGoalsTitleEl.innerText = d.tagGoalsTitle;
             document.getElementById('th-dur').innerText = d.thDur;
             document.getElementById('th-range').innerText = d.thRange;
             document.getElementById('th-action').innerText = d.thAction;
@@ -1541,6 +1549,16 @@
             document.getElementById('goal-modal-deadline-lbl').innerText = d.goalModalDeadlineLbl;
             document.getElementById('goal-modal-cancel').innerText = d.goalModalCancel;
             document.getElementById('goal-modal-save').innerText = d.goalModalSave;
+            const goalTagLbl = document.getElementById('goal-modal-tag-lbl');
+            if (goalTagLbl) goalTagLbl.innerText = d.goalModalTagLbl;
+            const goalTypeLbl = document.getElementById('goal-modal-type-lbl');
+            if (goalTypeLbl) goalTypeLbl.innerText = d.goalModalTypeLbl;
+            const goalTypeCountOpt = document.getElementById('goal-modal-type-count');
+            if (goalTypeCountOpt) goalTypeCountOpt.innerText = d.goalTypeCountOpt;
+            const goalTypeTimeOpt = document.getElementById('goal-modal-type-time');
+            if (goalTypeTimeOpt) goalTypeTimeOpt.innerText = d.goalTypeTimeOpt;
+            renderGoalsScreen();
+            renderLinkedGoalChip();
             document.getElementById('habits-header-title').innerText = d.habitsHeaderTitle;
             document.getElementById('habits-add-btn-txt').innerText = d.habitsAddBtnTxt;
             document.getElementById('habits-empty-state').innerText = d.habitsEmptyState;
@@ -1645,40 +1663,35 @@
                 const combinedRange = sessionTimeSegments.length > 0
                     ? sessionTimeSegments.join(', ')
                     : (currentSessionStartTimeStamp || '--:--');
-                const loggedMinutesInt = Math.round(totalElapsedSecondsTracked / 60);
-
-                // 🔗 Link this session to the active task (if one was selected) and roll the
-                // actual tracked time into that task's progress.
-                let linkedTaskId = "", linkedTaskTitle = "";
-                const tagTasks = tagTasksMap[currentlySelectedTag] || [];
-                const linkedTask = tagTasks.find(t => t.id === currentlySelectedTaskId);
-                if (linkedTask) {
-                    linkedTaskId = linkedTask.id;
-                    linkedTaskTitle = linkedTask.title;
-                    linkedTask.loggedMinutes = (linkedTask.loggedMinutes || 0) + loggedMinutesInt;
-                    if (!linkedTask.done && linkedTask.loggedMinutes >= linkedTask.estMinutes) {
-                        linkedTask.done = true;
-                        const d0 = languageDictionary[currentSystemLanguage];
-                        showToast(currentSystemLanguage === 'ar' ? '🎉 المهمة اتخلصت!' : '🎉 Task completed!', linkedTask.title, 'success');
-                        currentlySelectedTaskId = ""; // free up the slot for the next task
-                    }
-                    dbSet('tagTasksMap', tagTasksMap);
-                }
-
                 archivedSessionsArray.unshift({
                     date: fullISODate, title: rawSessionTitle, tag: currentlySelectedTag,
                     duration: minutesFormattedString,
-                    range: combinedRange,
-                    taskId: linkedTaskId, taskTitle: linkedTaskTitle
+                    range: combinedRange
                 });
                 dbSet('sessions', archivedSessionsArray);
+
+                // Auto-update time-based goals linked to this session's tag
+                const sessionMinutes = Math.round(totalElapsedSecondsTracked / 60);
+                if (sessionMinutes > 0) {
+                    let goalsUpdated = false;
+                    goalsArray.forEach(goal => {
+                        if (goal.goalType === 'time' && goal.linkedTag === currentlySelectedTag && goal.current < goal.target) {
+                            goal.current = Math.min(goal.target, (goal.current || 0) + sessionMinutes);
+                            goalsUpdated = true;
+                        }
+                    });
+                    if (goalsUpdated) {
+                        dbSet('goals', goalsArray);
+                        renderGoalsScreen();
+                        renderLinkedGoalChip();
+                    }
+                }
                 const d = languageDictionary[currentSystemLanguage];
                 showToast(d.toastSessionSaved, `${rawSessionTitle} — ${minutesFormattedString}`, 'success');
                 renderStudyTrendChart();
                 renderProductivityHeatTimeline();
                 renderBreakAnalysis();
                 renderStudyConsistency();
-                checkTagWeeklyGoalCelebration(currentlySelectedTag);
             }
             totalElapsedSecondsTracked = 0;
             currentSessionStartTimeStamp = null;
@@ -1692,20 +1705,6 @@
             recalculateAndRenderDashboard();
             renderHistoryGridWithPagination();
             updateQuickStats();
-            renderTagsChips();
-        }
-
-        // 🎉 Fires a one-time-per-week congratulations toast when a tag's weekly time goal is reached
-        function checkTagWeeklyGoalCelebration(tag) {
-            const goalHrs = tagWeeklyGoals[tag];
-            if (!goalHrs || goalHrs <= 0) return;
-            const weekMins = getTagWeekMinutes(tag);
-            if (weekMins < goalHrs * 60) return;
-            const weekStart = new Date(); weekStart.setDate(weekStart.getDate() - weekStart.getDay());
-            const weekKey = getLocalISODate(weekStart);
-            if (tagGoalToastFiredThisWeek[tag] === weekKey) return;
-            tagGoalToastFiredThisWeek[tag] = weekKey;
-            showToast(currentSystemLanguage === 'ar' ? '🎯 تم تحقيق الهدف الأسبوعي!' : '🎯 Weekly goal reached!', `${tag} — ${goalHrs}h/${currentSystemLanguage === 'ar' ? 'أسبوع' : 'week'}`, 'success', 4500);
         }
 
         function stopAndSaveClock() {
@@ -1750,10 +1749,6 @@
                 document.getElementById('badge-elapsed').innerText = `${elapsedMin}:${elapsedSec.toString().padStart(2, '0')}`;
                 document.getElementById('badge-tag').innerText = currentlySelectedTag;
                 document.getElementById('badge-start').innerText = currentSessionStartTimeStamp || '--:--';
-                const taskWrap = document.getElementById('badge-task-wrap');
-                const linkedTask = (tagTasksMap[currentlySelectedTag] || []).find(t => t.id === currentlySelectedTaskId);
-                if (linkedTask) { taskWrap.style.display = 'flex'; document.getElementById('badge-task').innerText = linkedTask.title; }
-                else { taskWrap.style.display = 'none'; }
             }
         }
 
@@ -1789,23 +1784,18 @@
         }
         document.getElementById('modal-tag-input').addEventListener('keypress', function (e) { if (e.key === 'Enter') saveTagFromModal(); });
 
-        function getTagWeekMinutes(tag) {
-            const weekStart = new Date(); weekStart.setHours(0, 0, 0, 0); weekStart.setDate(weekStart.getDate() - weekStart.getDay());
-            return archivedSessionsArray.filter(s => s.tag === tag && new Date(s.date + 'T00:00:00') >= weekStart).reduce((sum, s) => sum + (parseInt(s.duration) || 0), 0);
-        }
-
         function renderTagsChips() {
             const wrapper = document.getElementById('tags-box-wrapper');
             wrapper.innerHTML = '';
             currentTagsList.forEach(tag => {
                 const chip = document.createElement('div');
                 chip.className = `mini-tag-chip ${tag === currentlySelectedTag ? 'selected' : ''}`;
-                chip.title = currentSystemLanguage === 'ar' ? 'انقر لتختار · انقر بزر الماوس الأيمن لإعدادات التاج (اللون/الهدف/المهام)' : 'Click to select · Right-click for tag settings (color/goal/tasks)';
+                chip.title = currentSystemLanguage === 'ar' ? 'انقر لتختار · انقر بزر الماوس الأيمن لتغيير اللون' : 'Click to select · Right-click to change color';
                 chip.onclick = () => selectActiveTag(tag);
-                chip.oncontextmenu = (e) => { e.preventDefault(); openTagSettingsModal(tag); };
+                chip.oncontextmenu = (e) => { e.preventDefault(); openTagColorModal(tag); };
                 let pressTimer;
                 chip.addEventListener('touchstart', (e) => {
-                    pressTimer = setTimeout(() => { e.preventDefault(); openTagSettingsModal(tag); }, 600);
+                    pressTimer = setTimeout(() => { e.preventDefault(); openTagColorModal(tag); }, 600);
                 });
                 chip.addEventListener('touchend', () => clearTimeout(pressTimer));
                 chip.addEventListener('touchmove', () => clearTimeout(pressTimer));
@@ -1815,33 +1805,12 @@
                 colorDot.style.backgroundColor = getTagColor(tag);
                 const spanName = document.createElement('span');
                 spanName.innerText = tag;
-                chip.appendChild(colorDot);
-                chip.appendChild(spanName);
-
-                // 🎯 Mini weekly-goal progress badge, shown only if a target is set for this tag
-                const goalHrs = tagWeeklyGoals[tag];
-                if (goalHrs && goalHrs > 0) {
-                    const weekMins = getTagWeekMinutes(tag);
-                    const pct = Math.min(100, Math.round((weekMins / (goalHrs * 60)) * 100));
-                    const goalBadge = document.createElement('span');
-                    goalBadge.style.cssText = `font-size:10px; font-weight:800; margin-left:6px; padding:1px 6px; border-radius:8px; background:${pct >= 100 ? 'rgba(0,210,106,0.18)' : 'rgba(217,165,74,0.14)'}; color:${pct >= 100 ? 'var(--success)' : 'var(--accent-orange)'};`;
-                    goalBadge.innerText = (pct >= 100 ? '🎯✓' : '🎯 ' + pct + '%');
-                    chip.appendChild(goalBadge);
-                }
-                // ✅ Task-completion badge, shown only if this tag has tasks
-                const tasks = tagTasksMap[tag] || [];
-                if (tasks.length > 0) {
-                    const doneCount = tasks.filter(t => t.done).length;
-                    const taskBadge = document.createElement('span');
-                    taskBadge.style.cssText = 'font-size:10px; font-weight:700; margin-left:5px; padding:1px 6px; border-radius:8px; background:rgba(62,92,138,0.18); color:#8fb2e0;';
-                    taskBadge.innerText = `✅ ${doneCount}/${tasks.length}`;
-                    chip.appendChild(taskBadge);
-                }
-
                 const removeBtn = document.createElement('span');
                 removeBtn.className = 'remove-icon';
                 removeBtn.innerText = '✕';
                 removeBtn.onclick = (e) => { e.stopPropagation(); deleteTagFromSystem(tag); };
+                chip.appendChild(colorDot);
+                chip.appendChild(spanName);
                 chip.appendChild(removeBtn);
                 wrapper.appendChild(chip);
             });
@@ -1850,114 +1819,15 @@
             addBtnCircle.innerHTML = '+';
             addBtnCircle.onclick = () => openTagModal();
             wrapper.appendChild(addBtnCircle);
-            renderActiveTaskSelector();
-            renderActiveTagGoalProgress();
-            renderTimerScreenTaskChecklist();
         }
 
-        function selectActiveTag(tag) {
-            currentlySelectedTag = tag;
-            currentlySelectedTaskId = ""; // switching subjects clears any linked task from the previous one
-            dbSet('selectedTag', currentlySelectedTag);
-            renderTagsChips();
-        }
+        function selectActiveTag(tag) { currentlySelectedTag = tag; dbSet('selectedTag', currentlySelectedTag); renderTagsChips(); renderLinkedGoalChip(); }
         function deleteTagFromSystem(tag) {
             currentTagsList = currentTagsList.filter(t => t !== tag);
             if (currentlySelectedTag === tag && currentTagsList.length > 0) currentlySelectedTag = currentTagsList[0];
-            delete tagWeeklyGoals[tag];
-            delete tagTasksMap[tag];
             dbSet('tags', currentTagsList); dbSet('selectedTag', currentlySelectedTag);
-            dbSet('tagWeeklyGoals', tagWeeklyGoals); dbSet('tagTasksMap', tagTasksMap);
             renderTagsChips(); recalculateAndRenderDashboard();
         }
-
-        // ========== 🎯 TAG ⇄ TIME LINKING: weekly goal ring + task selector on the Timer screen ==========
-        function renderActiveTagGoalProgress() {
-            const holder = document.getElementById('active-tag-goal-progress');
-            if (!holder) return;
-            const goalHrs = tagWeeklyGoals[currentlySelectedTag];
-            if (!goalHrs || goalHrs <= 0) { holder.style.display = 'none'; holder.innerHTML = ''; return; }
-            const weekMins = getTagWeekMinutes(currentlySelectedTag);
-            const targetMins = goalHrs * 60;
-            const pct = Math.min(100, Math.round((weekMins / targetMins) * 100));
-            const isDone = pct >= 100;
-            holder.style.display = 'block';
-            holder.innerHTML = `
-                <div style="display:flex; justify-content:space-between; font-size:11px; font-weight:700; color:${isDone ? 'var(--success)' : 'var(--text-gray)'}; margin-bottom:4px;">
-                    <span>🎯 ${currentSystemLanguage === 'ar' ? 'هدف الأسبوع لمادة' : 'Weekly goal for'} ${currentlySelectedTag}</span>
-                    <span>${formatMinutesToHM(weekMins)} / ${formatMinutesToHM(targetMins)}</span>
-                </div>
-                <div class="chart-progress-rail"><div class="chart-progress-fill" style="width:${pct}%; background:${isDone ? 'var(--success)' : 'var(--accent-orange)'};"></div></div>
-            `;
-        }
-
-        function renderActiveTaskSelector() {
-            const wrap = document.getElementById('task-selector-wrapper');
-            const select = document.getElementById('active-task-select');
-            if (!wrap || !select) return;
-            const tasks = (tagTasksMap[currentlySelectedTag] || []).filter(t => !t.done);
-            if (tasks.length === 0) { wrap.style.display = 'none'; currentlySelectedTaskId = ""; return; }
-            wrap.style.display = 'block';
-            select.innerHTML = `<option value="">— ${currentSystemLanguage === 'ar' ? 'من غير مهمة محددة' : 'No specific task'} —</option>` +
-                tasks.map(t => `<option value="${t.id}" ${t.id === currentlySelectedTaskId ? 'selected' : ''}>${t.title} (${t.loggedMinutes || 0}/${t.estMinutes} ${currentSystemLanguage === 'ar' ? 'د' : 'min'})</option>`).join('');
-            if (!tasks.some(t => t.id === currentlySelectedTaskId)) currentlySelectedTaskId = "";
-        }
-
-        function setActiveTaskSelection() {
-            const select = document.getElementById('active-task-select');
-            currentlySelectedTaskId = select ? select.value : "";
-        }
-
-        // ✅ Google-Tasks-style checklist, shown directly under the tags on the Timer screen —
-        // no need to open the settings modal just to tick a task done or see its time.
-        function renderTimerScreenTaskChecklist() {
-            const wrap = document.getElementById('timer-tasklist-wrapper');
-            const holder = document.getElementById('timer-tasklist-items');
-            if (!wrap || !holder) return;
-            const ar = currentSystemLanguage === 'ar';
-            const tasks = tagTasksMap[currentlySelectedTag] || [];
-            wrap.style.display = 'block'; // always visible so the quick-add box is reachable even with 0 tasks
-            if (tasks.length === 0) {
-                holder.innerHTML = `<div style="font-size:12px; color:var(--text-gray); padding:4px 0;">${ar ? 'لسه مفيش مهام لـ' : 'No tasks yet for'} ${currentlySelectedTag}</div>`;
-                return;
-            }
-            holder.innerHTML = tasks.map(t => {
-                const timeTxt = `${t.loggedMinutes || 0}/${t.estMinutes} ${ar ? 'د' : 'min'}`;
-                return `
-                <label style="display:flex; align-items:center; gap:10px; background:rgba(255,255,255,0.03); border:1px solid var(--border-soft); border-radius:10px; padding:9px 12px; cursor:pointer;">
-                    <input type="checkbox" ${t.done ? 'checked' : ''} onchange="quickToggleTaskDone('${t.id}')" style="width:17px; height:17px; cursor:pointer; flex-shrink:0; accent-color: var(--accent-orange);">
-                    <span style="flex:1; font-size:13px; font-weight:600; ${t.done ? 'text-decoration:line-through; color:var(--text-gray);' : 'color:var(--text-light);'}">${t.title}</span>
-                    <span style="font-size:11px; color:${t.done ? 'var(--success)' : 'var(--text-gray)'}; font-weight:700;">${t.done ? '✓ ' : ''}${timeTxt}</span>
-                </label>`;
-            }).join('');
-        }
-
-        function quickToggleTaskDone(taskId) {
-            const task = (tagTasksMap[currentlySelectedTag] || []).find(t => t.id === taskId);
-            if (!task) return;
-            task.done = !task.done;
-            if (task.done && currentlySelectedTaskId === taskId) currentlySelectedTaskId = ""; // free the slot once ticked done
-            dbSet('tagTasksMap', tagTasksMap);
-            renderTagsChips(); // re-renders the checklist, the task selector dropdown, and the tag chip badges together
-        }
-
-        function addTaskQuickFromTimer() {
-            const titleInput = document.getElementById('timer-quick-task-title');
-            const estInput = document.getElementById('timer-quick-task-est');
-            const title = titleInput.value.trim();
-            const est = parseInt(estInput.value);
-            if (!title || !est || est <= 0) return;
-            if (!tagTasksMap[currentlySelectedTag]) tagTasksMap[currentlySelectedTag] = [];
-            tagTasksMap[currentlySelectedTag].push({ id: generateUniqueTaskId(), title: title, estMinutes: est, loggedMinutes: 0, done: false });
-            dbSet('tagTasksMap', tagTasksMap);
-            titleInput.value = '';
-            estInput.value = 30;
-            renderTagsChips();
-        }
-        document.addEventListener('DOMContentLoaded', () => {
-            const qt = document.getElementById('timer-quick-task-title');
-            if (qt) qt.addEventListener('keypress', (e) => { if (e.key === 'Enter') addTaskQuickFromTimer(); });
-        });
 
         function updateQuickStats() {
             let today = getLocalISODate(new Date());
@@ -2081,67 +1951,6 @@
                 });
             }
             if (typeof renderWeeklySegmentedChart === "function") renderWeeklySegmentedChart();
-            if (typeof renderTagGoalsAndTasksPanel === "function") renderTagGoalsAndTasksPanel();
-        }
-
-        // ========== 🎯 TAG TIME GOALS & TASKS ANALYTICS PANEL ==========
-        function renderTagGoalsAndTasksPanel() {
-            const holder = document.getElementById('tag-goals-tasks-wrapper');
-            if (!holder) return;
-            const ar = currentSystemLanguage === 'ar';
-            const tagsWithGoalsOrTasks = currentTagsList.filter(t => (tagWeeklyGoals[t] && tagWeeklyGoals[t] > 0) || (tagTasksMap[t] && tagTasksMap[t].length > 0));
-
-            if (tagsWithGoalsOrTasks.length === 0) {
-                holder.innerHTML = `<div style="text-align:center; padding:24px; color:var(--text-gray); font-size:12px;">${ar ? 'مفيش أهداف أو مهام متضافة لأي تاج لسه. دوس زر ماوس يمين (أو اضغط مطول) على أي تاج فوق عشان تضيف هدف أسبوعي أو مهام.' : 'No goals or tasks set yet. Right-click (or long-press) any tag above to add a weekly goal or tasks.'}</div>`;
-                return;
-            }
-
-            holder.innerHTML = tagsWithGoalsOrTasks.map(tag => {
-                const goalHrs = tagWeeklyGoals[tag];
-                const weekMins = getTagWeekMinutes(tag);
-                const tasks = tagTasksMap[tag] || [];
-                const doneCount = tasks.filter(t => t.done).length;
-
-                let goalBlockHtml = '';
-                if (goalHrs && goalHrs > 0) {
-                    const pct = Math.min(100, Math.round((weekMins / (goalHrs * 60)) * 100));
-                    const isDone = pct >= 100;
-                    goalBlockHtml = `
-                        <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:700; color:${isDone ? 'var(--success)' : 'var(--text-gray)'}; margin-bottom:5px;">
-                            <span>${ar ? 'هذا الأسبوع' : 'This week'}</span>
-                            <span>${formatMinutesToHM(weekMins)} / ${formatMinutesToHM(goalHrs * 60)} ${isDone ? '✓' : ''}</span>
-                        </div>
-                        <div class="chart-progress-rail"><div class="chart-progress-fill" style="width:${pct}%; background:${isDone ? 'var(--success)' : getTagColor(tag)};"></div></div>
-                    `;
-                }
-
-                let tasksBlockHtml = '';
-                if (tasks.length > 0) {
-                    tasksBlockHtml = `
-                        <div style="margin-top:10px; font-size:11px; color:var(--text-gray); font-weight:700;">✅ ${doneCount}/${tasks.length} ${ar ? 'مهام مكتملة' : 'tasks done'}</div>
-                        <div style="display:flex; flex-direction:column; gap:5px; margin-top:6px;">
-                            ${tasks.map(t => {
-                                const tpct = t.estMinutes > 0 ? Math.min(100, Math.round((t.loggedMinutes || 0) / t.estMinutes * 100)) : 0;
-                                return `<div style="display:flex; align-items:center; gap:8px; font-size:11px;">
-                                    <span style="width:14px;">${t.done ? '✅' : '⬜'}</span>
-                                    <span style="flex:1; ${t.done ? 'color:var(--text-gray); text-decoration:line-through;' : 'color:var(--text-light);'}">${t.title}</span>
-                                    <span style="color:var(--text-gray);">${t.loggedMinutes || 0}/${t.estMinutes}${ar ? 'د' : 'm'}</span>
-                                </div>`;
-                            }).join('')}
-                        </div>
-                    `;
-                }
-
-                return `
-                <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-soft); border-radius: 16px; padding: 16px 18px; cursor:pointer;" onclick="openTagSettingsModal('${tag}')" title="${ar ? 'اضغط لتعديل الإعدادات' : 'Click to edit settings'}">
-                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
-                        <span style="width:10px; height:10px; border-radius:50%; background:${getTagColor(tag)}; display:inline-block;"></span>
-                        <span style="font-weight:800; font-size:14px; color:var(--text-light);">${tag}</span>
-                    </div>
-                    ${goalBlockHtml}
-                    ${tasksBlockHtml}
-                </div>`;
-            }).join('');
         }
 
         
@@ -2653,7 +2462,7 @@
             const tagFilter = document.getElementById('tag-filter').value;
             const dateFilter = document.getElementById('date-filter').value;
             filteredSessions = archivedSessionsArray.filter(s => {
-                let matchSearch = s.title.toLowerCase().includes(searchTerm) || s.tag.toLowerCase().includes(searchTerm) || (s.taskTitle || '').toLowerCase().includes(searchTerm);
+                let matchSearch = s.title.toLowerCase().includes(searchTerm) || s.tag.toLowerCase().includes(searchTerm);
                 let matchTag = !tagFilter || s.tag === tagFilter;
                 let matchDate = true;
                 if (dateFilter === 'today') matchDate = s.date === getLocalISODate(new Date());
@@ -2676,8 +2485,7 @@
             currentItemsPage.forEach((rowItem, pageLocalIndex) => {
                 let absoluteArrayIndex = archivedSessionsArray.indexOf(rowItem);
                 const tr = document.createElement('tr');
-                const taskCell = rowItem.taskTitle ? `<span style="font-size:11px; color:var(--text-gray);">✅ ${rowItem.taskTitle}</span>` : `<span style="font-size:11px; color:var(--text-gray); opacity:0.4;">—</span>`;
-                tr.innerHTML = `<td>${rowItem.date}</td><td><strong>${rowItem.title}</strong></td><td><span class="session-tag-indicator" style="color: ${getTagColor(rowItem.tag)};">#${rowItem.tag}</span></td><td>${taskCell}</td><td>${rowItem.duration}</td><td style="color: var(--text-gray); font-size:13px;">${rowItem.range}</td><td><button class="delete-row-btn" onclick="openEditSessionModal(${absoluteArrayIndex})" title="Edit" style="margin-right: 6px; color: var(--accent-orange);">✎</button><button class="delete-row-btn" onclick="deleteIndividualSession(${absoluteArrayIndex})">✕</button></td>`;
+                tr.innerHTML = `<td>${rowItem.date}</td><td><strong>${rowItem.title}</strong></td><td><span class="session-tag-indicator" style="color: ${getTagColor(rowItem.tag)};">#${rowItem.tag}</span></td><td>${rowItem.duration}</td><td style="color: var(--text-gray); font-size:13px;">${rowItem.range}</td><td><button class="delete-row-btn" onclick="openEditSessionModal(${absoluteArrayIndex})" title="Edit" style="margin-right: 6px; color: var(--accent-orange);">✎</button><button class="delete-row-btn" onclick="deleteIndividualSession(${absoluteArrayIndex})">✕</button></td>`;
                 tableBody.appendChild(tr);
             });
             renderPaginationNodes(sessionsToShow.length);
@@ -2748,6 +2556,17 @@
             document.getElementById('modal-goal-target').value = 10;
             document.getElementById('modal-goal-unit').value = '';
             document.getElementById('modal-goal-deadline').value = '';
+            document.getElementById('modal-goal-type').value = 'count';
+
+            const tagSelect = document.getElementById('modal-goal-tag');
+            tagSelect.innerHTML = `<option value="">-- None --</option>`;
+            currentTagsList.forEach(tag => {
+                const opt = document.createElement('option');
+                opt.value = tag;
+                opt.innerText = tag;
+                tagSelect.appendChild(opt);
+            });
+
             document.getElementById('goal-modal').classList.add('modal-open');
             setTimeout(() => document.getElementById('modal-goal-title').focus(), 100);
         }
@@ -2757,10 +2576,24 @@
             const target = parseFloat(document.getElementById('modal-goal-target').value);
             const unit = document.getElementById('modal-goal-unit').value.trim();
             const deadline = document.getElementById('modal-goal-deadline').value;
+            const linkedTag = document.getElementById('modal-goal-tag').value;
+            const goalType = document.getElementById('modal-goal-type').value;
             if (!title || !target || target <= 0) return;
-            goalsArray.unshift({ id: generateUniqueRecordId(), title: title, target: target, current: 0, unit: unit, deadline: deadline || '' });
+            goalsArray.unshift({
+                id: generateUniqueRecordId(),
+                title: title,
+                target: target,
+                current: 0,
+                unit: unit || (goalType === 'time' ? (currentSystemLanguage === 'ar' ? 'دقيقة' : 'min') : ''),
+                deadline: deadline || '',
+                linkedTag: linkedTag || '',
+                goalType: goalType || 'count',
+                autoTrack: goalType === 'time' && !!linkedTag,
+                tasks: []
+            });
             dbSet('goals', goalsArray);
             renderGoalsScreen();
+            renderLinkedGoalChip();
             closeGoalModal();
             const d = languageDictionary[currentSystemLanguage];
             showToast(d.toastGoalAdded, title, 'success');
@@ -2789,6 +2622,12 @@
             const dateLabel = dueDate.toLocaleDateString(currentSystemLanguage === 'ar' ? 'ar-EG' : 'en-US', { month: 'short', day: 'numeric' });
             return { text: `🗓 ${dictionary.goalDeadlineDuePrefix}: ${dateLabel}`, cls: diffDays <= 3 ? 'urgent' : '' };
         }
+        const expandedGoalTasksSet = new Set();
+        function escapeGoalHtml(str) {
+            const div = document.createElement('div');
+            div.innerText = str == null ? '' : String(str);
+            return div.innerHTML;
+        }
         function renderGoalsScreen() {
             const d = languageDictionary[currentSystemLanguage];
             const grid = document.getElementById('goals-grid-wrapper');
@@ -2798,32 +2637,120 @@
             if (goalsArray.length === 0) { emptyState.style.display = 'block'; return; }
             emptyState.style.display = 'none';
             goalsArray.forEach(goal => {
+                if (!Array.isArray(goal.tasks)) goal.tasks = [];
                 const pct = goal.target > 0 ? Math.min(100, Math.round((goal.current / goal.target) * 100)) : 0;
                 const isCompleted = pct >= 100;
                 const deadlineInfo = formatDeadlineBadge(goal.deadline, d);
                 const ringColor = isCompleted ? '#00d26a' : 'var(--accent-orange)';
                 const goalStepValue = goal.target >= 20 ? Math.max(1, Math.round(goal.target / 20)) : 1;
+                const isAutoTime = goal.goalType === 'time' && goal.linkedTag;
+
+                const progressText = isAutoTime
+                    ? `<strong>${goal.current}</strong> / ${goal.target} ${goal.unit || 'min'} <span class="goal-linked-tag-pill">🔗 ${escapeGoalHtml(goal.linkedTag)}</span>`
+                    : `<strong>${goal.current}</strong> / ${goal.target} ${goal.unit || ''}`;
+
+                const typeBadge = goal.goalType === 'time'
+                    ? `<span class="goal-type-badge time-type">⏱ ${d.goalAutoTrackedTxt || 'Auto-tracked'}</span>`
+                    : `<span class="goal-type-badge count-type">🔢 ${d.goalManualTxt || 'Manual'}</span>`;
+
+                const doneTasksCount = goal.tasks.filter(t => t.done).length;
+                const isPanelOpen = expandedGoalTasksSet.has(goal.id);
+                const tasksListHtml = goal.tasks.length > 0
+                    ? goal.tasks.map(task => `
+                        <div class="goal-task-item ${task.done ? 'is-done' : ''}">
+                            <div class="goal-task-checkbox ${task.done ? 'checked' : ''}" onclick="toggleGoalTaskDone('${goal.id}','${task.id}')">${task.done ? '✓' : ''}</div>
+                            <div class="goal-task-text">${escapeGoalHtml(task.text)}</div>
+                            <button class="goal-task-delete" onclick="deleteGoalTask('${goal.id}','${task.id}')">✕</button>
+                        </div>`).join('')
+                    : `<div class="goal-tasks-empty-hint">${d.goalTasksEmptyHint || 'No study tasks yet — add one below.'}</div>`;
+
                 const card = document.createElement('div');
                 card.className = `goal-card ${isCompleted ? 'is-completed' : ''}`;
                 card.innerHTML = `
                     <div class="goal-card-top">
                         <div>
-                            <div class="goal-card-title">${goal.title}</div>
+                            <div class="goal-card-title">${escapeGoalHtml(goal.title)}</div>
                             ${isCompleted ? `<div class="goal-card-deadline" style="color:#00d26a;">${d.goalCompletedTxt}</div>` : (deadlineInfo.text ? `<div class="goal-card-deadline ${deadlineInfo.cls}">${deadlineInfo.text}</div>` : '')}
+                            ${typeBadge}
                         </div>
                         <button class="item-delete-btn" onclick="deleteGoal('${goal.id}')">✕</button>
                     </div>
                     <div class="donut-ring" style="background: conic-gradient(${ringColor} ${pct * 3.6}deg, rgba(255,255,255,0.06) 0deg);">
                         <div class="donut-ring-inner">${pct}%</div>
                     </div>
-                    <div class="goal-progress-summary"><strong>${goal.current}</strong> / ${goal.target} ${goal.unit || ''}</div>
+                    <div class="goal-progress-summary">${progressText}</div>
                     <div class="stepper-row">
-                        <button class="stepper-btn" onclick="adjustGoalProgress('${goal.id}', -${goalStepValue})">−</button>
+                        <button class="stepper-btn" onclick="adjustGoalProgress('${goal.id}', -${goalStepValue})" ${isAutoTime ? 'disabled style="opacity:0.3;cursor:not-allowed;"' : ''}>−</button>
                         <div class="stepper-value">${goal.current} ${goal.unit || ''}</div>
-                        <button class="stepper-btn" onclick="adjustGoalProgress('${goal.id}', ${goalStepValue})">+</button>
+                        <button class="stepper-btn" onclick="adjustGoalProgress('${goal.id}', ${goalStepValue})" ${isAutoTime ? 'disabled style="opacity:0.3;cursor:not-allowed;"' : ''}>+</button>
+                    </div>
+                    <div class="goal-tasks-toggle ${isPanelOpen ? 'is-open' : ''}" onclick="toggleGoalTasksPanel('${goal.id}')">
+                        <span>📋 ${d.goalTasksHeader || 'Study Tasks'} ${goal.tasks.length ? `(<span class="gt-count">${doneTasksCount}/${goal.tasks.length}</span>)` : ''}</span>
+                        <span class="gt-chevron">▾</span>
+                    </div>
+                    <div class="goal-tasks-panel ${isPanelOpen ? 'is-open' : ''}" id="goal-tasks-panel-${goal.id}">
+                        <div class="goal-tasks-list">${tasksListHtml}</div>
+                        <div class="goal-task-add-row">
+                            <input type="text" class="goal-task-input" id="goal-task-input-${goal.id}" placeholder="${d.goalTaskPlaceholder || 'e.g. Review chapter 3...'}" onkeypress="if(event.key==='Enter') addGoalTask('${goal.id}')">
+                            <button class="goal-task-add-confirm" onclick="addGoalTask('${goal.id}')">+</button>
+                        </div>
                     </div>`;
                 grid.appendChild(card);
             });
+        }
+        function toggleGoalTasksPanel(goalId) {
+            if (expandedGoalTasksSet.has(goalId)) expandedGoalTasksSet.delete(goalId);
+            else expandedGoalTasksSet.add(goalId);
+            renderGoalsScreen();
+        }
+        function addGoalTask(goalId) {
+            const goal = goalsArray.find(g => g.id === goalId);
+            if (!goal) return;
+            const input = document.getElementById(`goal-task-input-${goalId}`);
+            const text = input ? input.value.trim() : '';
+            if (!text) return;
+            if (!Array.isArray(goal.tasks)) goal.tasks = [];
+            goal.tasks.push({ id: generateUniqueRecordId(), text: text, done: false });
+            expandedGoalTasksSet.add(goalId);
+            dbSet('goals', goalsArray);
+            renderGoalsScreen();
+            const newInput = document.getElementById(`goal-task-input-${goalId}`);
+            if (newInput) newInput.focus();
+        }
+        function toggleGoalTaskDone(goalId, taskId) {
+            const goal = goalsArray.find(g => g.id === goalId);
+            if (!goal || !Array.isArray(goal.tasks)) return;
+            const task = goal.tasks.find(t => t.id === taskId);
+            if (!task) return;
+            task.done = !task.done;
+            // For manual (count-based) goals, let checking off a study task nudge progress forward too
+            if (goal.goalType !== 'time') {
+                const goalStepValue = goal.target >= 20 ? Math.max(1, Math.round(goal.target / 20)) : 1;
+                goal.current = Math.max(0, Math.min(goal.target, (goal.current || 0) + (task.done ? goalStepValue : -goalStepValue)));
+            }
+            expandedGoalTasksSet.add(goalId);
+            dbSet('goals', goalsArray);
+            renderGoalsScreen();
+        }
+        function deleteGoalTask(goalId, taskId) {
+            const goal = goalsArray.find(g => g.id === goalId);
+            if (!goal || !Array.isArray(goal.tasks)) return;
+            goal.tasks = goal.tasks.filter(t => t.id !== taskId);
+            expandedGoalTasksSet.add(goalId);
+            dbSet('goals', goalsArray);
+            renderGoalsScreen();
+        }
+        function renderLinkedGoalChip() {
+            const chip = document.getElementById('linked-goal-chip');
+            if (!chip) return;
+            const d = languageDictionary[currentSystemLanguage];
+            const linkedGoal = goalsArray.find(g => g.goalType === 'time' && g.linkedTag === currentlySelectedTag && g.current < g.target);
+            if (!linkedGoal) { chip.classList.remove('is-visible'); return; }
+            const pct = linkedGoal.target > 0 ? Math.min(100, Math.round((linkedGoal.current / linkedGoal.target) * 100)) : 0;
+            document.getElementById('lg-chip-title').innerText = linkedGoal.title;
+            document.getElementById('lg-chip-progress').innerText = `${linkedGoal.current}/${linkedGoal.target} ${linkedGoal.unit || 'min'} (${pct}%)`;
+            document.getElementById('lg-chip-fill').style.width = pct + '%';
+            chip.classList.add('is-visible');
         }
 
         function openHabitModal() {
@@ -3105,8 +3032,34 @@
         }
 
 
-        // Kept for backward-compat (old right-click handler name); now opens the full settings modal.
-        function openTagColorModal(tagName) { openTagSettingsModal(tagName); }
+        function openTagColorModal(tagName) {
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay modal-open';
+            modal.id = 'tag-color-modal-dynamic';
+            modal.innerHTML = `
+                <div class="modal-box">
+                    <h3>${currentSystemLanguage === 'ar' ? 'لون التاج' : 'Tag Color'}: ${tagName}</h3>
+                    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:16px 0;">
+                        ${['#3498db','#e67e22','#1abc9c','#e84393','#2ecc71','#9b59b6','#e74c3c','#f1c40f','#16a085','#d35400','#8e44ad','#2c3e50','#d9a54a','#3e5c8a','#00d26a','#3498db','#e74c3c','#f39c12'].map(c => `
+                            <div onclick="setTagColor('${tagName}', '${c}'); document.getElementById('tag-color-modal-dynamic').remove();" 
+                                 style="width:40px;height:40px;border-radius:10px;background:${c};cursor:pointer;border:2px solid transparent;transition:all 0.2s;"
+                                 onmouseover="this.style.borderColor='#fff';this.style.transform='scale(1.15)';"
+                                 onmouseout="this.style.borderColor='transparent';this.style.transform='scale(1)';"
+                            ></div>
+                        `).join('')}
+                    </div>
+                    <div style="margin-bottom:16px;">
+                        <label style="font-size:11px;color:var(--text-gray);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:6px;">${currentSystemLanguage === 'ar' ? 'لون مخصص' : 'Custom Color'}</label>
+                        <input type="color" id="custom-tag-color-picker" value="${getTagColor(tagName)}" style="width:100%;height:40px;border-radius:10px;border:none;cursor:pointer;background:transparent;">
+                    </div>
+                    <div class="modal-buttons">
+                        <button class="modal-btn cancel" onclick="document.getElementById('tag-color-modal-dynamic').remove();">${currentSystemLanguage === 'ar' ? 'إلغاء' : 'Cancel'}</button>
+                        <button class="modal-btn confirm" onclick="setTagColor('${tagName}', document.getElementById('custom-tag-color-picker').value); document.getElementById('tag-color-modal-dynamic').remove();">${currentSystemLanguage === 'ar' ? 'حفظ' : 'Save'}</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
 
         let customTagColors = {};
 
@@ -3119,119 +3072,7 @@
             renderHistoryGridWithPagination();
             renderHeatmap();
             renderWeeklySegmentedChart();
-        }
-
-        // ========== 🎯 TAG SETTINGS MODAL: color + weekly time goal + task list (all in one place) ==========
-        function generateUniqueTaskId() { return 'task_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
-
-        function openTagSettingsModal(tagName) {
-            const modal = document.createElement('div');
-            modal.className = 'modal-overlay modal-open';
-            modal.id = 'tag-settings-modal-dynamic';
-            const ar = currentSystemLanguage === 'ar';
-            modal.innerHTML = `
-                <div class="modal-box" style="max-width:480px; text-align:${ar ? 'right' : 'left'};">
-                    <h3 style="text-align:center;">${ar ? 'إعدادات التاج' : 'Tag Settings'}: ${tagName}</h3>
-
-                    <label class="field-label">${ar ? 'اللون' : 'Color'}</label>
-                    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:8px 0 16px;">
-                        ${['#3498db','#e67e22','#1abc9c','#e84393','#2ecc71','#9b59b6','#e74c3c','#f1c40f','#16a085','#d35400','#8e44ad','#2c3e50'].map(c => `
-                            <div onclick="setTagColor('${tagName}', '${c}');"
-                                 style="width:100%;aspect-ratio:1;border-radius:10px;background:${c};cursor:pointer;border:2px solid ${getTagColor(tagName) === c ? '#fff' : 'transparent'};transition:all 0.2s;"
-                                 onmouseover="this.style.transform='scale(1.1)';" onmouseout="this.style.transform='scale(1)';"
-                            ></div>
-                        `).join('')}
-                    </div>
-                    <input type="color" id="custom-tag-color-picker" value="${getTagColor(tagName)}" onchange="setTagColor('${tagName}', this.value);" style="width:100%;height:36px;border-radius:10px;border:none;cursor:pointer;background:transparent;margin-bottom:18px;">
-
-                    <label class="field-label">🎯 ${ar ? 'هدف الوقت الأسبوعي (ساعات) — اسيبه فاضي لو مفيش هدف' : 'Weekly time goal (hours) — leave empty for no goal'}</label>
-                    <input type="number" id="tag-weekly-goal-input" min="0" step="0.5" placeholder="${ar ? 'مثال: 6' : 'e.g. 6'}" value="${tagWeeklyGoals[tagName] || ''}" style="margin-bottom:18px;">
-
-                    <label class="field-label">✅ ${ar ? 'المهام الفرعية لهذا التاج' : 'Tasks for this tag'}</label>
-                    <div id="tag-settings-tasks-list" style="display:flex; flex-direction:column; gap:8px; margin:8px 0 14px; max-height:220px; overflow-y:auto;"></div>
-                    <div class="input-row-split">
-                        <input type="text" id="tag-settings-new-task-title" placeholder="${ar ? 'اسم المهمة...' : 'Task title...'}" style="flex:2;">
-                        <input type="number" id="tag-settings-new-task-est" placeholder="${ar ? 'دقيقة' : 'min'}" min="1" value="30" style="flex:1;">
-                    </div>
-                    <button class="add-item-pill-btn" style="width:100%; justify-content:center; margin-bottom:18px;" onclick="addTaskToTagFromModal('${tagName}')">+ ${ar ? 'إضافة مهمة' : 'Add Task'}</button>
-
-                    <div class="modal-buttons">
-                        <button class="modal-btn confirm" style="width:100%;" onclick="saveTagWeeklyGoalFromModal('${tagName}'); document.getElementById('tag-settings-modal-dynamic').remove();">${ar ? 'حفظ وإغلاق' : 'Save & Close'}</button>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(modal);
-            renderTagSettingsTasksList(tagName);
-        }
-
-        function renderTagSettingsTasksList(tagName) {
-            const holder = document.getElementById('tag-settings-tasks-list');
-            if (!holder) return;
-            const tasks = tagTasksMap[tagName] || [];
-            const ar = currentSystemLanguage === 'ar';
-            if (tasks.length === 0) {
-                holder.innerHTML = `<div style="font-size:12px; color:var(--text-gray); text-align:center; padding:10px 0;">${ar ? 'لا توجد مهام بعد' : 'No tasks yet'}</div>`;
-                return;
-            }
-            holder.innerHTML = tasks.map(t => {
-                const pct = t.estMinutes > 0 ? Math.min(100, Math.round((t.loggedMinutes || 0) / t.estMinutes * 100)) : 0;
-                return `
-                <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-soft); border-radius:10px; padding:8px 12px;">
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTaskDoneInTag('${tagName}','${t.id}')" style="width:16px; height:16px; cursor:pointer; flex-shrink:0;">
-                        <span style="flex:1; font-size:13px; font-weight:600; ${t.done ? 'text-decoration:line-through; color:var(--text-gray);' : 'color:var(--text-light);'}">${t.title}</span>
-                        <span style="font-size:11px; color:var(--text-gray);">${t.loggedMinutes || 0}/${t.estMinutes}${ar ? 'د' : 'm'}</span>
-                        <span class="item-delete-btn" style="width:22px;height:22px;font-size:10px;" onclick="deleteTaskFromTag('${tagName}','${t.id}')">✕</span>
-                    </div>
-                    <div class="chart-progress-rail" style="margin-top:6px; height:5px;"><div class="chart-progress-fill" style="width:${pct}%; background:${t.done ? 'var(--success)' : 'var(--accent-orange)'};"></div></div>
-                </div>`;
-            }).join('');
-        }
-
-        function saveTagWeeklyGoalFromModal(tagName) {
-            const input = document.getElementById('tag-weekly-goal-input');
-            const val = parseFloat(input.value);
-            if (val > 0) tagWeeklyGoals[tagName] = val;
-            else delete tagWeeklyGoals[tagName];
-            dbSet('tagWeeklyGoals', tagWeeklyGoals);
-            renderTagsChips();
-            recalculateAndRenderDashboard();
-            showToast(currentSystemLanguage === 'ar' ? 'تم حفظ إعدادات التاج!' : 'Tag settings saved!', tagName, 'success');
-        }
-
-        function addTaskToTagFromModal(tagName) {
-            const titleInput = document.getElementById('tag-settings-new-task-title');
-            const estInput = document.getElementById('tag-settings-new-task-est');
-            const title = titleInput.value.trim();
-            const est = parseInt(estInput.value);
-            if (!title || !est || est <= 0) return;
-            if (!tagTasksMap[tagName]) tagTasksMap[tagName] = [];
-            tagTasksMap[tagName].push({ id: generateUniqueTaskId(), title: title, estMinutes: est, loggedMinutes: 0, done: false });
-            dbSet('tagTasksMap', tagTasksMap);
-            titleInput.value = '';
-            estInput.value = 30;
-            renderTagSettingsTasksList(tagName);
-            renderTagsChips();
-            renderActiveTaskSelector();
-        }
-
-        function toggleTaskDoneInTag(tagName, taskId) {
-            const task = (tagTasksMap[tagName] || []).find(t => t.id === taskId);
-            if (!task) return;
-            task.done = !task.done;
-            dbSet('tagTasksMap', tagTasksMap);
-            renderTagSettingsTasksList(tagName);
-            renderTagsChips();
-            renderActiveTaskSelector();
-        }
-
-        function deleteTaskFromTag(tagName, taskId) {
-            tagTasksMap[tagName] = (tagTasksMap[tagName] || []).filter(t => t.id !== taskId);
-            if (currentlySelectedTaskId === taskId) currentlySelectedTaskId = "";
-            dbSet('tagTasksMap', tagTasksMap);
-            renderTagSettingsTasksList(tagName);
-            renderTagsChips();
-            renderActiveTaskSelector();
+            showToast(currentSystemLanguage === 'ar' ? 'تم تحديث اللون!' : 'Color Updated!', tag, 'success');
         }
 
         async function loadCustomTagColors() {
@@ -4157,6 +3998,7 @@ let appHasBooted = false;
             recalculateAndRenderDashboard();
             renderHistoryGridWithPagination();
             renderGoalsScreen();
+            renderLinkedGoalChip();
             renderHabitsScreen();
             syncLanguageInterfaceStrings();
             updateQuickStats();
