@@ -80,7 +80,7 @@
         .screen-view { display: none; animation: fadeIn 0.5s ease-out forwards; }
         .screen-view.active-view { display: block; }
         .timer-screen-layout { display: flex; flex-direction: column; align-items: center; gap: 28px; text-align: center; animation: fadeIn 0.6s ease-out; }
-        .timer-3col-grid { display: grid; grid-template-columns: 300px minmax(0, 1fr) 340px; gap: 28px; align-items: start; }
+        .timer-3col-grid { display: grid; grid-template-columns: 300px minmax(0, 1fr) 340px; gap: 28px; align-items: start; background: radial-gradient(ellipse 800px 420px at 50% 0%, color-mix(in srgb, var(--subject-tint, var(--accent-orange)) 10%, transparent), transparent 70%); border-radius: 24px; transition: background 0.6s ease; }
         .timer-side-panel { background: linear-gradient(160deg, rgba(15, 17, 26, 0.65), rgba(18, 20, 32, 0.4)); border: 1px solid var(--border-soft); border-radius: 24px; padding: 26px; display: flex; flex-direction: column; gap: 16px; position: sticky; top: 24px; animation: fadeIn 0.6s ease-out; max-height: calc(100vh - 120px); }
         .timer-side-panel-header { display: flex; align-items: center; gap: 9px; font-size: 15px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-light); }
         .timer-side-panel-header span:first-child { font-size: 19px; }
@@ -1528,6 +1528,9 @@
             for (let i = 0; i < tag.length; i++) hash = tag.charCodeAt(i) + ((hash << 5) - hash);
             return genericColorPalette[Math.abs(hash) % genericColorPalette.length];
         }
+        function applySubjectTint() {
+            document.documentElement.style.setProperty('--subject-tint', getTagColor(currentlySelectedTag));
+        }
 
         function formatMinutesToHM(minutes) {
             const h = Math.floor(minutes / 60);
@@ -1950,7 +1953,7 @@
             wrapper.appendChild(addBtnCircle);
         }
 
-        function selectActiveTag(tag) { currentlySelectedTag = tag; dbSet('selectedTag', currentlySelectedTag); renderTagsChips(); refreshTimerSidebar(); loadTimerNotesForCurrentTag(); }
+        function selectActiveTag(tag) { currentlySelectedTag = tag; dbSet('selectedTag', currentlySelectedTag); renderTagsChips(); refreshTimerSidebar(); loadTimerNotesForCurrentTag(); applySubjectTint(); }
         function deleteTagFromSystem(tag) {
             currentTagsList = currentTagsList.filter(t => t !== tag);
             if (currentlySelectedTag === tag && currentTagsList.length > 0) currentlySelectedTag = currentTagsList[0];
@@ -4295,6 +4298,7 @@ let appHasBooted = false;
             renderTagsChips();
             refreshTimerDisplay();
             loadTimerNotesForCurrentTag();
+            applySubjectTint();
             recalculateAndRenderDashboard();
             renderHistoryGridWithPagination();
             renderGoalsScreen();
