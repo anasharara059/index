@@ -80,26 +80,27 @@
         .screen-view { display: none; animation: fadeIn 0.5s ease-out forwards; }
         .screen-view.active-view { display: block; }
         .timer-screen-layout { display: flex; flex-direction: column; align-items: center; gap: 28px; text-align: center; animation: fadeIn 0.6s ease-out; }
-        .timer-3col-grid { display: grid; grid-template-columns: 230px minmax(0, 1fr) 260px; gap: 24px; align-items: start; }
-        .timer-side-panel { background: linear-gradient(160deg, rgba(15, 17, 26, 0.65), rgba(18, 20, 32, 0.4)); border: 1px solid var(--border-soft); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px; position: sticky; top: 24px; animation: fadeIn 0.6s ease-out; max-height: calc(100vh - 140px); }
-        .timer-side-panel-header { display: flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-gray); }
-        .timer-side-panel-divider { height: 1px; background: var(--border-soft); margin: 4px 0; }
-        .timer-notes-textarea { flex: 1; min-height: 260px; resize: vertical; background: rgba(0, 0, 0, 0.25); border: 1px solid var(--border-soft); color: var(--text-light); padding: 14px; border-radius: 14px; font-size: 13px; line-height: 1.6; outline: none; font-family: inherit; transition: all 0.3s; }
+        .timer-3col-grid { display: grid; grid-template-columns: 300px minmax(0, 1fr) 340px; gap: 28px; align-items: start; }
+        .timer-side-panel { background: linear-gradient(160deg, rgba(15, 17, 26, 0.65), rgba(18, 20, 32, 0.4)); border: 1px solid var(--border-soft); border-radius: 24px; padding: 26px; display: flex; flex-direction: column; gap: 16px; position: sticky; top: 24px; animation: fadeIn 0.6s ease-out; max-height: calc(100vh - 120px); }
+        .timer-side-panel-header { display: flex; align-items: center; gap: 9px; font-size: 15px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-light); }
+        .timer-side-panel-header span:first-child { font-size: 19px; }
+        .timer-side-panel-divider { height: 1px; background: var(--border-soft); margin: 6px 0; }
+        .timer-notes-textarea { flex: 1; min-height: 420px; resize: vertical; background: rgba(0, 0, 0, 0.25); border: 1px solid var(--border-soft); color: var(--text-light); padding: 18px; border-radius: 16px; font-size: 14.5px; line-height: 1.75; outline: none; font-family: inherit; transition: all 0.3s; }
         .timer-notes-textarea:focus { border-color: var(--accent-orange); box-shadow: 0 0 15px rgba(217, 165, 74, 0.12); }
         .timer-notes-textarea::placeholder { color: var(--text-gray); }
-        .timer-current-subject-pill { background: rgba(217, 165, 74, 0.12); border: 1px solid rgba(217, 165, 74, 0.3); color: var(--accent-orange); font-weight: 800; font-size: 14px; padding: 10px 14px; border-radius: 12px; text-align: center; }
-        .timer-tasks-panel-list { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; padding-right: 2px; }
-        .timer-task-item { display: flex; align-items: flex-start; gap: 9px; background: rgba(255, 255, 255, 0.025); border: 1px solid var(--border-soft); border-radius: 10px; padding: 9px 10px; text-align: left; transition: all 0.2s ease; }
+        .timer-current-subject-pill { background: rgba(217, 165, 74, 0.12); border: 1px solid rgba(217, 165, 74, 0.3); color: var(--accent-orange); font-weight: 800; font-size: 17px; padding: 14px 16px; border-radius: 14px; text-align: center; }
+        .timer-tasks-panel-list { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; padding-right: 4px; flex: 1; min-height: 300px; }
+        .timer-task-item { display: flex; align-items: flex-start; gap: 11px; background: rgba(255, 255, 255, 0.025); border: 1px solid var(--border-soft); border-radius: 13px; padding: 13px 14px; text-align: left; transition: all 0.2s ease; }
         html[dir="rtl"] .timer-task-item { text-align: right; }
         .timer-task-item.is-matching { border-color: rgba(217, 165, 74, 0.35); background: rgba(217, 165, 74, 0.06); }
         .timer-task-item.is-done { opacity: 0.5; }
-        .timer-task-item .goal-task-checkbox { margin-top: 1px; }
+        .timer-task-item .goal-task-checkbox { margin-top: 1px; width: 22px; height: 22px; min-width: 22px; }
         .timer-task-info { flex: 1; min-width: 0; }
-        .timer-task-text { font-size: 12px; color: var(--text-light); word-break: break-word; }
+        .timer-task-text { font-size: 14px; color: var(--text-light); word-break: break-word; }
         .timer-task-item.is-done .timer-task-text { text-decoration: line-through; color: var(--text-gray); }
-        .timer-task-goal-src { font-size: 10px; color: var(--accent-purple); font-weight: 700; margin-top: 3px; }
-        .timer-tasks-empty { font-size: 11.5px; color: var(--text-gray); text-align: center; padding: 20px 8px; border: 1.5px dashed var(--border-soft); border-radius: 12px; }
-        @media (max-width: 1150px) { .timer-3col-grid { grid-template-columns: 1fr; } .timer-side-panel { position: static; max-height: none; order: 2; } .timer-side-panel-right { order: 2; } .timer-screen-layout { order: 1; } .timer-notes-textarea { min-height: 140px; } }
+        .timer-task-goal-src { font-size: 11.5px; color: var(--accent-purple); font-weight: 700; margin-top: 5px; }
+        .timer-tasks-empty { font-size: 13px; color: var(--text-gray); text-align: center; padding: 40px 12px; border: 1.5px dashed var(--border-soft); border-radius: 14px; }
+        @media (max-width: 1250px) { .timer-3col-grid { grid-template-columns: 1fr; } .timer-side-panel { position: static; max-height: none; order: 2; } .timer-side-panel-right { order: 2; } .timer-screen-layout { order: 1; } .timer-notes-textarea { min-height: 160px; } .timer-tasks-panel-list { min-height: 0; } }
         .session-title-field { background: transparent; border: none; border-bottom: 2px dashed var(--border-soft); color: var(--text-light); font-size: 22px; font-weight: 700; text-align: center; width: 80%; max-width: 500px; padding: 10px; outline: none; transition: all 0.3s; }
         .session-title-field:focus { border-bottom-color: var(--accent-orange); border-bottom-style: solid; }
         .session-title-field::placeholder { color: var(--text-gray); }
