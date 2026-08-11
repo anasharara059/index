@@ -116,6 +116,11 @@
         .timer-tasks-filter-row { display: flex; gap: 6px; background: rgba(0,0,0,0.25); padding: 4px; border-radius: 12px; }
         .timer-tasks-filter-btn { flex: 1; background: transparent; border: none; color: var(--text-gray); padding: 7px 4px; border-radius: 9px; font-size: 11px; font-weight: 700; cursor: pointer; transition: all 0.25s ease; }
         .timer-tasks-filter-btn.active { background: var(--accent-orange); color: #000; }
+        .timer-tasks-scope-row { display: flex; gap: 6px; margin-bottom: 2px; }
+        .timer-tasks-scope-btn { flex: 1; background: rgba(255,255,255,0.03); border: 1px solid var(--border-soft); color: var(--text-gray); padding: 6px 4px; border-radius: 9px; font-size: 10px; font-weight: 700; letter-spacing: 0.3px; cursor: pointer; transition: all 0.25s ease; }
+        .timer-tasks-scope-btn.active { background: rgba(217, 165, 74, 0.15); border-color: rgba(217, 165, 74, 0.4); color: var(--accent-orange); }
+        .linked-goal-empty-cta { display: block; width: 100%; background: transparent; border: 1px dashed var(--border-soft); color: var(--text-gray); padding: 10px 14px; border-radius: 14px; font-size: 12px; text-align: center; cursor: pointer; transition: all 0.25s ease; font-family: inherit; }
+        .linked-goal-empty-cta:hover { border-color: rgba(217, 165, 74, 0.4); color: var(--accent-orange); }
         .timer-task-delete { background: transparent; border: none; color: var(--text-gray); cursor: pointer; font-size: 12px; opacity: 0.45; transition: all 0.2s; padding: 2px 4px; flex-shrink: 0; }
         .timer-task-delete:hover { opacity: 1; color: var(--danger); }
         @media (max-width: 1250px) { .timer-3col-grid { grid-template-columns: 1fr; } .timer-side-panel { position: static; max-height: none; order: 2; } .timer-side-panel-right { order: 2; } .timer-screen-layout { order: 1; } .timer-notes-textarea { min-height: 160px; } .timer-tasks-panel-list { min-height: 0; } }
@@ -612,8 +617,13 @@
                         <span id="linked-goal-chip-text"><strong id="lg-chip-title"></strong> · <span id="lg-chip-progress"></span></span>
                         <div class="lg-mini-bar"><div class="lg-mini-fill" id="lg-chip-fill" style="width:0%;"></div></div>
                     </div>
+                    <button class="linked-goal-empty-cta" id="linked-goal-empty-cta" onclick="openGoalModal(currentlySelectedTag)" style="display:none;">+ Link a goal to this subject</button>
                     <div class="timer-side-panel-divider"></div>
                     <div class="timer-side-panel-header"><span>📋</span><span id="timer-tasks-header">Study Tasks</span></div>
+                    <div class="timer-tasks-scope-row" id="timer-tasks-scope-row">
+                        <button class="timer-tasks-scope-btn active" data-scope="subject" onclick="setTimerTasksScope('subject')" id="tsc-btn-subject">This Subject</button>
+                        <button class="timer-tasks-scope-btn" data-scope="all" onclick="setTimerTasksScope('all')" id="tsc-btn-all">All Subjects</button>
+                    </div>
                     <div class="timer-tasks-progress-row" id="timer-tasks-progress-row" style="display:none;">
                         <div class="timer-tasks-progress-bar"><div class="timer-tasks-progress-fill" id="timer-tasks-progress-fill" style="width:0%;"></div></div>
                         <span id="timer-tasks-progress-txt">0/0</span>
@@ -962,6 +972,9 @@
                 timerNotesClearConfirm: "Clear all notes?",
                 timerTasksFilterPending: "Pending", timerTasksFilterAll: "All", timerTasksFilterDone: "Done",
                 timerTasksFilterEmptyState: "Nothing here.",
+                timerTasksScopeSubject: "This Subject", timerTasksScopeAll: "All Subjects",
+                timerTasksSubjectEmptyState: "No tasks for this subject yet. Add one below, or switch to All Subjects.",
+                linkedGoalEmptyCta: "+ Link a goal to this subject",
                 habitsHeaderTitle: "Habits", habitsAddBtnTxt: "New Habit", habitsEmptyState: "No habits yet — start tracking one!",
                 habitDeleteConfirm: "Do you want to delete this habit?", habitStreakTxt: "day streak",
                 habitMarkDoneTxt: "Mark Today Done", habitDoneTxt: "Done Today ✓",
@@ -1065,6 +1078,9 @@
                 timerNotesClearConfirm: "هل تريد مسح كل الملاحظات؟",
                 timerTasksFilterPending: "الحالية", timerTasksFilterAll: "الكل", timerTasksFilterDone: "المنجزة",
                 timerTasksFilterEmptyState: "لا يوجد شيء هنا.",
+                timerTasksScopeSubject: "المادة دي", timerTasksScopeAll: "كل المواد",
+                timerTasksSubjectEmptyState: "لسه مفيش مهام للمادة دي. ضيف واحدة تحت، أو بدّل لـ«كل المواد».",
+                linkedGoalEmptyCta: "+ اربط هدف بالمادة دي",
                 habitsHeaderTitle: "العادات", habitsAddBtnTxt: "عادة جديدة", habitsEmptyState: "لسه معملتش أي عادة — ابدأ بتتبع واحدة!",
                 habitDeleteConfirm: "هل تريد حذف هذه العادة؟", habitStreakTxt: "يوم متتالي",
                 habitMarkDoneTxt: "تسجيل إنجاز اليوم", habitDoneTxt: "تم اليوم ✓",
@@ -1161,7 +1177,7 @@
         let habitsArray = [];
         let filteredSessions = [];
         let studyGoals = { daily: 4, weekly: 28, monthly: 120 };
-        let timerQuickNotesText = '';
+        let timerQuickNotesMap = {};
         let timerWorker = null;
         let currentViewedWeekOffset = 0;
         let archivedWeeks = {};
@@ -1478,11 +1494,19 @@
                 const savedStudyGoals = await dbGet('studyGoals');
                 if (savedStudyGoals !== undefined) studyGoals = { ...studyGoals, ...savedStudyGoals };
                 else await dbSet('studyGoals', studyGoals);
-                const savedQuickNotes = await dbGet('timerQuickNotes');
-                if (savedQuickNotes !== undefined) timerQuickNotesText = savedQuickNotes;
                 const savedSelectedTag = await dbGet('selectedTag');
                 if (savedSelectedTag !== undefined && currentTagsList.includes(savedSelectedTag)) currentlySelectedTag = savedSelectedTag;
                 else { currentlySelectedTag = currentTagsList[0] || currentlySelectedTag; await dbSet('selectedTag', currentlySelectedTag); }
+                const savedQuickNotes = await dbGet('timerQuickNotes');
+                if (savedQuickNotes !== undefined) {
+                    if (typeof savedQuickNotes === 'string') {
+                        // migrate legacy single shared note into the current subject's note
+                        timerQuickNotesMap = savedQuickNotes ? { [currentlySelectedTag]: savedQuickNotes } : {};
+                        await dbSet('timerQuickNotes', timerQuickNotesMap);
+                    } else {
+                        timerQuickNotesMap = savedQuickNotes;
+                    }
+                }
                 const savedLanguage = await dbGet('language');
                 if (savedLanguage !== undefined) {
                     currentSystemLanguage = savedLanguage;
@@ -1645,8 +1669,7 @@
             if (goalTypeCountOpt) goalTypeCountOpt.innerText = d.goalTypeCountOpt;
             const goalTypeTimeOpt = document.getElementById('goal-modal-type-time');
             if (goalTypeTimeOpt) goalTypeTimeOpt.innerText = d.goalTypeTimeOpt;
-            const timerNotesHeader = document.getElementById('timer-notes-header');
-            if (timerNotesHeader) timerNotesHeader.innerText = d.timerNotesHeader;
+            updateTimerNotesHeaderSubject();
             const timerNotesArea = document.getElementById('timer-quick-notes');
             if (timerNotesArea) timerNotesArea.placeholder = d.timerNotesPlaceholder;
             const timerSubjectLbl = document.getElementById('timer-current-subject-lbl');
@@ -1659,6 +1682,10 @@
             if (tfAll) tfAll.innerText = d.timerTasksFilterAll;
             const tfDone = document.getElementById('tf-btn-done');
             if (tfDone) tfDone.innerText = d.timerTasksFilterDone;
+            const tscSubject = document.getElementById('tsc-btn-subject');
+            if (tscSubject) tscSubject.innerText = d.timerTasksScopeSubject;
+            const tscAll = document.getElementById('tsc-btn-all');
+            if (tscAll) tscAll.innerText = d.timerTasksScopeAll;
             renderGoalsScreen();
             refreshTimerSidebar();
             document.getElementById('habits-header-title').innerText = d.habitsHeaderTitle;
@@ -1923,7 +1950,7 @@
             wrapper.appendChild(addBtnCircle);
         }
 
-        function selectActiveTag(tag) { currentlySelectedTag = tag; dbSet('selectedTag', currentlySelectedTag); renderTagsChips(); refreshTimerSidebar(); }
+        function selectActiveTag(tag) { currentlySelectedTag = tag; dbSet('selectedTag', currentlySelectedTag); renderTagsChips(); refreshTimerSidebar(); loadTimerNotesForCurrentTag(); }
         function deleteTagFromSystem(tag) {
             currentTagsList = currentTagsList.filter(t => t !== tag);
             if (currentlySelectedTag === tag && currentTagsList.length > 0) currentlySelectedTag = currentTagsList[0];
@@ -2653,12 +2680,12 @@
         }
 
         function generateUniqueRecordId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
-        function openGoalModal() {
+        function openGoalModal(presetTag) {
             document.getElementById('modal-goal-title').value = '';
             document.getElementById('modal-goal-target').value = 10;
             document.getElementById('modal-goal-unit').value = '';
             document.getElementById('modal-goal-deadline').value = '';
-            document.getElementById('modal-goal-type').value = 'count';
+            document.getElementById('modal-goal-type').value = presetTag ? 'time' : 'count';
 
             const tagSelect = document.getElementById('modal-goal-tag');
             tagSelect.innerHTML = `<option value="">-- None --</option>`;
@@ -2668,6 +2695,7 @@
                 opt.innerText = tag;
                 tagSelect.appendChild(opt);
             });
+            if (presetTag && currentTagsList.includes(presetTag)) tagSelect.value = presetTag;
 
             document.getElementById('goal-modal').classList.add('modal-open');
             setTimeout(() => document.getElementById('modal-goal-title').focus(), 100);
@@ -2847,9 +2875,19 @@
             const subjectPill = document.getElementById('timer-current-subject-pill');
             if (subjectPill) subjectPill.innerText = currentlySelectedTag;
             const chip = document.getElementById('linked-goal-chip');
+            const emptyCta = document.getElementById('linked-goal-empty-cta');
             if (!chip) return;
             const linkedGoal = goalsArray.find(g => g.goalType === 'time' && g.linkedTag === currentlySelectedTag && g.current < g.target);
-            if (!linkedGoal) { chip.classList.remove('is-visible'); return; }
+            if (!linkedGoal) {
+                chip.classList.remove('is-visible');
+                if (emptyCta) {
+                    const d = languageDictionary[currentSystemLanguage];
+                    emptyCta.innerText = (d.linkedGoalEmptyCta || '+ Link a goal to this subject');
+                    emptyCta.style.display = 'block';
+                }
+                return;
+            }
+            if (emptyCta) emptyCta.style.display = 'none';
             const pct = linkedGoal.target > 0 ? Math.min(100, Math.round((linkedGoal.current / linkedGoal.target) * 100)) : 0;
             document.getElementById('lg-chip-title').innerText = linkedGoal.title;
             document.getElementById('lg-chip-progress').innerText = `${linkedGoal.current}/${linkedGoal.target} ${linkedGoal.unit || 'min'} (${pct}%)`;
@@ -2857,10 +2895,18 @@
             chip.classList.add('is-visible');
         }
         let timerTasksFilterState = 'pending';
+        let timerTasksScopeState = 'subject';
         function setTimerTasksFilter(filter) {
             timerTasksFilterState = filter;
             document.querySelectorAll('.timer-tasks-filter-btn').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.filter === filter);
+            });
+            renderTimerTasksPanel();
+        }
+        function setTimerTasksScope(scope) {
+            timerTasksScopeState = scope;
+            document.querySelectorAll('.timer-tasks-scope-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.scope === scope);
             });
             renderTimerTasksPanel();
         }
@@ -2912,12 +2958,18 @@
             const filterRow = document.getElementById('timer-tasks-filter-row');
             if (filterRow) filterRow.style.display = allTasks.length > 0 ? 'flex' : 'none';
 
-            let visibleTasks = allTasks;
-            if (timerTasksFilterState === 'pending') visibleTasks = allTasks.filter(t => !t.done);
-            else if (timerTasksFilterState === 'done') visibleTasks = allTasks.filter(t => t.done);
+            const scopedTasks = timerTasksScopeState === 'subject' ? allTasks.filter(t => t.matchesTag) : allTasks;
+
+            let visibleTasks = scopedTasks;
+            if (timerTasksFilterState === 'pending') visibleTasks = scopedTasks.filter(t => !t.done);
+            else if (timerTasksFilterState === 'done') visibleTasks = scopedTasks.filter(t => t.done);
 
             if (allTasks.length === 0) {
                 listEl.innerHTML = `<div class="timer-tasks-empty">${d.timerTasksEmptyState || 'No study tasks yet. Add some from the Goals tab.'}</div>`;
+                return;
+            }
+            if (timerTasksScopeState === 'subject' && scopedTasks.length === 0) {
+                listEl.innerHTML = `<div class="timer-tasks-empty">${d.timerTasksSubjectEmptyState || 'No tasks for this subject yet. Add one below, or switch to All Subjects.'}</div>`;
                 return;
             }
             if (visibleTasks.length === 0) {
@@ -2947,12 +2999,12 @@
         function saveTimerQuickNotes() {
             const el = document.getElementById('timer-quick-notes');
             if (!el) return;
-            timerQuickNotesText = el.value;
+            timerQuickNotesMap[currentlySelectedTag] = el.value;
             const cc = document.getElementById('timer-notes-charcount');
             if (cc) cc.innerText = `${el.value.length} ${currentSystemLanguage === 'ar' ? 'حرف' : 'chars'}`;
             clearTimeout(quickNotesSaveTimer);
             quickNotesSaveTimer = setTimeout(() => {
-                dbSet('timerQuickNotes', timerQuickNotesText);
+                dbSet('timerQuickNotes', timerQuickNotesMap);
                 const sv = document.getElementById('timer-notes-savestate');
                 if (sv) {
                     sv.innerText = currentSystemLanguage === 'ar' ? '✓ محفوظ' : '✓ Saved';
@@ -2964,12 +3016,26 @@
         function clearTimerQuickNotes() {
             const d = languageDictionary[currentSystemLanguage];
             if (!confirm(d.timerNotesClearConfirm || 'Clear all notes?')) return;
-            timerQuickNotesText = '';
+            delete timerQuickNotesMap[currentlySelectedTag];
             const el = document.getElementById('timer-quick-notes');
             if (el) el.value = '';
-            dbSet('timerQuickNotes', '');
+            dbSet('timerQuickNotes', timerQuickNotesMap);
             const cc = document.getElementById('timer-notes-charcount');
             if (cc) cc.innerText = `0 ${currentSystemLanguage === 'ar' ? 'حرف' : 'chars'}`;
+        }
+        function updateTimerNotesHeaderSubject() {
+            const header = document.getElementById('timer-notes-header');
+            const d = languageDictionary[currentSystemLanguage];
+            if (header) header.innerText = `${d.timerNotesHeader} — ${currentlySelectedTag}`;
+        }
+        function loadTimerNotesForCurrentTag() {
+            const el = document.getElementById('timer-quick-notes');
+            if (!el) return;
+            const text = timerQuickNotesMap[currentlySelectedTag] || '';
+            el.value = text;
+            const cc = document.getElementById('timer-notes-charcount');
+            if (cc) cc.innerText = `${text.length} ${currentSystemLanguage === 'ar' ? 'حرف' : 'chars'}`;
+            updateTimerNotesHeaderSubject();
         }
         function addTaskFromTimerPanel() {
             const goalId = document.getElementById('timer-quick-add-goal-select')?.value;
@@ -4228,12 +4294,7 @@ let appHasBooted = false;
             await checkAndArchivePreviousWeek();
             renderTagsChips();
             refreshTimerDisplay();
-            const notesEl = document.getElementById('timer-quick-notes');
-            if (notesEl) {
-                notesEl.value = timerQuickNotesText || '';
-                const cc = document.getElementById('timer-notes-charcount');
-                if (cc) cc.innerText = `${notesEl.value.length} ${currentSystemLanguage === 'ar' ? 'حرف' : 'chars'}`;
-            }
+            loadTimerNotesForCurrentTag();
             recalculateAndRenderDashboard();
             renderHistoryGridWithPagination();
             renderGoalsScreen();
