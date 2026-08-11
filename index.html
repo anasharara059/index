@@ -1,16 +1,4 @@
-<!DOC,
-                deepFocusTitle: "وضع التركيز العميق",
-                deepFocusLocked: "تم قفل التركيز",
-                deepFocusStay: "ابقَ مركزاً!",
-                deepFocusAway: "ابتعدت لمدة",
-                deepFocusReturn: "رجعت — استئناف التركيز",
-                deepFocusPaused: "متوقف مؤقتاً",
-                deepFocusRunning: "قيد التشغيل",
-                deepFocusExitHint: "ESC للخروج من وضع التركيز",
-                focusBroken: "⚠️ تم كسر التركيز!",
-                focusBrokenMsg: "ابتعدت عن جلستك. التركيز مهم لتحقيق أهدافك.",
-                focusBackBtn: "رجعت — استئناف التركيز"
-            TYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
@@ -418,158 +406,7 @@
         .user-badge:hover .account-dropdown-hint {
             opacity: 1;
         }
-                
-        /* ========== DEEP FOCUS MODE ========== */
-        .deep-focus-overlay {
-            position: fixed;
-            inset: 0;
-            background: #08090d;
-            z-index: 999999;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 40px;
-            animation: fadeIn 0.6s ease-out;
-            cursor: default;
-        }
-        .deep-focus-overlay.is-active {
-            display: flex;
-        }
-        .deep-focus-overlay::before {
-            content: '';
-            position: absolute;
-            inset: 20px;
-            border: 1px solid rgba(217, 165, 74, 0.08);
-            border-radius: 24px;
-            pointer-events: none;
-        }
-        .deep-focus-timer {
-            font-family: 'Digital-7 Mono', 'Courier New', Courier, monospace;
-            font-size: clamp(100px, 22vw, 240px);
-            font-weight: 400;
-            color: var(--accent-orange);
-            letter-spacing: 12px;
-            text-shadow: 0 0 60px rgba(217, 165, 74, 0.15);
-            line-height: 1;
-            user-select: none;
-            transition: all 0.3s ease;
-        }
-        .deep-focus-timer.paused {
-            color: var(--warning);
-            text-shadow: 0 0 60px rgba(243, 156, 18, 0.15);
-        }
-        .deep-focus-session-info {
-            font-size: 14px;
-            color: var(--text-gray);
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            font-weight: 600;
-            text-align: center;
-            opacity: 0.7;
-        }
-        .deep-focus-controls {
-            display: flex;
-            gap: 20px;
-            margin-top: 20px;
-        }
-        .deep-focus-btn {
-            background: transparent;
-            border: 1.5px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-gray);
-            padding: 14px 36px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: system-ui, sans-serif;
-        }
-        .deep-focus-btn:hover {
-            border-color: var(--accent-orange);
-            color: var(--accent-orange);
-            transform: translateY(-2px);
-        }
-        .deep-focus-btn.danger:hover {
-            border-color: var(--danger);
-            color: var(--danger);
-        }
-        .deep-focus-hint {
-            position: fixed;
-            bottom: 30px;
-            font-size: 11px;
-            color: rgba(122, 127, 145, 0.4);
-            letter-spacing: 1px;
-            font-family: system-ui, sans-serif;
-        }
-        .deep-focus-lock-indicator {
-            position: fixed;
-            top: 30px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 11px;
-            color: rgba(217, 165, 74, 0.5);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            font-weight: 700;
-            font-family: system-ui, sans-serif;
-        }
-        .deep-focus-lock-indicator::before {
-            content: '';
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--accent-orange);
-            animation: pulse 2s ease-in-out infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.8); }
-        }
-        /* Tab switch warning overlay */
-        .tab-switch-warning {
-            position: fixed;
-            inset: 0;
-            background: rgba(8, 9, 13, 0.98);
-            z-index: 1000000;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 24px;
-            text-align: center;
-            padding: 40px;
-        }
-        .tab-switch-warning.is-visible {
-            display: flex;
-        }
-        .tab-switch-warning h2 {
-            font-size: 28px;
-            color: var(--danger);
-            font-weight: 800;
-        }
-        .tab-switch-warning p {
-            font-size: 14px;
-            color: var(--text-gray);
-            max-width: 400px;
-            line-height: 1.6;
-        }
-        .tab-switch-warning button {
-            background: var(--accent-orange);
-            border: none;
-            color: #000;
-            padding: 14px 40px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-@media (max-width: 768px) { .header-navigation { padding: 12px 16px; flex-wrap: wrap; gap: 10px; } .nav-tabs { order: 3; width: 100%; justify-content: center; } .timer-circle-widget { width: 280px; height: 280px; } .timer-digits { font-size: 56px; } .metrics-cards-grid { grid-template-columns: 1fr; } .charts-double-column { grid-template-columns: 1fr; } .goals-cards-grid, .habits-cards-grid { grid-template-columns: 1fr; } .shortcuts-hint { display: none; } }
+                @media (max-width: 768px) { .header-navigation { padding: 12px 16px; flex-wrap: wrap; gap: 10px; } .nav-tabs { order: 3; width: 100%; justify-content: center; } .timer-circle-widget { width: 280px; height: 280px; } .timer-digits { font-size: 56px; } .metrics-cards-grid { grid-template-columns: 1fr; } .charts-double-column { grid-template-columns: 1fr; } .goals-cards-grid, .habits-cards-grid { grid-template-columns: 1fr; } .shortcuts-hint { display: none; } }
     </style>
 <base target="_blank">
 </head>
@@ -667,7 +504,14 @@
                 <div class="session-info-badge" id="session-info-badge" style="display:none;">
                     <div class="badge-item"><span>⏱</span><span>Elapsed: <strong id="badge-elapsed">0:00</strong></span></div>
                     <div class="badge-item"><span>🏷</span><span>Tag: <strong id="badge-tag">Medicine</strong></span></div>
+                    <div class="badge-item" id="badge-task-wrap" style="display:none;"><span>✅</span><span>Task: <strong id="badge-task">-</strong></span></div>
                     <div class="badge-item"><span>📅</span><span>Started: <strong id="badge-start">--:--</strong></span></div>
+                </div>
+                <div class="task-selector-wrapper" id="task-selector-wrapper" style="display:none; width:100%; max-width:600px;">
+                    <div class="tags-label" id="task-selector-label">Working on which task? (optional):</div>
+                    <select id="active-task-select" class="filter-select" style="width:100%; margin-top:8px;" onchange="setActiveTaskSelection()">
+                        <option value="">— No specific task —</option>
+                    </select>
                 </div>
                 <div class="controls-button-group">
                     <button class="word-control-btn btn-start" onclick="startClock()" id="ctrl-start">Start</button>
@@ -684,6 +528,7 @@
                 <div class="tags-management-section">
                     <div class="tags-label" id="tags-section-header">Subjects & Preparations (Click to select):</div>
                     <div class="tags-list" id="tags-box-wrapper"></div>
+                    <div id="active-tag-goal-progress" style="display:none; margin-top:4px;"></div>
                 </div>
             </div>
         </div>
@@ -734,6 +579,11 @@
                         <div class="charts-box-title" id="chart-distribution-title">Tag Relative Distribution</div>
                         <div class="analytics-tag-distribution" id="bars-dynamic-wrapper"></div>
                     </div>
+                </div>
+                <!-- 🎯 Tag Time Goals & Tasks -->
+                <div class="charts-container-box" style="margin-top:10px;">
+                    <div class="charts-box-title" id="tag-goals-title">🎯 Tag Time Goals & Tasks</div>
+                    <div id="tag-goals-tasks-wrapper" style="display:flex; flex-direction:column; gap:16px;"></div>
                 </div>
                 <!-- 📉 Break Analysis -->
                 <div class="charts-container-box" style="margin-top:10px;">
@@ -819,7 +669,7 @@
                     </div>
                     <div class="sessions-table-wrapper">
                         <table class="sessions-history-table">
-                            <thead><tr><th id="th-date">Date</th><th id="th-title">Session / Lecture Title</th><th id="th-tag">Tag</th><th id="th-dur">Duration</th><th id="th-range">Time Frame</th><th id="th-action">Action</th></tr></thead>
+                            <thead><tr><th id="th-date">Date</th><th id="th-title">Session / Lecture Title</th><th id="th-tag">Tag</th><th id="th-task">Task</th><th id="th-dur">Duration</th><th id="th-range">Time Frame</th><th id="th-action">Action</th></tr></thead>
                             <tbody id="table-history-body"></tbody>
                         </table>
                     </div>
@@ -986,7 +836,11 @@
                 chartWeeklyTitle: "Weekly Subject Breakdown", chartDistTitle: "Tag Relative Distribution",
                 dayLbl: "Daily Study", weekLbl: "Current Week Progress", monthLbl: "Monthly Statistics",
                 unitHrs: "Hrs", daySubTxt: "Daily progress up by 12%", monthSubTxt: "19 days active streak",
-                histTitle: "Recent Sessions & Lectures Log", thDate: "Date", thTitle: "Session / Lecture Title", thTag: "Tag", thDur: "Duration", thRange: "Time Frame", thAction: "Action",
+                histTitle: "Recent Sessions & Lectures Log", thDate: "Date", thTitle: "Session / Lecture Title", thTag: "Tag", thTask: "Task", thDur: "Duration", thRange: "Time Frame", thAction: "Action",
+                taskSelectorLbl: "Working on which task? (optional):", noSpecificTask: "No specific task", tagGoalsTitle: "🎯 Tag Time Goals & Tasks",
+                tagSettingsHeading: "Tag Settings", weeklyGoalLbl: "Weekly time goal (hours) — leave empty for no goal", tasksForTagLbl: "Tasks for this tag",
+                addTaskBtn: "Add Task", saveCloseBtn: "Save & Close", noTasksYet: "No tasks yet", noGoalsTasksYet: "No goals or tasks set yet. Right-click (or long-press) any tag above to add a weekly goal or tasks.",
+                taskCompletedToast: "🎉 Task completed!", weeklyGoalReachedToast: "🎯 Weekly goal reached!", tagSettingsSavedToast: "Tag settings saved!",
                 modalTitle: "Edit Session Duration (Minutes)", modalCancel: "Cancel", modalSave: "Confirm",
                 tagModalTitle: "Add New Subject", tagModalPlace: "Subject Name...", tagModalCancel: "Cancel", tagModalSave: "Add",
                 clearConfirm: "Are you sure you want to delete all study data?", deleteConfirm: "Do you want to delete this session?", modeSwitchConfirm: "You have an active/unfinished session. Switching mode now will save it as a completed session first. Continue?",
@@ -1067,19 +921,7 @@
                 consistencyBestDay: "Best day",
                 consistency30DayActivity: "30-Day Activity",
                 consistencyDay: "day",
-                consistencyDays: "days",
-                deepFocusTitle: "Deep Focus Mode",
-                deepFocusLocked: "Focus Locked",
-                deepFocusStay: "Stay Focused!",
-                deepFocusAway: "You were away for",
-                deepFocusReturn: "I'm Back — Resume Focus",
-                deepFocusPaused: "Paused",
-                deepFocusRunning: "Running",
-                deepFocusExitHint: "ESC to exit focus mode",
-                focusBroken: "⚠️ Focus Broken!",
-                focusBrokenMsg: "You switched away from your study session. Staying focused is key to achieving your goals.",
-                focusBackBtn: "I'm Back — Resume Focus"
-            
+                consistencyDays: "days"
             },
             ar: {
                 logo: "إندكس", navTimer: "المؤقت", navAnalysis: "التحليلات والإحصائيات", navGoals: "الأهداف", navHabits: "العادات",
@@ -1088,7 +930,11 @@
                 chartWeeklyTitle: "توزيع الجهد الدراسي الأسبوعي", chartDistTitle: "توزيع المواد النسبي",
                 dayLbl: "الدراسة اليومية", weekLbl: "تقدم الأسبوع الحالي", monthLbl: "إجمالي هذا الشهر",
                 unitHrs: "ساعة", daySubTxt: "ارتفع بنسبة 12% عن أمس", monthSubTxt: "تم إنجاز 19 يوم دراسة متتالي",
-                histTitle: "سجل الجلسات والمحاضرات الأخيرة", thDate: "التاريخ", thTitle: "اسم الجلسة / المحاضرة", thTag: "التاج المخصص", thDur: "المدة المنقضية", thRange: "النطاق الزمني والوقت", thAction: "حذف الجلسة",
+                histTitle: "سجل الجلسات والمحاضرات الأخيرة", thDate: "التاريخ", thTitle: "اسم الجلسة / المحاضرة", thTag: "التاج المخصص", thTask: "المهمة", thDur: "المدة المنقضية", thRange: "النطاق الزمني والوقت", thAction: "حذف الجلسة",
+                taskSelectorLbl: "شغال على أنهي مهمة؟ (اختياري):", noSpecificTask: "من غير مهمة محددة", tagGoalsTitle: "🎯 أهداف ومهام التاج",
+                tagSettingsHeading: "إعدادات التاج", weeklyGoalLbl: "هدف الوقت الأسبوعي (ساعات) — اسيبه فاضي لو مفيش هدف", tasksForTagLbl: "المهام الفرعية لهذا التاج",
+                addTaskBtn: "إضافة مهمة", saveCloseBtn: "حفظ وإغلاق", noTasksYet: "لا توجد مهام بعد", noGoalsTasksYet: "مفيش أهداف أو مهام متضافة لأي تاج لسه. دوس يمين (أو اضغط مطول) على أي تاج فوق عشان تضيف هدف أو مهام.",
+                taskCompletedToast: "🎉 المهمة اتخلصت!", weeklyGoalReachedToast: "🎯 تم تحقيق الهدف الأسبوعي!", tagSettingsSavedToast: "تم حفظ إعدادات التاج!",
                 modalTitle: "تعديل مدة الجلسة (بالدقائق)", modalCancel: "إلغاء", modalSave: "تأكيد",
                 tagModalTitle: "إضافة مادة دراسية جديدة", tagModalPlace: "اسم المادة...", tagModalCancel: "إلغاء", tagModalSave: "إضافة",
                 clearConfirm: "هل أنت متأكد تماماً من حذف كافة البيانات المخزنة وتصفير السجل والتحليلات؟",
@@ -1184,6 +1030,8 @@
         let runningSeconds = 0;
         let totalElapsedSecondsTracked = 0;
         let currentSessionStartTimeStamp = null;
+        let currentSegmentStartTimeStamp = null; // start time of the currently-running (since last resume) segment
+        let sessionTimeSegments = []; // closed "start - end" segments for the in-progress session (one per run between pauses)
         let currentTagsList = ["Medicine", "Surgery", "Anatomy", "Obstetrics", "Pediatrics"];
         let currentlySelectedTag = "Medicine";
         let archivedSessionsArray = [];
@@ -1193,6 +1041,13 @@
         let habitsArray = [];
         let filteredSessions = [];
         let studyGoals = { daily: 4, weekly: 28, monthly: 120 };
+        // 🎯 Per-tag weekly time goals: { "Medicine": 6 (hours/week), ... }
+        let tagWeeklyGoals = {};
+        // ✅ Per-tag task lists: { "Medicine": [ { id, title, estMinutes, loggedMinutes, done } ] }
+        let tagTasksMap = {};
+        // Task currently linked to the running/next session (task id string, or "" for none)
+        let currentlySelectedTaskId = "";
+        let tagGoalToastFiredThisWeek = {}; // { "Medicine": "2026-W32" } prevents repeat celebration toasts
         let timerWorker = null;
         let currentViewedWeekOffset = 0;
         let archivedWeeks = {};
@@ -1509,6 +1364,12 @@
                 const savedStudyGoals = await dbGet('studyGoals');
                 if (savedStudyGoals !== undefined) studyGoals = { ...studyGoals, ...savedStudyGoals };
                 else await dbSet('studyGoals', studyGoals);
+                const savedTagGoals = await dbGet('tagWeeklyGoals');
+                if (savedTagGoals !== undefined) tagWeeklyGoals = savedTagGoals;
+                else await dbSet('tagWeeklyGoals', tagWeeklyGoals);
+                const savedTagTasks = await dbGet('tagTasksMap');
+                if (savedTagTasks !== undefined) tagTasksMap = savedTagTasks;
+                else await dbSet('tagTasksMap', tagTasksMap);
                 const savedSelectedTag = await dbGet('selectedTag');
                 if (savedSelectedTag !== undefined && currentTagsList.includes(savedSelectedTag)) currentlySelectedTag = savedSelectedTag;
                 else { currentlySelectedTag = currentTagsList[0] || currentlySelectedTag; await dbSet('selectedTag', currentlySelectedTag); }
@@ -1599,6 +1460,7 @@
             recalculateAndRenderDashboard();
             renderHistoryGridWithPagination();
             renderHeatmap();
+            renderTagsChips();
         }
 
         function syncLanguageInterfaceStrings() {
@@ -1628,6 +1490,9 @@
             document.getElementById('th-date').innerText = d.thDate;
             document.getElementById('th-title').innerText = d.thTitle;
             document.getElementById('th-tag').innerText = d.thTag;
+            const thTaskEl = document.getElementById('th-task'); if (thTaskEl) thTaskEl.innerText = d.thTask;
+            const taskSelLbl = document.getElementById('task-selector-label'); if (taskSelLbl) taskSelLbl.innerText = d.taskSelectorLbl;
+            const tagGoalsTitleEl = document.getElementById('tag-goals-title'); if (tagGoalsTitleEl) tagGoalsTitleEl.innerText = d.tagGoalsTitle;
             document.getElementById('th-dur').innerText = d.thDur;
             document.getElementById('th-range').innerText = d.thRange;
             document.getElementById('th-action').innerText = d.thAction;
@@ -1691,7 +1556,12 @@
                 if (!confirm(d.modeSwitchConfirm)) return;
                 if (isClockRunning) pauseClock();
                 saveCurrentSessionRecord();
-            } else if (isClockRunning) { pauseClock(); }
+            } else if (isClockRunning) {
+                pauseClock();
+                currentSessionStartTimeStamp = null;
+                currentSegmentStartTimeStamp = null;
+                sessionTimeSegments = [];
+            }
             currentMode = mode;
             document.getElementById('mb-timer').classList.remove('active');
             document.getElementById('mb-stopwatch').classList.remove('active');
@@ -1713,7 +1583,9 @@
             document.getElementById('timer-numbers').classList.add('running');
             document.getElementById('timer-numbers').classList.remove('paused');
             document.getElementById('ctrl-start').classList.add('active');
-            if (!currentSessionStartTimeStamp) currentSessionStartTimeStamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const clockStartStamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            if (!currentSessionStartTimeStamp) currentSessionStartTimeStamp = clockStartStamp;
+            currentSegmentStartTimeStamp = clockStartStamp; // marks the start of this run (until the next pause/stop)
             updateSessionBadge();
 
             if (!timerWorker) initTimerWorker();
@@ -1726,33 +1598,68 @@
             }
 
             timerWorker.postMessage({ type: 'start' });
-            // Auto-enter Deep Focus Mode on first session start
-            if (!deepFocusActive && totalElapsedSecondsTracked === 0) {
-                setTimeout(() => enterDeepFocus(), 300);
-            }
-
         }
 
         function pauseClock() {
+            if (!isClockRunning) return; // منع استدعاء التوقيف وهو أصلاً واقف عشان ما يضيعش وقت البووز غلط
             isClockRunning = false;
             workerLastPauseTime = Date.now();
             if (timerWorker) timerWorker.postMessage({ type: 'pause' });
             document.getElementById('timer-numbers').classList.remove('running');
             document.getElementById('timer-numbers').classList.add('paused');
             document.getElementById('ctrl-start').classList.remove('active');
+
+            // Close the segment that was running up to this pause, e.g. "2:00 PM - 2:30 PM"
+            if (currentSegmentStartTimeStamp) {
+                const segmentEndStamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                sessionTimeSegments.push(`${currentSegmentStartTimeStamp} - ${segmentEndStamp}`);
+                currentSegmentStartTimeStamp = null;
+            }
         }
 
         function saveCurrentSessionRecord() {
-            let finalEndTimeStamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            // If a segment is still open (e.g. Stop was pressed while running, without a prior Pause), close it now
+            if (currentSegmentStartTimeStamp) {
+                const segmentEndStamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                sessionTimeSegments.push(`${currentSegmentStartTimeStamp} - ${segmentEndStamp}`);
+                currentSegmentStartTimeStamp = null;
+            }
+
             let minutesFormattedString = Math.round(totalElapsedSecondsTracked / 60) + " Min";
             let fullISODate = getLocalISODate(new Date());
             let rawSessionTitle = document.getElementById('session-current-title').value;
             if (!rawSessionTitle.trim()) rawSessionTitle = currentSystemLanguage === 'ar' ? "جلسة دراسة غير معنونة" : "Untitled Session";
             if (totalElapsedSecondsTracked > 1) {
+                // Time Frame = every start/pause/resume/stop segment, e.g.
+                // "2:00 PM - 2:30 PM, 2:45 PM - 3:15 PM" if the session was paused and resumed
+                const combinedRange = sessionTimeSegments.length > 0
+                    ? sessionTimeSegments.join(', ')
+                    : (currentSessionStartTimeStamp || '--:--');
+                const loggedMinutesInt = Math.round(totalElapsedSecondsTracked / 60);
+
+                // 🔗 Link this session to the active task (if one was selected) and roll the
+                // actual tracked time into that task's progress.
+                let linkedTaskId = "", linkedTaskTitle = "";
+                const tagTasks = tagTasksMap[currentlySelectedTag] || [];
+                const linkedTask = tagTasks.find(t => t.id === currentlySelectedTaskId);
+                if (linkedTask) {
+                    linkedTaskId = linkedTask.id;
+                    linkedTaskTitle = linkedTask.title;
+                    linkedTask.loggedMinutes = (linkedTask.loggedMinutes || 0) + loggedMinutesInt;
+                    if (!linkedTask.done && linkedTask.loggedMinutes >= linkedTask.estMinutes) {
+                        linkedTask.done = true;
+                        const d0 = languageDictionary[currentSystemLanguage];
+                        showToast(currentSystemLanguage === 'ar' ? '🎉 المهمة اتخلصت!' : '🎉 Task completed!', linkedTask.title, 'success');
+                        currentlySelectedTaskId = ""; // free up the slot for the next task
+                    }
+                    dbSet('tagTasksMap', tagTasksMap);
+                }
+
                 archivedSessionsArray.unshift({
                     date: fullISODate, title: rawSessionTitle, tag: currentlySelectedTag,
                     duration: minutesFormattedString,
-                    range: currentSessionStartTimeStamp ? `${currentSessionStartTimeStamp} - ${finalEndTimeStamp}` : finalEndTimeStamp
+                    range: combinedRange,
+                    taskId: linkedTaskId, taskTitle: linkedTaskTitle
                 });
                 dbSet('sessions', archivedSessionsArray);
                 const d = languageDictionary[currentSystemLanguage];
@@ -1761,9 +1668,12 @@
                 renderProductivityHeatTimeline();
                 renderBreakAnalysis();
                 renderStudyConsistency();
+                checkTagWeeklyGoalCelebration(currentlySelectedTag);
             }
             totalElapsedSecondsTracked = 0;
             currentSessionStartTimeStamp = null;
+            currentSegmentStartTimeStamp = null;
+            sessionTimeSegments = [];
             workerStartTime = null;
             workerPausedAccumulator = 0;
             workerLastPauseTime = null;
@@ -1772,6 +1682,20 @@
             recalculateAndRenderDashboard();
             renderHistoryGridWithPagination();
             updateQuickStats();
+            renderTagsChips();
+        }
+
+        // 🎉 Fires a one-time-per-week congratulations toast when a tag's weekly time goal is reached
+        function checkTagWeeklyGoalCelebration(tag) {
+            const goalHrs = tagWeeklyGoals[tag];
+            if (!goalHrs || goalHrs <= 0) return;
+            const weekMins = getTagWeekMinutes(tag);
+            if (weekMins < goalHrs * 60) return;
+            const weekStart = new Date(); weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+            const weekKey = getLocalISODate(weekStart);
+            if (tagGoalToastFiredThisWeek[tag] === weekKey) return;
+            tagGoalToastFiredThisWeek[tag] = weekKey;
+            showToast(currentSystemLanguage === 'ar' ? '🎯 تم تحقيق الهدف الأسبوعي!' : '🎯 Weekly goal reached!', `${tag} — ${goalHrs}h/${currentSystemLanguage === 'ar' ? 'أسبوع' : 'week'}`, 'success', 4500);
         }
 
         function stopAndSaveClock() {
@@ -1805,12 +1729,7 @@
             if (mainRingEl) mainRingEl.style.strokeDashoffset = offsetNormal;
             let fsRingEl = document.getElementById('fs-ring-filler');
             if (fsRingEl) fsRingEl.style.strokeDashoffset = offsetFS;
-        
-            // Update Deep Focus timer if active
-            if (deepFocusActive) {
-                updateDeepFocusTimer();
-            }
-}
+        }
 
         function updateSessionBadge() {
             const badge = document.getElementById('session-info-badge');
@@ -1821,6 +1740,10 @@
                 document.getElementById('badge-elapsed').innerText = `${elapsedMin}:${elapsedSec.toString().padStart(2, '0')}`;
                 document.getElementById('badge-tag').innerText = currentlySelectedTag;
                 document.getElementById('badge-start').innerText = currentSessionStartTimeStamp || '--:--';
+                const taskWrap = document.getElementById('badge-task-wrap');
+                const linkedTask = (tagTasksMap[currentlySelectedTag] || []).find(t => t.id === currentlySelectedTaskId);
+                if (linkedTask) { taskWrap.style.display = 'flex'; document.getElementById('badge-task').innerText = linkedTask.title; }
+                else { taskWrap.style.display = 'none'; }
             }
         }
 
@@ -1856,18 +1779,23 @@
         }
         document.getElementById('modal-tag-input').addEventListener('keypress', function (e) { if (e.key === 'Enter') saveTagFromModal(); });
 
+        function getTagWeekMinutes(tag) {
+            const weekStart = new Date(); weekStart.setHours(0, 0, 0, 0); weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+            return archivedSessionsArray.filter(s => s.tag === tag && new Date(s.date + 'T00:00:00') >= weekStart).reduce((sum, s) => sum + (parseInt(s.duration) || 0), 0);
+        }
+
         function renderTagsChips() {
             const wrapper = document.getElementById('tags-box-wrapper');
             wrapper.innerHTML = '';
             currentTagsList.forEach(tag => {
                 const chip = document.createElement('div');
                 chip.className = `mini-tag-chip ${tag === currentlySelectedTag ? 'selected' : ''}`;
-                chip.title = currentSystemLanguage === 'ar' ? 'انقر لتختار · انقر بزر الماوس الأيمن لتغيير اللون' : 'Click to select · Right-click to change color';
+                chip.title = currentSystemLanguage === 'ar' ? 'انقر لتختار · انقر بزر الماوس الأيمن لإعدادات التاج (اللون/الهدف/المهام)' : 'Click to select · Right-click for tag settings (color/goal/tasks)';
                 chip.onclick = () => selectActiveTag(tag);
-                chip.oncontextmenu = (e) => { e.preventDefault(); openTagColorModal(tag); };
+                chip.oncontextmenu = (e) => { e.preventDefault(); openTagSettingsModal(tag); };
                 let pressTimer;
                 chip.addEventListener('touchstart', (e) => {
-                    pressTimer = setTimeout(() => { e.preventDefault(); openTagColorModal(tag); }, 600);
+                    pressTimer = setTimeout(() => { e.preventDefault(); openTagSettingsModal(tag); }, 600);
                 });
                 chip.addEventListener('touchend', () => clearTimeout(pressTimer));
                 chip.addEventListener('touchmove', () => clearTimeout(pressTimer));
@@ -1877,12 +1805,33 @@
                 colorDot.style.backgroundColor = getTagColor(tag);
                 const spanName = document.createElement('span');
                 spanName.innerText = tag;
+                chip.appendChild(colorDot);
+                chip.appendChild(spanName);
+
+                // 🎯 Mini weekly-goal progress badge, shown only if a target is set for this tag
+                const goalHrs = tagWeeklyGoals[tag];
+                if (goalHrs && goalHrs > 0) {
+                    const weekMins = getTagWeekMinutes(tag);
+                    const pct = Math.min(100, Math.round((weekMins / (goalHrs * 60)) * 100));
+                    const goalBadge = document.createElement('span');
+                    goalBadge.style.cssText = `font-size:10px; font-weight:800; margin-left:6px; padding:1px 6px; border-radius:8px; background:${pct >= 100 ? 'rgba(0,210,106,0.18)' : 'rgba(217,165,74,0.14)'}; color:${pct >= 100 ? 'var(--success)' : 'var(--accent-orange)'};`;
+                    goalBadge.innerText = (pct >= 100 ? '🎯✓' : '🎯 ' + pct + '%');
+                    chip.appendChild(goalBadge);
+                }
+                // ✅ Task-completion badge, shown only if this tag has tasks
+                const tasks = tagTasksMap[tag] || [];
+                if (tasks.length > 0) {
+                    const doneCount = tasks.filter(t => t.done).length;
+                    const taskBadge = document.createElement('span');
+                    taskBadge.style.cssText = 'font-size:10px; font-weight:700; margin-left:5px; padding:1px 6px; border-radius:8px; background:rgba(62,92,138,0.18); color:#8fb2e0;';
+                    taskBadge.innerText = `✅ ${doneCount}/${tasks.length}`;
+                    chip.appendChild(taskBadge);
+                }
+
                 const removeBtn = document.createElement('span');
                 removeBtn.className = 'remove-icon';
                 removeBtn.innerText = '✕';
                 removeBtn.onclick = (e) => { e.stopPropagation(); deleteTagFromSystem(tag); };
-                chip.appendChild(colorDot);
-                chip.appendChild(spanName);
                 chip.appendChild(removeBtn);
                 wrapper.appendChild(chip);
             });
@@ -1891,14 +1840,61 @@
             addBtnCircle.innerHTML = '+';
             addBtnCircle.onclick = () => openTagModal();
             wrapper.appendChild(addBtnCircle);
+            renderActiveTaskSelector();
+            renderActiveTagGoalProgress();
         }
 
-        function selectActiveTag(tag) { currentlySelectedTag = tag; dbSet('selectedTag', currentlySelectedTag); renderTagsChips(); }
+        function selectActiveTag(tag) {
+            currentlySelectedTag = tag;
+            currentlySelectedTaskId = ""; // switching subjects clears any linked task from the previous one
+            dbSet('selectedTag', currentlySelectedTag);
+            renderTagsChips();
+        }
         function deleteTagFromSystem(tag) {
             currentTagsList = currentTagsList.filter(t => t !== tag);
             if (currentlySelectedTag === tag && currentTagsList.length > 0) currentlySelectedTag = currentTagsList[0];
+            delete tagWeeklyGoals[tag];
+            delete tagTasksMap[tag];
             dbSet('tags', currentTagsList); dbSet('selectedTag', currentlySelectedTag);
+            dbSet('tagWeeklyGoals', tagWeeklyGoals); dbSet('tagTasksMap', tagTasksMap);
             renderTagsChips(); recalculateAndRenderDashboard();
+        }
+
+        // ========== 🎯 TAG ⇄ TIME LINKING: weekly goal ring + task selector on the Timer screen ==========
+        function renderActiveTagGoalProgress() {
+            const holder = document.getElementById('active-tag-goal-progress');
+            if (!holder) return;
+            const goalHrs = tagWeeklyGoals[currentlySelectedTag];
+            if (!goalHrs || goalHrs <= 0) { holder.style.display = 'none'; holder.innerHTML = ''; return; }
+            const weekMins = getTagWeekMinutes(currentlySelectedTag);
+            const targetMins = goalHrs * 60;
+            const pct = Math.min(100, Math.round((weekMins / targetMins) * 100));
+            const isDone = pct >= 100;
+            holder.style.display = 'block';
+            holder.innerHTML = `
+                <div style="display:flex; justify-content:space-between; font-size:11px; font-weight:700; color:${isDone ? 'var(--success)' : 'var(--text-gray)'}; margin-bottom:4px;">
+                    <span>🎯 ${currentSystemLanguage === 'ar' ? 'هدف الأسبوع لمادة' : 'Weekly goal for'} ${currentlySelectedTag}</span>
+                    <span>${formatMinutesToHM(weekMins)} / ${formatMinutesToHM(targetMins)}</span>
+                </div>
+                <div class="chart-progress-rail"><div class="chart-progress-fill" style="width:${pct}%; background:${isDone ? 'var(--success)' : 'var(--accent-orange)'};"></div></div>
+            `;
+        }
+
+        function renderActiveTaskSelector() {
+            const wrap = document.getElementById('task-selector-wrapper');
+            const select = document.getElementById('active-task-select');
+            if (!wrap || !select) return;
+            const tasks = (tagTasksMap[currentlySelectedTag] || []).filter(t => !t.done);
+            if (tasks.length === 0) { wrap.style.display = 'none'; currentlySelectedTaskId = ""; return; }
+            wrap.style.display = 'block';
+            select.innerHTML = `<option value="">— ${currentSystemLanguage === 'ar' ? 'من غير مهمة محددة' : 'No specific task'} —</option>` +
+                tasks.map(t => `<option value="${t.id}" ${t.id === currentlySelectedTaskId ? 'selected' : ''}>${t.title} (${t.loggedMinutes || 0}/${t.estMinutes} ${currentSystemLanguage === 'ar' ? 'د' : 'min'})</option>`).join('');
+            if (!tasks.some(t => t.id === currentlySelectedTaskId)) currentlySelectedTaskId = "";
+        }
+
+        function setActiveTaskSelection() {
+            const select = document.getElementById('active-task-select');
+            currentlySelectedTaskId = select ? select.value : "";
         }
 
         function updateQuickStats() {
@@ -2023,6 +2019,67 @@
                 });
             }
             if (typeof renderWeeklySegmentedChart === "function") renderWeeklySegmentedChart();
+            if (typeof renderTagGoalsAndTasksPanel === "function") renderTagGoalsAndTasksPanel();
+        }
+
+        // ========== 🎯 TAG TIME GOALS & TASKS ANALYTICS PANEL ==========
+        function renderTagGoalsAndTasksPanel() {
+            const holder = document.getElementById('tag-goals-tasks-wrapper');
+            if (!holder) return;
+            const ar = currentSystemLanguage === 'ar';
+            const tagsWithGoalsOrTasks = currentTagsList.filter(t => (tagWeeklyGoals[t] && tagWeeklyGoals[t] > 0) || (tagTasksMap[t] && tagTasksMap[t].length > 0));
+
+            if (tagsWithGoalsOrTasks.length === 0) {
+                holder.innerHTML = `<div style="text-align:center; padding:24px; color:var(--text-gray); font-size:12px;">${ar ? 'مفيش أهداف أو مهام متضافة لأي تاج لسه. دوس زر ماوس يمين (أو اضغط مطول) على أي تاج فوق عشان تضيف هدف أسبوعي أو مهام.' : 'No goals or tasks set yet. Right-click (or long-press) any tag above to add a weekly goal or tasks.'}</div>`;
+                return;
+            }
+
+            holder.innerHTML = tagsWithGoalsOrTasks.map(tag => {
+                const goalHrs = tagWeeklyGoals[tag];
+                const weekMins = getTagWeekMinutes(tag);
+                const tasks = tagTasksMap[tag] || [];
+                const doneCount = tasks.filter(t => t.done).length;
+
+                let goalBlockHtml = '';
+                if (goalHrs && goalHrs > 0) {
+                    const pct = Math.min(100, Math.round((weekMins / (goalHrs * 60)) * 100));
+                    const isDone = pct >= 100;
+                    goalBlockHtml = `
+                        <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:700; color:${isDone ? 'var(--success)' : 'var(--text-gray)'}; margin-bottom:5px;">
+                            <span>${ar ? 'هذا الأسبوع' : 'This week'}</span>
+                            <span>${formatMinutesToHM(weekMins)} / ${formatMinutesToHM(goalHrs * 60)} ${isDone ? '✓' : ''}</span>
+                        </div>
+                        <div class="chart-progress-rail"><div class="chart-progress-fill" style="width:${pct}%; background:${isDone ? 'var(--success)' : getTagColor(tag)};"></div></div>
+                    `;
+                }
+
+                let tasksBlockHtml = '';
+                if (tasks.length > 0) {
+                    tasksBlockHtml = `
+                        <div style="margin-top:10px; font-size:11px; color:var(--text-gray); font-weight:700;">✅ ${doneCount}/${tasks.length} ${ar ? 'مهام مكتملة' : 'tasks done'}</div>
+                        <div style="display:flex; flex-direction:column; gap:5px; margin-top:6px;">
+                            ${tasks.map(t => {
+                                const tpct = t.estMinutes > 0 ? Math.min(100, Math.round((t.loggedMinutes || 0) / t.estMinutes * 100)) : 0;
+                                return `<div style="display:flex; align-items:center; gap:8px; font-size:11px;">
+                                    <span style="width:14px;">${t.done ? '✅' : '⬜'}</span>
+                                    <span style="flex:1; ${t.done ? 'color:var(--text-gray); text-decoration:line-through;' : 'color:var(--text-light);'}">${t.title}</span>
+                                    <span style="color:var(--text-gray);">${t.loggedMinutes || 0}/${t.estMinutes}${ar ? 'د' : 'm'}</span>
+                                </div>`;
+                            }).join('')}
+                        </div>
+                    `;
+                }
+
+                return `
+                <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-soft); border-radius: 16px; padding: 16px 18px; cursor:pointer;" onclick="openTagSettingsModal('${tag}')" title="${ar ? 'اضغط لتعديل الإعدادات' : 'Click to edit settings'}">
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+                        <span style="width:10px; height:10px; border-radius:50%; background:${getTagColor(tag)}; display:inline-block;"></span>
+                        <span style="font-weight:800; font-size:14px; color:var(--text-light);">${tag}</span>
+                    </div>
+                    ${goalBlockHtml}
+                    ${tasksBlockHtml}
+                </div>`;
+            }).join('');
         }
 
         
@@ -2534,7 +2591,7 @@
             const tagFilter = document.getElementById('tag-filter').value;
             const dateFilter = document.getElementById('date-filter').value;
             filteredSessions = archivedSessionsArray.filter(s => {
-                let matchSearch = s.title.toLowerCase().includes(searchTerm) || s.tag.toLowerCase().includes(searchTerm);
+                let matchSearch = s.title.toLowerCase().includes(searchTerm) || s.tag.toLowerCase().includes(searchTerm) || (s.taskTitle || '').toLowerCase().includes(searchTerm);
                 let matchTag = !tagFilter || s.tag === tagFilter;
                 let matchDate = true;
                 if (dateFilter === 'today') matchDate = s.date === getLocalISODate(new Date());
@@ -2557,7 +2614,8 @@
             currentItemsPage.forEach((rowItem, pageLocalIndex) => {
                 let absoluteArrayIndex = archivedSessionsArray.indexOf(rowItem);
                 const tr = document.createElement('tr');
-                tr.innerHTML = `<td>${rowItem.date}</td><td><strong>${rowItem.title}</strong></td><td><span class="session-tag-indicator" style="color: ${getTagColor(rowItem.tag)};">#${rowItem.tag}</span></td><td>${rowItem.duration}</td><td style="color: var(--text-gray); font-size:13px;">${rowItem.range}</td><td><button class="delete-row-btn" onclick="openEditSessionModal(${absoluteArrayIndex})" title="Edit" style="margin-right: 6px; color: var(--accent-orange);">✎</button><button class="delete-row-btn" onclick="deleteIndividualSession(${absoluteArrayIndex})">✕</button></td>`;
+                const taskCell = rowItem.taskTitle ? `<span style="font-size:11px; color:var(--text-gray);">✅ ${rowItem.taskTitle}</span>` : `<span style="font-size:11px; color:var(--text-gray); opacity:0.4;">—</span>`;
+                tr.innerHTML = `<td>${rowItem.date}</td><td><strong>${rowItem.title}</strong></td><td><span class="session-tag-indicator" style="color: ${getTagColor(rowItem.tag)};">#${rowItem.tag}</span></td><td>${taskCell}</td><td>${rowItem.duration}</td><td style="color: var(--text-gray); font-size:13px;">${rowItem.range}</td><td><button class="delete-row-btn" onclick="openEditSessionModal(${absoluteArrayIndex})" title="Edit" style="margin-right: 6px; color: var(--accent-orange);">✎</button><button class="delete-row-btn" onclick="deleteIndividualSession(${absoluteArrayIndex})">✕</button></td>`;
                 tableBody.appendChild(tr);
             });
             renderPaginationNodes(sessionsToShow.length);
@@ -2985,34 +3043,8 @@
         }
 
 
-        function openTagColorModal(tagName) {
-            const modal = document.createElement('div');
-            modal.className = 'modal-overlay modal-open';
-            modal.id = 'tag-color-modal-dynamic';
-            modal.innerHTML = `
-                <div class="modal-box">
-                    <h3>${currentSystemLanguage === 'ar' ? 'لون التاج' : 'Tag Color'}: ${tagName}</h3>
-                    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:16px 0;">
-                        ${['#3498db','#e67e22','#1abc9c','#e84393','#2ecc71','#9b59b6','#e74c3c','#f1c40f','#16a085','#d35400','#8e44ad','#2c3e50','#d9a54a','#3e5c8a','#00d26a','#3498db','#e74c3c','#f39c12'].map(c => `
-                            <div onclick="setTagColor('${tagName}', '${c}'); document.getElementById('tag-color-modal-dynamic').remove();" 
-                                 style="width:40px;height:40px;border-radius:10px;background:${c};cursor:pointer;border:2px solid transparent;transition:all 0.2s;"
-                                 onmouseover="this.style.borderColor='#fff';this.style.transform='scale(1.15)';"
-                                 onmouseout="this.style.borderColor='transparent';this.style.transform='scale(1)';"
-                            ></div>
-                        `).join('')}
-                    </div>
-                    <div style="margin-bottom:16px;">
-                        <label style="font-size:11px;color:var(--text-gray);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:6px;">${currentSystemLanguage === 'ar' ? 'لون مخصص' : 'Custom Color'}</label>
-                        <input type="color" id="custom-tag-color-picker" value="${getTagColor(tagName)}" style="width:100%;height:40px;border-radius:10px;border:none;cursor:pointer;background:transparent;">
-                    </div>
-                    <div class="modal-buttons">
-                        <button class="modal-btn cancel" onclick="document.getElementById('tag-color-modal-dynamic').remove();">${currentSystemLanguage === 'ar' ? 'إلغاء' : 'Cancel'}</button>
-                        <button class="modal-btn confirm" onclick="setTagColor('${tagName}', document.getElementById('custom-tag-color-picker').value); document.getElementById('tag-color-modal-dynamic').remove();">${currentSystemLanguage === 'ar' ? 'حفظ' : 'Save'}</button>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(modal);
-        }
+        // Kept for backward-compat (old right-click handler name); now opens the full settings modal.
+        function openTagColorModal(tagName) { openTagSettingsModal(tagName); }
 
         let customTagColors = {};
 
@@ -3025,7 +3057,119 @@
             renderHistoryGridWithPagination();
             renderHeatmap();
             renderWeeklySegmentedChart();
-            showToast(currentSystemLanguage === 'ar' ? 'تم تحديث اللون!' : 'Color Updated!', tag, 'success');
+        }
+
+        // ========== 🎯 TAG SETTINGS MODAL: color + weekly time goal + task list (all in one place) ==========
+        function generateUniqueTaskId() { return 'task_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+
+        function openTagSettingsModal(tagName) {
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay modal-open';
+            modal.id = 'tag-settings-modal-dynamic';
+            const ar = currentSystemLanguage === 'ar';
+            modal.innerHTML = `
+                <div class="modal-box" style="max-width:480px; text-align:${ar ? 'right' : 'left'};">
+                    <h3 style="text-align:center;">${ar ? 'إعدادات التاج' : 'Tag Settings'}: ${tagName}</h3>
+
+                    <label class="field-label">${ar ? 'اللون' : 'Color'}</label>
+                    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:8px 0 16px;">
+                        ${['#3498db','#e67e22','#1abc9c','#e84393','#2ecc71','#9b59b6','#e74c3c','#f1c40f','#16a085','#d35400','#8e44ad','#2c3e50'].map(c => `
+                            <div onclick="setTagColor('${tagName}', '${c}');"
+                                 style="width:100%;aspect-ratio:1;border-radius:10px;background:${c};cursor:pointer;border:2px solid ${getTagColor(tagName) === c ? '#fff' : 'transparent'};transition:all 0.2s;"
+                                 onmouseover="this.style.transform='scale(1.1)';" onmouseout="this.style.transform='scale(1)';"
+                            ></div>
+                        `).join('')}
+                    </div>
+                    <input type="color" id="custom-tag-color-picker" value="${getTagColor(tagName)}" onchange="setTagColor('${tagName}', this.value);" style="width:100%;height:36px;border-radius:10px;border:none;cursor:pointer;background:transparent;margin-bottom:18px;">
+
+                    <label class="field-label">🎯 ${ar ? 'هدف الوقت الأسبوعي (ساعات) — اسيبه فاضي لو مفيش هدف' : 'Weekly time goal (hours) — leave empty for no goal'}</label>
+                    <input type="number" id="tag-weekly-goal-input" min="0" step="0.5" placeholder="${ar ? 'مثال: 6' : 'e.g. 6'}" value="${tagWeeklyGoals[tagName] || ''}" style="margin-bottom:18px;">
+
+                    <label class="field-label">✅ ${ar ? 'المهام الفرعية لهذا التاج' : 'Tasks for this tag'}</label>
+                    <div id="tag-settings-tasks-list" style="display:flex; flex-direction:column; gap:8px; margin:8px 0 14px; max-height:220px; overflow-y:auto;"></div>
+                    <div class="input-row-split">
+                        <input type="text" id="tag-settings-new-task-title" placeholder="${ar ? 'اسم المهمة...' : 'Task title...'}" style="flex:2;">
+                        <input type="number" id="tag-settings-new-task-est" placeholder="${ar ? 'دقيقة' : 'min'}" min="1" value="30" style="flex:1;">
+                    </div>
+                    <button class="add-item-pill-btn" style="width:100%; justify-content:center; margin-bottom:18px;" onclick="addTaskToTagFromModal('${tagName}')">+ ${ar ? 'إضافة مهمة' : 'Add Task'}</button>
+
+                    <div class="modal-buttons">
+                        <button class="modal-btn confirm" style="width:100%;" onclick="saveTagWeeklyGoalFromModal('${tagName}'); document.getElementById('tag-settings-modal-dynamic').remove();">${ar ? 'حفظ وإغلاق' : 'Save & Close'}</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            renderTagSettingsTasksList(tagName);
+        }
+
+        function renderTagSettingsTasksList(tagName) {
+            const holder = document.getElementById('tag-settings-tasks-list');
+            if (!holder) return;
+            const tasks = tagTasksMap[tagName] || [];
+            const ar = currentSystemLanguage === 'ar';
+            if (tasks.length === 0) {
+                holder.innerHTML = `<div style="font-size:12px; color:var(--text-gray); text-align:center; padding:10px 0;">${ar ? 'لا توجد مهام بعد' : 'No tasks yet'}</div>`;
+                return;
+            }
+            holder.innerHTML = tasks.map(t => {
+                const pct = t.estMinutes > 0 ? Math.min(100, Math.round((t.loggedMinutes || 0) / t.estMinutes * 100)) : 0;
+                return `
+                <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-soft); border-radius:10px; padding:8px 12px;">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTaskDoneInTag('${tagName}','${t.id}')" style="width:16px; height:16px; cursor:pointer; flex-shrink:0;">
+                        <span style="flex:1; font-size:13px; font-weight:600; ${t.done ? 'text-decoration:line-through; color:var(--text-gray);' : 'color:var(--text-light);'}">${t.title}</span>
+                        <span style="font-size:11px; color:var(--text-gray);">${t.loggedMinutes || 0}/${t.estMinutes}${ar ? 'د' : 'm'}</span>
+                        <span class="item-delete-btn" style="width:22px;height:22px;font-size:10px;" onclick="deleteTaskFromTag('${tagName}','${t.id}')">✕</span>
+                    </div>
+                    <div class="chart-progress-rail" style="margin-top:6px; height:5px;"><div class="chart-progress-fill" style="width:${pct}%; background:${t.done ? 'var(--success)' : 'var(--accent-orange)'};"></div></div>
+                </div>`;
+            }).join('');
+        }
+
+        function saveTagWeeklyGoalFromModal(tagName) {
+            const input = document.getElementById('tag-weekly-goal-input');
+            const val = parseFloat(input.value);
+            if (val > 0) tagWeeklyGoals[tagName] = val;
+            else delete tagWeeklyGoals[tagName];
+            dbSet('tagWeeklyGoals', tagWeeklyGoals);
+            renderTagsChips();
+            recalculateAndRenderDashboard();
+            showToast(currentSystemLanguage === 'ar' ? 'تم حفظ إعدادات التاج!' : 'Tag settings saved!', tagName, 'success');
+        }
+
+        function addTaskToTagFromModal(tagName) {
+            const titleInput = document.getElementById('tag-settings-new-task-title');
+            const estInput = document.getElementById('tag-settings-new-task-est');
+            const title = titleInput.value.trim();
+            const est = parseInt(estInput.value);
+            if (!title || !est || est <= 0) return;
+            if (!tagTasksMap[tagName]) tagTasksMap[tagName] = [];
+            tagTasksMap[tagName].push({ id: generateUniqueTaskId(), title: title, estMinutes: est, loggedMinutes: 0, done: false });
+            dbSet('tagTasksMap', tagTasksMap);
+            titleInput.value = '';
+            estInput.value = 30;
+            renderTagSettingsTasksList(tagName);
+            renderTagsChips();
+            renderActiveTaskSelector();
+        }
+
+        function toggleTaskDoneInTag(tagName, taskId) {
+            const task = (tagTasksMap[tagName] || []).find(t => t.id === taskId);
+            if (!task) return;
+            task.done = !task.done;
+            dbSet('tagTasksMap', tagTasksMap);
+            renderTagSettingsTasksList(tagName);
+            renderTagsChips();
+            renderActiveTaskSelector();
+        }
+
+        function deleteTaskFromTag(tagName, taskId) {
+            tagTasksMap[tagName] = (tagTasksMap[tagName] || []).filter(t => t.id !== taskId);
+            if (currentlySelectedTaskId === taskId) currentlySelectedTaskId = "";
+            dbSet('tagTasksMap', tagTasksMap);
+            renderTagSettingsTasksList(tagName);
+            renderTagsChips();
+            renderActiveTaskSelector();
         }
 
         async function loadCustomTagColors() {
@@ -3230,6 +3374,60 @@ document.addEventListener('keydown', function(e) {
         }
 
         // ========== 🕒 PRODUCTIVITY HOURS (24h HEAT TIMELINE) ==========
+        // A session's Time Frame can now hold MULTIPLE segments, e.g.
+        // "2:00 PM - 2:30 PM, 2:45 PM - 3:15 PM" (one segment per start/pause/resume/stop cycle).
+        // These helpers understand both 12H and 24H clock strings, and multi-segment ranges.
+
+        // Splits a Time Frame string into its individual "start - end" segments.
+        function splitRangeSegments(rangeStr) {
+            if (!rangeStr) return [];
+            return String(rangeStr).split(',').map(seg => seg.trim()).filter(Boolean);
+        }
+
+        // Splits a single "start - end" segment into its start and end pieces.
+        function splitSegmentStartEnd(segment) {
+            const parts = String(segment).split('-');
+            if (parts.length < 2) return { start: segment.trim(), end: segment.trim() };
+            return { start: parts[0].trim(), end: parts.slice(1).join('-').trim() };
+        }
+
+        // Parses a clock time string in EITHER 24H ("14:00") or 12H
+        // ("2:00 PM" / "2:00 م") format and returns minutes-since-midnight (0-1439), or null.
+        function parseTimeToMinutesOfDay(str) {
+            if (!str) return null;
+            const m = String(str).trim().match(/(\d{1,2}):(\d{2})\s*([AaPp][Mm]|ص|م)?/);
+            if (!m) return null;
+            let hour = parseInt(m[1], 10);
+            const minute = parseInt(m[2], 10);
+            const meridiem = m[3];
+            if (meridiem) {
+                const isPM = /[Pp][Mm]|م/.test(meridiem);
+                const isAM = /[Aa][Mm]|ص/.test(meridiem);
+                if (isPM && hour < 12) hour += 12;
+                if (isAM && hour === 12) hour = 0;
+            }
+            if (isNaN(hour) || hour < 0 || hour > 23 || isNaN(minute)) return null;
+            return hour * 60 + minute;
+        }
+
+        // Same as above but returns just the hour (0-23), for the heatmap buckets.
+        function parseHourFromTimeStr(str) {
+            const mins = parseTimeToMinutesOfDay(str);
+            return mins === null ? null : Math.floor(mins / 60);
+        }
+
+        // Compact 12H hour label for the timeline axis, e.g. 0 -> "12", 13 -> "1"
+        function formatHour12Short(hour) {
+            return (hour % 12 === 0 ? 12 : hour % 12).toString();
+        }
+
+        // Full 12H label with AM/PM (or ص/م in Arabic), e.g. 14 -> "2:00 PM"
+        function formatHour12(hour, lang) {
+            const h12 = hour % 12 === 0 ? 12 : hour % 12;
+            const suffix = lang === 'ar' ? (hour < 12 ? 'ص' : 'م') : (hour < 12 ? 'AM' : 'PM');
+            return `${h12}:00 ${suffix}`;
+        }
+
         function renderProductivityHeatTimeline() {
             const container = document.getElementById('productivity-heatmap-container');
             if (!container) return;
@@ -3240,16 +3438,36 @@ document.addEventListener('keydown', function(e) {
             const hourSessionCounts = new Array(24).fill(0);
 
             archivedSessionsArray.forEach(session => {
-                const range = session.range || '';
-                // Try to extract start hour from range like "14:00 - 15:30"
-                const match = range.match(/(\d{1,2}):\d{2}/);
-                if (match) {
-                    const hour = parseInt(match[1]);
-                    if (hour >= 0 && hour < 24) {
-                        hourMinutes[hour] += parseInt(session.duration) || 0;
-                        hourSessionCounts[hour]++;
+                const segments = splitRangeSegments(session.range || '');
+                if (segments.length === 0) return;
+                const totalSessionMinutes = parseInt(session.duration) || 0;
+
+                segments.forEach(seg => {
+                    const { start, end } = splitSegmentStartEnd(seg);
+                    let startMins = parseTimeToMinutesOfDay(start);
+                    const endMins = parseTimeToMinutesOfDay(end);
+                    if (startMins === null) startMins = endMins; // start unparsable, fall back to end's hour
+                    if (startMins === null) return; // truly unparsable, skip this block entirely
+                    const hour = Math.floor(startMins / 60);
+
+                    // Prefer this block's own span (accurate even across a pause/resume);
+                    // fall back to splitting the session's total duration evenly across its blocks.
+                    let segMinutes = null;
+                    if (endMins !== null && start !== end) {
+                        segMinutes = endMins - startMins;
+                        if (segMinutes < 0) segMinutes += 24 * 60; // block genuinely crossed midnight
                     }
-                }
+                    // Safety net: a single time block can never legitimately hold more minutes
+                    // than the session itself actually tracked. If clock parsing produced
+                    // something implausible (or there was no real end time), fall back instead
+                    // of letting a bad value distort the whole chart.
+                    if (segMinutes === null || segMinutes <= 0 || segMinutes > totalSessionMinutes + 1) {
+                        segMinutes = totalSessionMinutes / segments.length;
+                    }
+
+                    hourMinutes[hour] += segMinutes;
+                    hourSessionCounts[hour]++;
+                });
             });
 
             const maxMinutes = Math.max(...hourMinutes, 1);
@@ -3266,7 +3484,7 @@ document.addEventListener('keydown', function(e) {
             for (let h = 0; h < 24; h++) {
                 const label = document.createElement('div');
                 label.style.cssText = 'flex: 1; text-align: center; font-size: 9px; color: var(--text-gray); font-weight: 600; min-width: 22px;';
-                label.innerText = h.toString().padStart(2, '0');
+                label.innerText = formatHour12Short(h);
                 labelsRow.appendChild(label);
             }
             wrapper.appendChild(labelsRow);
@@ -3372,7 +3590,7 @@ document.addEventListener('keydown', function(e) {
                         backdrop-filter: blur(10px);
                     `;
 
-                    const timeLabel = `${h.toString().padStart(2, '0')}:00 - ${((h + 1) % 24).toString().padStart(2, '0')}:00`;
+                    const timeLabel = `${formatHour12(h, currentSystemLanguage)} - ${formatHour12((h + 1) % 24, currentSystemLanguage)}`;
                     const pct = totalMinutes > 0 ? Math.round((mins / totalMinutes) * 100) : 0;
                     tooltip.innerHTML = `
                         <div style="font-weight: 800; color: var(--accent-orange); margin-bottom: 4px;">${timeLabel}</div>
@@ -3439,7 +3657,7 @@ document.addEventListener('keydown', function(e) {
             const stats = [
                 { 
                     label: currentSystemLanguage === 'ar' ? 'أكثر ساعة نشاطاً' : 'Peak Hour', 
-                    value: peakMinutes > 0 ? `${peakHour.toString().padStart(2, '0')}:00` : '--:--',
+                    value: peakMinutes > 0 ? formatHour12(peakHour, currentSystemLanguage) : '--:--',
                     sub: peakMinutes > 0 ? formatMinutesToHM(peakMinutes) : '--'
                 },
                 { 
@@ -3489,12 +3707,21 @@ document.addEventListener('keydown', function(e) {
                 const dateStr = s.date || getLocalISODate(new Date());
                 const durationMin = parseInt(s.duration) || 0;
 
-                // Try to parse start time from range
+                // Use the first segment's start and the LAST segment's end (handles both
+                // 12H/24H clock strings and multi-segment ranges from pause/resume).
                 let startTime = null;
-                if (s.range && s.range.includes(' - ')) {
-                    const startMatch = s.range.match(/(\d{1,2}):(\d{2})/);
-                    if (startMatch) {
-                        startTime = new Date(dateStr + 'T' + startMatch[1].padStart(2, '0') + ':' + startMatch[2] + ':00');
+                let endTime = null;
+                const segments = splitRangeSegments(s.range || '');
+                if (segments.length > 0) {
+                    const first = splitSegmentStartEnd(segments[0]);
+                    const last = splitSegmentStartEnd(segments[segments.length - 1]);
+                    const startMins = parseTimeToMinutesOfDay(first.start);
+                    const endMins = parseTimeToMinutesOfDay(last.end);
+                    if (startMins !== null) {
+                        startTime = new Date(dateStr + 'T' + String(Math.floor(startMins / 60)).padStart(2, '0') + ':' + String(startMins % 60).padStart(2, '0') + ':00');
+                    }
+                    if (endMins !== null) {
+                        endTime = new Date(dateStr + 'T' + String(Math.floor(endMins / 60)).padStart(2, '0') + ':' + String(endMins % 60).padStart(2, '0') + ':00');
                     }
                 }
 
@@ -3502,8 +3729,13 @@ document.addEventListener('keydown', function(e) {
                 if (!startTime || isNaN(startTime.getTime())) {
                     startTime = new Date(dateStr + 'T09:00:00');
                 }
-
-                const endTime = new Date(startTime.getTime() + durationMin * 60000);
+                // Fallback: if no valid end time, or it's before the start, or the gap between
+                // start/end is wildly larger than the session's own tracked duration (a sign the
+                // clock string was malformed), derive the end time from duration instead.
+                const spanMinutes = endTime ? (endTime - startTime) / 60000 : -1;
+                if (!endTime || isNaN(endTime.getTime()) || spanMinutes <= 0 || spanMinutes > Math.max(durationMin * 4, 180)) {
+                    endTime = new Date(startTime.getTime() + durationMin * 60000);
+                }
 
                 return {
                     ...s,
@@ -3875,258 +4107,23 @@ let appHasBooted = false;
         }
     </script>
 <script>
-       
-    <!-- Deep Focus Mode Overlay -->
-    <div class="deep-focus-overlay" id="deep-focus-overlay">
-        <div class="deep-focus-lock-indicator" id="deep-focus-lock-indicator">
-            <span id="lock-indicator-text">Focus Locked</span>
-        </div>
-        <div class="deep-focus-session-info" id="deep-focus-session-info">
-            Medicine · Preparing Clinical Session
-        </div>
-        <div class="deep-focus-timer" id="deep-focus-timer">25:00</div>
-        <div class="deep-focus-controls">
-            <button class="deep-focus-btn" onclick="deepFocusPause()" id="deep-focus-pause-btn">Pause</button>
-            <button class="deep-focus-btn danger" onclick="deepFocusStop()">Stop & Save</button>
-        </div>
-        <div class="deep-focus-hint">
-            ESC to exit focus mode · Space to pause/resume
-        </div>
-    </div>
-
-    <!-- Tab Switch Warning -->
-    <div class="tab-switch-warning" id="tab-switch-warning">
-        <div style="font-size: 48px; margin-bottom: 10px;">⚠️</div>
-        <h2 id="tab-warning-title">Focus Broken!</h2>
-        <p id="tab-warning-message">You switched away from your study session. Stay focused to achieve your goals.</p>
-        <button onclick="dismissTabWarning()" id="tab-warning-btn">I'm Back — Resume Focus</button>
-    </div>
-
-
-        // ========== DEEP FOCUS MODE ==========
-        let deepFocusActive = false;
-        let tabSwitchCount = 0;
-        let lastVisibilityHidden = null;
-        let focusSessionPausedByTab = false;
-
-        function enterDeepFocus() {
-            deepFocusActive = true;
-
-            // Request fullscreen
-            const elem = document.documentElement;
-            if (elem.requestFullscreen) {
-                elem.requestFullscreen().catch(() => {});
-            } else if (elem.webkitRequestFullscreen) {
-                elem.webkitRequestFullscreen();
-            } else if (elem.msRequestFullscreen) {
-                elem.msRequestFullscreen();
-            }
-
-            // Show deep focus overlay
-            const overlay = document.getElementById('deep-focus-overlay');
-            overlay.classList.add('is-active');
-
-            // Update session info
-            updateDeepFocusInfo();
-
-            // Update timer display
-            updateDeepFocusTimer();
-
-            // Hide header
-            document.querySelector('.header-navigation').style.display = 'none';
-            document.querySelector('.screens-container').style.display = 'none';
-            document.getElementById('shortcuts-hint').style.display = 'none';
-
-            // Show toast
-            const d = languageDictionary[currentSystemLanguage];
-            showToast(
-                currentSystemLanguage === 'ar' ? 'وضع التركيز العميق' : 'Deep Focus Mode',
-                currentSystemLanguage === 'ar' ? 'تم قفل التركيز. لا يمكنك مغادرة هذه الصفحة.' : 'Focus locked. You cannot leave this page.',
-                'warning',
-                4000
-            );
+        if ("serviceWorker" in navigator) {
+            const swCode = `self.addEventListener("install",e=>{e.waitUntil(caches.open("index-v1").then(c=>c.addAll(["/"])));self.skipWaiting()});self.addEventListener("fetch",e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)))});`;
+            const swBlob = new Blob([swCode], {type: "application/javascript"});
+            const swUrl = URL.createObjectURL(swBlob);
+            navigator.serviceWorker.register(swUrl).catch(()=>{});
         }
-
-        function exitDeepFocus() {
-            deepFocusActive = false;
-
-            // Exit fullscreen
-            if (document.exitFullscreen) {
-                document.exitFullscreen().catch(() => {});
-            } else if (document.webkitExitFullscreen) {
-                document.webkitExitFullscreen();
-            } else if (document.msExitFullscreen) {
-                document.msExitFullscreen();
-            }
-
-            // Hide deep focus overlay
-            document.getElementById('deep-focus-overlay').classList.remove('is-active');
-            document.getElementById('tab-switch-warning').classList.remove('is-visible');
-
-            // Show header and content
-            document.querySelector('.header-navigation').style.display = '';
-            document.querySelector('.screens-container').style.display = '';
-            document.getElementById('shortcuts-hint').style.display = '';
-        }
-
-        function updateDeepFocusTimer() {
-            const timerEl = document.getElementById('deep-focus-timer');
-            const fsTimerEl = document.getElementById('fs-timer-numbers');
-            const mainTimerEl = document.getElementById('timer-numbers');
-
-            // Get current time from main timer
-            const timeText = mainTimerEl ? mainTimerEl.innerText : '25:00';
-            if (timerEl) timerEl.innerText = timeText;
-
-            // Update pause state styling
-            if (timerEl) {
-                if (isClockRunning) {
-                    timerEl.classList.remove('paused');
-                } else {
-                    timerEl.classList.add('paused');
+        let deferredPrompt;
+        window.addEventListener("beforeinstallprompt", e => {
+            e.preventDefault();
+            deferredPrompt = e;
+            setTimeout(() => {
+                if (confirm("Install INDEX as an app on your device?")) {
+                    deferredPrompt.prompt();
+                    deferredPrompt.userChoice.then(() => { deferredPrompt = null; });
                 }
-            }
-
-            // Update pause button text
-            const pauseBtn = document.getElementById('deep-focus-pause-btn');
-            if (pauseBtn) {
-                const d = languageDictionary[currentSystemLanguage];
-                pauseBtn.innerText = isClockRunning ? (d.btnPause || 'Pause') : (d.btnStart || 'Resume');
-            }
-        }
-
-        function updateDeepFocusInfo() {
-            const infoEl = document.getElementById('deep-focus-session-info');
-            const title = document.getElementById('session-current-title')?.value || '';
-            if (infoEl) {
-                infoEl.innerText = `${currentlySelectedTag} · ${title}`;
-            }
-        }
-
-        function deepFocusPause() {
-            if (isClockRunning) {
-                pauseClock();
-            } else {
-                startClock();
-            }
-            updateDeepFocusTimer();
-        }
-
-        function deepFocusStop() {
-            exitDeepFocus();
-            stopAndSaveClock();
-        }
-
-        // Tab switch detection
-        function handleVisibilityChange() {
-            if (!deepFocusActive) return;
-
-            if (document.hidden || document.visibilityState === 'hidden') {
-                // User switched away
-                lastVisibilityHidden = Date.now();
-                focusSessionPausedByTab = true;
-
-                // Pause the timer
-                if (isClockRunning) {
-                    pauseClock();
-                }
-
-                tabSwitchCount++;
-
-                // Show warning when they come back
-            } else {
-                // User came back
-                if (focusSessionPausedByTab) {
-                    const awayTime = lastVisibilityHidden ? Math.round((Date.now() - lastVisibilityHidden) / 1000) : 0;
-                    showTabSwitchWarning(awayTime);
-                    focusSessionPausedByTab = false;
-                }
-            }
-        }
-
-        function showTabSwitchWarning(awaySeconds) {
-            const warning = document.getElementById('tab-switch-warning');
-            const title = document.getElementById('tab-warning-title');
-            const msg = document.getElementById('tab-warning-message');
-            const btn = document.getElementById('tab-warning-btn');
-
-            const d = languageDictionary[currentSystemLanguage];
-            const awayMin = Math.floor(awaySeconds / 60);
-            const awaySec = awaySeconds % 60;
-            const awayTimeStr = awayMin > 0 ? `${awayMin}m ${awaySec}s` : `${awaySec}s`;
-
-            if (currentSystemLanguage === 'ar') {
-                title.innerText = '⚠️ تم كسر التركيز!';
-                msg.innerText = `ابتعدت عن جلستك لمدة ${awayTimeStr}. التركيز مهم لتحقيق أهدافك. عد الآن واستمر!`;
-                btn.innerText = 'رجعت — استئناف التركيز';
-            } else {
-                title.innerText = '⚠️ Focus Broken!';
-                msg.innerText = `You were away for ${awayTimeStr}. Staying focused is key to achieving your goals. Come back and keep going!`;
-                btn.innerText = "I'm Back — Resume Focus";
-            }
-
-            warning.classList.add('is-visible');
-        }
-
-        function dismissTabWarning() {
-            document.getElementById('tab-switch-warning').classList.remove('is-visible');
-            // Auto-resume
-            if (!isClockRunning) {
-                startClock();
-            }
-            updateDeepFocusTimer();
-        }
-
-        // Window blur/focus detection (backup for visibilitychange)
-        function handleWindowBlur() {
-            if (!deepFocusActive) return;
-            if (isClockRunning) {
-                pauseClock();
-                focusSessionPausedByTab = true;
-                lastVisibilityHidden = Date.now();
-            }
-        }
-
-        function handleWindowFocus() {
-            if (!deepFocusActive) return;
-            if (focusSessionPausedByTab && !document.getElementById('tab-switch-warning').classList.contains('is-visible')) {
-                const awayTime = lastVisibilityHidden ? Math.round((Date.now() - lastVisibilityHidden) / 1000) : 0;
-                if (awayTime > 2) {
-                    showTabSwitchWarning(awayTime);
-                }
-                focusSessionPausedByTab = false;
-            }
-        }
-
-        // Prevent keyboard shortcuts that could navigate away
-        function handleDeepFocusKeydown(e) {
-            if (!deepFocusActive) return;
-
-            // Allow: Space (pause/resume), ESC (exit)
-            if (e.code === 'Space' || e.code === 'Escape') return;
-
-            // Prevent: Tab switching shortcuts, navigation, etc.
-            if (e.code.startsWith('Digit') || e.code === 'KeyF' || e.code === 'KeyS') {
-                // These are our app shortcuts, allow them
-                return;
-            }
-
-            // Prevent Alt+Tab simulation and other navigation
-            if (e.altKey || e.metaKey || e.ctrlKey) {
-                e.preventDefault();
-                showToast(
-                    currentSystemLanguage === 'ar' ? 'ممنوع!' : 'Not Allowed!',
-                    currentSystemLanguage === 'ar' ? 'لا يمكنك مغادرة وضع التركيز.' : 'You cannot leave focus mode.',
-                    'error',
-                    2000
-                );
-            }
-        }
-
-        // Setup event listeners
-        document.addEventListener('visibilitychange', handleVisibilityChange);
-        window.addEventListener('blur', handleWindowBlur);
-        window.addEventListener('focus', handleWindowFocus);
-        document.addEventListener('keydown', handleDeepFocusKeydown);
-
-         
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
