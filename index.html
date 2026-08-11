@@ -100,6 +100,19 @@
         .timer-task-item.is-done .timer-task-text { text-decoration: line-through; color: var(--text-gray); }
         .timer-task-goal-src { font-size: 11.5px; color: var(--accent-purple); font-weight: 700; margin-top: 5px; }
         .timer-tasks-empty { font-size: 13px; color: var(--text-gray); text-align: center; padding: 40px 12px; border: 1.5px dashed var(--border-soft); border-radius: 14px; }
+        .timer-notes-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 11px; color: var(--text-gray); }
+        .timer-notes-savestate { color: #00d26a; font-weight: 700; opacity: 0; transition: opacity 0.4s ease; }
+        .timer-notes-savestate.is-visible { opacity: 1; }
+        .timer-notes-clear-btn { background: transparent; border: 1px solid var(--border-soft); color: var(--text-gray); width: 26px; height: 26px; border-radius: 8px; cursor: pointer; font-size: 12px; transition: all 0.2s; }
+        .timer-notes-clear-btn:hover { border-color: var(--danger); color: var(--danger); }
+        .timer-tasks-progress-row { display: flex; align-items: center; gap: 10px; }
+        .timer-tasks-progress-bar { flex: 1; height: 6px; border-radius: 4px; background: rgba(255,255,255,0.08); overflow: hidden; }
+        .timer-tasks-progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent-orange), #00d26a); border-radius: 4px; transition: width 0.5s ease; }
+        #timer-tasks-progress-txt { font-size: 11px; color: var(--text-gray); font-weight: 700; white-space: nowrap; }
+        .timer-quick-add-row { display: flex; flex-direction: column; gap: 8px; padding-top: 6px; border-top: 1px solid var(--border-soft); }
+        .timer-quick-add-goal { background: rgba(0,0,0,0.3); border: 1px solid var(--border-soft); color: #fff; padding: 9px 10px; border-radius: 10px; font-size: 12px; outline: none; }
+        .timer-quick-add-input-row { display: flex; gap: 8px; }
+        .timer-quick-add-input-row .goal-task-input { margin-bottom: 0; }
         @media (max-width: 1250px) { .timer-3col-grid { grid-template-columns: 1fr; } .timer-side-panel { position: static; max-height: none; order: 2; } .timer-side-panel-right { order: 2; } .timer-screen-layout { order: 1; } .timer-notes-textarea { min-height: 160px; } .timer-tasks-panel-list { min-height: 0; } }
         .session-title-field { background: transparent; border: none; border-bottom: 2px dashed var(--border-soft); color: var(--text-light); font-size: 22px; font-weight: 700; text-align: center; width: 80%; max-width: 500px; padding: 10px; outline: none; transition: all 0.3s; }
         .session-title-field:focus { border-bottom-color: var(--accent-orange); border-bottom-style: solid; }
@@ -544,6 +557,11 @@
                 <div class="timer-side-panel timer-side-panel-left">
                     <div class="timer-side-panel-header"><span>📝</span><span id="timer-notes-header">Quick Notes</span></div>
                     <textarea class="timer-notes-textarea" id="timer-quick-notes" placeholder="Jot down anything about this study session..." oninput="saveTimerQuickNotes()"></textarea>
+                    <div class="timer-notes-footer">
+                        <span id="timer-notes-charcount">0 chars</span>
+                        <span id="timer-notes-savestate"></span>
+                        <button class="timer-notes-clear-btn" onclick="clearTimerQuickNotes()" id="timer-notes-clear-btn">🗑</button>
+                    </div>
                 </div>
                 <div class="timer-screen-layout">
                     <input type="text" class="session-title-field" id="session-current-title" value="Preparing Clinical Session" placeholder="Enter session title...">
@@ -591,7 +609,18 @@
                     </div>
                     <div class="timer-side-panel-divider"></div>
                     <div class="timer-side-panel-header"><span>📋</span><span id="timer-tasks-header">Study Tasks</span></div>
+                    <div class="timer-tasks-progress-row" id="timer-tasks-progress-row" style="display:none;">
+                        <div class="timer-tasks-progress-bar"><div class="timer-tasks-progress-fill" id="timer-tasks-progress-fill" style="width:0%;"></div></div>
+                        <span id="timer-tasks-progress-txt">0/0</span>
+                    </div>
                     <div class="timer-tasks-panel-list" id="timer-tasks-panel-list"></div>
+                    <div class="timer-quick-add-row">
+                        <select class="timer-quick-add-goal" id="timer-quick-add-goal-select"></select>
+                        <div class="timer-quick-add-input-row">
+                            <input type="text" class="goal-task-input" id="timer-quick-add-task-input" placeholder="Add a task..." onkeypress="if(event.key==='Enter') addTaskFromTimerPanel()">
+                            <button class="goal-task-add-confirm" onclick="addTaskFromTimerPanel()">+</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -920,6 +949,7 @@
                 timerNotesHeader: "Quick Notes", timerNotesPlaceholder: "Jot down anything about this study session...",
                 timerCurrentSubjectLbl: "Current Subject", timerTasksHeader: "Study Tasks",
                 timerTasksEmptyState: "No study tasks yet. Add some from the Goals tab.",
+                timerNotesClearConfirm: "Clear all notes?",
                 habitsHeaderTitle: "Habits", habitsAddBtnTxt: "New Habit", habitsEmptyState: "No habits yet — start tracking one!",
                 habitDeleteConfirm: "Do you want to delete this habit?", habitStreakTxt: "day streak",
                 habitMarkDoneTxt: "Mark Today Done", habitDoneTxt: "Done Today ✓",
@@ -1020,6 +1050,7 @@
                 timerNotesHeader: "ملاحظات سريعة", timerNotesPlaceholder: "دوّن أي حاجة عن الجلسة الدراسية دي...",
                 timerCurrentSubjectLbl: "المادة الحالية", timerTasksHeader: "المهام الدراسية",
                 timerTasksEmptyState: "لسه مفيش مهام دراسية. ضيف شوية من تبويب الأهداف.",
+                timerNotesClearConfirm: "هل تريد مسح كل الملاحظات؟",
                 habitsHeaderTitle: "العادات", habitsAddBtnTxt: "عادة جديدة", habitsEmptyState: "لسه معملتش أي عادة — ابدأ بتتبع واحدة!",
                 habitDeleteConfirm: "هل تريد حذف هذه العادة؟", habitStreakTxt: "يوم متتالي",
                 habitMarkDoneTxt: "تسجيل إنجاز اليوم", habitDoneTxt: "تم اليوم ✓",
@@ -2818,6 +2849,35 @@
                     });
                 });
             });
+
+            const progressRow = document.getElementById('timer-tasks-progress-row');
+            if (progressRow) {
+                if (allTasks.length > 0) {
+                    const doneCount = allTasks.filter(t => t.done).length;
+                    const pct = Math.round((doneCount / allTasks.length) * 100);
+                    progressRow.style.display = 'flex';
+                    document.getElementById('timer-tasks-progress-fill').style.width = pct + '%';
+                    document.getElementById('timer-tasks-progress-txt').innerText = `${doneCount}/${allTasks.length}`;
+                } else {
+                    progressRow.style.display = 'none';
+                }
+            }
+
+            const goalSelect = document.getElementById('timer-quick-add-goal-select');
+            if (goalSelect) {
+                const prevVal = goalSelect.value;
+                if (goalsArray.length === 0) {
+                    goalSelect.innerHTML = `<option value="">${currentSystemLanguage === 'ar' ? 'لا توجد أهداف — أضف واحداً من تبويب الأهداف' : 'No goals yet — add one in Goals tab'}</option>`;
+                    goalSelect.disabled = true;
+                } else {
+                    goalSelect.disabled = false;
+                    goalSelect.innerHTML = goalsArray.map(g => `<option value="${g.id}">${escapeGoalHtml(g.title)}</option>`).join('');
+                    const preferredGoal = goalsArray.find(g => g.linkedTag === currentlySelectedTag);
+                    if (goalsArray.some(g => g.id === prevVal)) goalSelect.value = prevVal;
+                    else if (preferredGoal) goalSelect.value = preferredGoal.id;
+                }
+            }
+
             if (allTasks.length === 0) {
                 listEl.innerHTML = `<div class="timer-tasks-empty">${d.timerTasksEmptyState || 'No study tasks yet. Add some from the Goals tab.'}</div>`;
                 return;
@@ -2845,8 +2905,42 @@
             const el = document.getElementById('timer-quick-notes');
             if (!el) return;
             timerQuickNotesText = el.value;
+            const cc = document.getElementById('timer-notes-charcount');
+            if (cc) cc.innerText = `${el.value.length} ${currentSystemLanguage === 'ar' ? 'حرف' : 'chars'}`;
             clearTimeout(quickNotesSaveTimer);
-            quickNotesSaveTimer = setTimeout(() => { dbSet('timerQuickNotes', timerQuickNotesText); }, 500);
+            quickNotesSaveTimer = setTimeout(() => {
+                dbSet('timerQuickNotes', timerQuickNotesText);
+                const sv = document.getElementById('timer-notes-savestate');
+                if (sv) {
+                    sv.innerText = currentSystemLanguage === 'ar' ? '✓ محفوظ' : '✓ Saved';
+                    sv.classList.add('is-visible');
+                    setTimeout(() => sv.classList.remove('is-visible'), 1200);
+                }
+            }, 500);
+        }
+        function clearTimerQuickNotes() {
+            const d = languageDictionary[currentSystemLanguage];
+            if (!confirm(d.timerNotesClearConfirm || 'Clear all notes?')) return;
+            timerQuickNotesText = '';
+            const el = document.getElementById('timer-quick-notes');
+            if (el) el.value = '';
+            dbSet('timerQuickNotes', '');
+            const cc = document.getElementById('timer-notes-charcount');
+            if (cc) cc.innerText = `0 ${currentSystemLanguage === 'ar' ? 'حرف' : 'chars'}`;
+        }
+        function addTaskFromTimerPanel() {
+            const goalId = document.getElementById('timer-quick-add-goal-select')?.value;
+            const input = document.getElementById('timer-quick-add-task-input');
+            const text = input ? input.value.trim() : '';
+            if (!goalId || !text) return;
+            const goal = goalsArray.find(g => g.id === goalId);
+            if (!goal) return;
+            if (!Array.isArray(goal.tasks)) goal.tasks = [];
+            goal.tasks.push({ id: generateUniqueRecordId(), text: text, done: false });
+            expandedGoalTasksSet.add(goalId);
+            dbSet('goals', goalsArray);
+            if (input) input.value = '';
+            renderGoalsScreen();
         }
 
         function openHabitModal() {
@@ -4092,7 +4186,11 @@ let appHasBooted = false;
             renderTagsChips();
             refreshTimerDisplay();
             const notesEl = document.getElementById('timer-quick-notes');
-            if (notesEl) notesEl.value = timerQuickNotesText || '';
+            if (notesEl) {
+                notesEl.value = timerQuickNotesText || '';
+                const cc = document.getElementById('timer-notes-charcount');
+                if (cc) cc.innerText = `${notesEl.value.length} ${currentSystemLanguage === 'ar' ? 'حرف' : 'chars'}`;
+            }
             recalculateAndRenderDashboard();
             renderHistoryGridWithPagination();
             renderGoalsScreen();
