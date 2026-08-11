@@ -513,6 +513,15 @@
                         <option value="">— No specific task —</option>
                     </select>
                 </div>
+                <div id="timer-tasklist-wrapper" style="display:none; width:100%; max-width:600px; text-align:left; border-top:1px solid var(--border-soft); padding-top:16px;">
+                    <div class="tags-label" id="timer-tasklist-header">Tasks for this subject:</div>
+                    <div id="timer-tasklist-items" style="display:flex; flex-direction:column; gap:8px; margin-top:10px;"></div>
+                    <div class="input-row-split" style="margin-top:10px;">
+                        <input type="text" id="timer-quick-task-title" placeholder="Task / lecture title..." style="flex:2;">
+                        <input type="number" id="timer-quick-task-est" placeholder="min" min="1" value="30" style="flex:1;">
+                        <button class="stepper-btn" style="width:44px; height:44px; font-size:20px;" onclick="addTaskQuickFromTimer()" title="Add">+</button>
+                    </div>
+                </div>
                 <div class="controls-button-group">
                     <button class="word-control-btn btn-start" onclick="startClock()" id="ctrl-start">Start</button>
                     <button class="word-control-btn btn-pause" onclick="pauseClock()" id="ctrl-pause">Pause</button>
@@ -840,7 +849,7 @@
                 taskSelectorLbl: "Working on which task? (optional):", noSpecificTask: "No specific task", tagGoalsTitle: "🎯 Tag Time Goals & Tasks",
                 tagSettingsHeading: "Tag Settings", weeklyGoalLbl: "Weekly time goal (hours) — leave empty for no goal", tasksForTagLbl: "Tasks for this tag",
                 addTaskBtn: "Add Task", saveCloseBtn: "Save & Close", noTasksYet: "No tasks yet", noGoalsTasksYet: "No goals or tasks set yet. Right-click (or long-press) any tag above to add a weekly goal or tasks.",
-                taskCompletedToast: "🎉 Task completed!", weeklyGoalReachedToast: "🎯 Weekly goal reached!", tagSettingsSavedToast: "Tag settings saved!",
+                taskCompletedToast: "🎉 Task completed!", weeklyGoalReachedToast: "🎯 Weekly goal reached!", tagSettingsSavedToast: "Tag settings saved!", timerTasklistHeader: "Tasks for this subject:",
                 modalTitle: "Edit Session Duration (Minutes)", modalCancel: "Cancel", modalSave: "Confirm",
                 tagModalTitle: "Add New Subject", tagModalPlace: "Subject Name...", tagModalCancel: "Cancel", tagModalSave: "Add",
                 clearConfirm: "Are you sure you want to delete all study data?", deleteConfirm: "Do you want to delete this session?", modeSwitchConfirm: "You have an active/unfinished session. Switching mode now will save it as a completed session first. Continue?",
@@ -934,7 +943,7 @@
                 taskSelectorLbl: "شغال على أنهي مهمة؟ (اختياري):", noSpecificTask: "من غير مهمة محددة", tagGoalsTitle: "🎯 أهداف ومهام التاج",
                 tagSettingsHeading: "إعدادات التاج", weeklyGoalLbl: "هدف الوقت الأسبوعي (ساعات) — اسيبه فاضي لو مفيش هدف", tasksForTagLbl: "المهام الفرعية لهذا التاج",
                 addTaskBtn: "إضافة مهمة", saveCloseBtn: "حفظ وإغلاق", noTasksYet: "لا توجد مهام بعد", noGoalsTasksYet: "مفيش أهداف أو مهام متضافة لأي تاج لسه. دوس يمين (أو اضغط مطول) على أي تاج فوق عشان تضيف هدف أو مهام.",
-                taskCompletedToast: "🎉 المهمة اتخلصت!", weeklyGoalReachedToast: "🎯 تم تحقيق الهدف الأسبوعي!", tagSettingsSavedToast: "تم حفظ إعدادات التاج!",
+                taskCompletedToast: "🎉 المهمة اتخلصت!", weeklyGoalReachedToast: "🎯 تم تحقيق الهدف الأسبوعي!", tagSettingsSavedToast: "تم حفظ إعدادات التاج!", timerTasklistHeader: "مهام هذه المادة:",
                 modalTitle: "تعديل مدة الجلسة (بالدقائق)", modalCancel: "إلغاء", modalSave: "تأكيد",
                 tagModalTitle: "إضافة مادة دراسية جديدة", tagModalPlace: "اسم المادة...", tagModalCancel: "إلغاء", tagModalSave: "إضافة",
                 clearConfirm: "هل أنت متأكد تماماً من حذف كافة البيانات المخزنة وتصفير السجل والتحليلات؟",
@@ -1492,6 +1501,7 @@
             document.getElementById('th-tag').innerText = d.thTag;
             const thTaskEl = document.getElementById('th-task'); if (thTaskEl) thTaskEl.innerText = d.thTask;
             const taskSelLbl = document.getElementById('task-selector-label'); if (taskSelLbl) taskSelLbl.innerText = d.taskSelectorLbl;
+            const tasklistHeaderEl = document.getElementById('timer-tasklist-header'); if (tasklistHeaderEl) tasklistHeaderEl.innerText = d.timerTasklistHeader;
             const tagGoalsTitleEl = document.getElementById('tag-goals-title'); if (tagGoalsTitleEl) tagGoalsTitleEl.innerText = d.tagGoalsTitle;
             document.getElementById('th-dur').innerText = d.thDur;
             document.getElementById('th-range').innerText = d.thRange;
@@ -1842,6 +1852,7 @@
             wrapper.appendChild(addBtnCircle);
             renderActiveTaskSelector();
             renderActiveTagGoalProgress();
+            renderTimerScreenTaskChecklist();
         }
 
         function selectActiveTag(tag) {
@@ -1896,6 +1907,57 @@
             const select = document.getElementById('active-task-select');
             currentlySelectedTaskId = select ? select.value : "";
         }
+
+        // ✅ Google-Tasks-style checklist, shown directly under the tags on the Timer screen —
+        // no need to open the settings modal just to tick a task done or see its time.
+        function renderTimerScreenTaskChecklist() {
+            const wrap = document.getElementById('timer-tasklist-wrapper');
+            const holder = document.getElementById('timer-tasklist-items');
+            if (!wrap || !holder) return;
+            const ar = currentSystemLanguage === 'ar';
+            const tasks = tagTasksMap[currentlySelectedTag] || [];
+            wrap.style.display = 'block'; // always visible so the quick-add box is reachable even with 0 tasks
+            if (tasks.length === 0) {
+                holder.innerHTML = `<div style="font-size:12px; color:var(--text-gray); padding:4px 0;">${ar ? 'لسه مفيش مهام لـ' : 'No tasks yet for'} ${currentlySelectedTag}</div>`;
+                return;
+            }
+            holder.innerHTML = tasks.map(t => {
+                const timeTxt = `${t.loggedMinutes || 0}/${t.estMinutes} ${ar ? 'د' : 'min'}`;
+                return `
+                <label style="display:flex; align-items:center; gap:10px; background:rgba(255,255,255,0.03); border:1px solid var(--border-soft); border-radius:10px; padding:9px 12px; cursor:pointer;">
+                    <input type="checkbox" ${t.done ? 'checked' : ''} onchange="quickToggleTaskDone('${t.id}')" style="width:17px; height:17px; cursor:pointer; flex-shrink:0; accent-color: var(--accent-orange);">
+                    <span style="flex:1; font-size:13px; font-weight:600; ${t.done ? 'text-decoration:line-through; color:var(--text-gray);' : 'color:var(--text-light);'}">${t.title}</span>
+                    <span style="font-size:11px; color:${t.done ? 'var(--success)' : 'var(--text-gray)'}; font-weight:700;">${t.done ? '✓ ' : ''}${timeTxt}</span>
+                </label>`;
+            }).join('');
+        }
+
+        function quickToggleTaskDone(taskId) {
+            const task = (tagTasksMap[currentlySelectedTag] || []).find(t => t.id === taskId);
+            if (!task) return;
+            task.done = !task.done;
+            if (task.done && currentlySelectedTaskId === taskId) currentlySelectedTaskId = ""; // free the slot once ticked done
+            dbSet('tagTasksMap', tagTasksMap);
+            renderTagsChips(); // re-renders the checklist, the task selector dropdown, and the tag chip badges together
+        }
+
+        function addTaskQuickFromTimer() {
+            const titleInput = document.getElementById('timer-quick-task-title');
+            const estInput = document.getElementById('timer-quick-task-est');
+            const title = titleInput.value.trim();
+            const est = parseInt(estInput.value);
+            if (!title || !est || est <= 0) return;
+            if (!tagTasksMap[currentlySelectedTag]) tagTasksMap[currentlySelectedTag] = [];
+            tagTasksMap[currentlySelectedTag].push({ id: generateUniqueTaskId(), title: title, estMinutes: est, loggedMinutes: 0, done: false });
+            dbSet('tagTasksMap', tagTasksMap);
+            titleInput.value = '';
+            estInput.value = 30;
+            renderTagsChips();
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const qt = document.getElementById('timer-quick-task-title');
+            if (qt) qt.addEventListener('keypress', (e) => { if (e.key === 'Enter') addTaskQuickFromTimer(); });
+        });
 
         function updateQuickStats() {
             let today = getLocalISODate(new Date());
