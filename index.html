@@ -2761,6 +2761,8 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb:hover{background:#aeb7b0 !imp
         const rtdb = firebase.database();
         const auth = firebase.auth();
         const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
+        // Always let the user choose which Google account to use after signing out.
+        googleAuthProvider.setCustomParameters({ prompt: 'select_account' });
         let APP_REF = null;
         let currentUser = null;
         let currentUserNamespace = 'guest';
