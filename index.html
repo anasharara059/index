@@ -491,7 +491,16 @@
         .stacked-segment:hover { filter: brightness(1.2); }
         .stacked-segment:hover::after { content: attr(data-tooltip); position: absolute; background: rgba(0,0,0,0.9); color: #fff; padding: 6px 12px; border-radius: 8px; font-size: 11px; white-space: nowrap; top: -35px; left: 50%; transform: translateX(-50%); z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.5); border: 1px solid color-mix(in srgb, var(--text-light) 10%, transparent); }
 
-        .auth-overlay { position: fixed; inset: 0; background: var(--bg-deep); z-index: 5000; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 24px; }
+        .auth-overlay { position: fixed; inset: 0; background: #000; z-index: 5000; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 24px; overflow: hidden; }
+        /* Exact login artwork supplied by the user. The real Google button is kept clickable over the artwork. */
+        #auth-card-login.auth-card { position: relative; width: 100vw; height: 100vh; max-width: none; padding: 0; margin: 0; border: 0; border-radius: 0; background: #000 url('login-hero.png') center center / cover no-repeat; box-shadow: none; backdrop-filter: none; text-align: left; overflow: hidden; animation: loginHeroMotion 10s ease-in-out infinite; }
+        #auth-card-login .auth-logo, #auth-card-login .auth-subtitle { display: none; }
+        #auth-card-login .google-signin-btn { position: absolute; left: 66.5%; top: 51%; width: 28%; height: 7%; min-height: 48px; padding: 0; margin: 0; background: transparent; border: 0; border-radius: 14px; box-shadow: none; color: transparent; font-size: 0; z-index: 3; cursor: pointer; }
+        #auth-card-login .google-signin-btn svg, #auth-card-login .google-signin-btn span { visibility: hidden; }
+        #auth-card-login .google-signin-btn:hover { transform: none; box-shadow: none; background: transparent; }
+        @keyframes loginHeroMotion { 0%,100% { transform: scale(1); } 50% { transform: scale(1.018); } }
+        @media (prefers-reduced-motion: reduce) { #auth-card-login.auth-card { animation: none; } }
+        @media (max-width: 800px) { #auth-card-login.auth-card { background-size: cover; } #auth-card-login .google-signin-btn { left: 66%; top: 51%; width: 29%; height: 8%; } }
         .auth-overlay.hidden { display: none; }
         .auth-card { background: var(--panel-bg); border: 1px solid var(--border-glow); border-radius: 20px; padding: 48px 40px; width: min(400px, 88vw); text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.5); backdrop-filter: blur(20px); }
         .auth-logo { font-family: 'Source Serif 4', Georgia, serif; font-size: 30px; font-weight: 700; color: var(--accent-orange); margin-bottom: 8px; }
