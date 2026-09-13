@@ -491,34 +491,6 @@
         .stacked-segment:hover { filter: brightness(1.2); }
         .stacked-segment:hover::after { content: attr(data-tooltip); position: absolute; background: rgba(0,0,0,0.9); color: #fff; padding: 6px 12px; border-radius: 8px; font-size: 11px; white-space: nowrap; top: -35px; left: 50%; transform: translateX(-50%); z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.5); border: 1px solid color-mix(in srgb, var(--text-light) 10%, transparent); }
 
-
-        /* Animated login hero — visual only, auth logic unchanged */
-        .auth-overlay.auth-login-showcase { flex-direction: row; gap: 0; padding: 0; overflow: hidden; background: #071114; }
-        .auth-login-visual { position: relative; width: min(62vw, 980px); height: 100%; min-height: 620px; overflow: hidden; display: flex; align-items: center; justify-content: center; isolation: isolate; background: #071114; }
-        .auth-login-visual::before { content: ''; position: absolute; inset: -8%; background-image: url('./login-hero.png'); background-size: 200% 100%; background-position: left center; background-repeat: no-repeat; filter: saturate(1.05) brightness(.72); transform: scale(1.06); animation: loginHeroZoom 10s ease-in-out infinite; z-index: -4; }
-        .auth-login-visual::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 68% 42%, rgba(44, 230, 150, .20), transparent 28%), linear-gradient(90deg, rgba(7,17,20,.08), rgba(7,17,20,.30)); z-index: -3; pointer-events: none; }
-        .auth-hero-glow { position: absolute; width: 52vw; height: 52vw; max-width: 760px; max-height: 760px; border: 1px solid rgba(62, 244, 170, .30); border-radius: 50%; box-shadow: 0 0 70px rgba(33, 222, 145, .12), inset 0 0 70px rgba(33, 222, 145, .06); animation: loginOrbit 10s linear infinite; pointer-events: none; }
-        .auth-hero-glow::before, .auth-hero-glow::after { content: ''; position: absolute; border-radius: 50%; background: #4affb1; box-shadow: 0 0 18px #4affb1, 0 0 40px rgba(74,255,177,.35); }
-        .auth-hero-glow::before { width: 7px; height: 7px; top: 10%; left: 18%; }
-        .auth-hero-glow::after { width: 5px; height: 5px; right: 13%; bottom: 16%; }
-        .auth-hero-copy { position: absolute; left: clamp(28px, 5vw, 76px); bottom: clamp(34px, 7vh, 86px); max-width: 560px; color: #fff; z-index: 2; text-align: left; animation: loginCopyIn 10s ease-in-out infinite; }
-        .auth-hero-kicker { display: inline-flex; align-items: center; gap: 8px; padding: 7px 12px; border: 1px solid rgba(74,255,177,.30); background: rgba(7,17,20,.38); backdrop-filter: blur(12px); border-radius: 999px; font-size: 11px; letter-spacing: 1.6px; text-transform: uppercase; color: #8fffc9; margin-bottom: 16px; }
-        .auth-hero-copy h1 { margin: 0 0 10px; font-size: clamp(34px, 4vw, 62px); line-height: .98; letter-spacing: -1.8px; font-weight: 800; text-shadow: 0 8px 35px rgba(0,0,0,.42); }
-        .auth-hero-copy h1 span { color: #4affb1; }
-        .auth-hero-copy p { margin: 0; color: rgba(255,255,255,.78); font-size: clamp(13px, 1.4vw, 17px); line-height: 1.55; max-width: 500px; }
-        .auth-hero-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
-        .auth-hero-pills span { padding: 7px 10px; border-radius: 10px; background: rgba(8,20,24,.54); border: 1px solid rgba(255,255,255,.10); backdrop-filter: blur(10px); color: rgba(255,255,255,.84); font-size: 11px; }
-        .auth-particle { position: absolute; width: 4px; height: 4px; border-radius: 50%; background: #6dffc0; box-shadow: 0 0 14px rgba(109,255,192,.85); opacity: .6; animation: loginParticle 10s ease-in-out infinite; pointer-events: none; }
-        .auth-p1 { left: 18%; top: 24%; animation-delay: -2s; } .auth-p2 { left: 72%; top: 20%; animation-delay: -6s; } .auth-p3 { left: 56%; top: 70%; animation-delay: -4s; } .auth-p4 { left: 84%; top: 58%; animation-delay: -8s; }
-        .auth-login-panel { width: min(420px, 88vw); margin: 0 clamp(24px, 5vw, 72px); position: relative; z-index: 3; }
-        .auth-login-panel .auth-card { width: 100%; box-sizing: border-box; background: rgba(13, 23, 27, .82); border-color: rgba(74,255,177,.20); box-shadow: 0 30px 90px rgba(0,0,0,.48), 0 0 45px rgba(30,220,145,.08); animation: loginCardFloat 10s ease-in-out infinite; }
-        @keyframes loginHeroZoom { 0%,100% { transform: scale(1.06); } 50% { transform: scale(1.13) translate3d(-8px,-4px,0); } }
-        @keyframes loginOrbit { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(1.035); } 100% { transform: rotate(360deg) scale(1); } }
-        @keyframes loginCopyIn { 0%,100% { opacity: .86; transform: translateY(8px); } 12%,88% { opacity: 1; transform: translateY(0); } 50% { transform: translateY(-4px); } }
-        @keyframes loginParticle { 0%,100% { transform: translate3d(0,20px,0) scale(.7); opacity: .15; } 50% { transform: translate3d(12px,-34px,0) scale(1.3); opacity: .85; } }
-        @keyframes loginCardFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-        @media (max-width: 900px) { .auth-login-showcase { flex-direction: column; overflow-y: auto; justify-content: center; padding: 22px 0; } .auth-login-visual { width: 100%; height: 300px; min-height: 300px; flex: 0 0 300px; } .auth-login-panel { margin: -34px 20px 10px; width: min(420px, calc(100vw - 40px)); } .auth-hero-copy { left: 24px; bottom: 30px; right: 24px; } .auth-hero-copy h1 { font-size: 34px; } .auth-hero-pills { display: none; } }
-        @media (prefers-reduced-motion: reduce) { .auth-login-visual::before, .auth-hero-glow, .auth-hero-copy, .auth-particle, .auth-login-panel .auth-card { animation: none !important; } }
         .auth-overlay { position: fixed; inset: 0; background: var(--bg-deep); z-index: 5000; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 24px; }
         .auth-overlay.hidden { display: none; }
         .auth-card { background: var(--panel-bg); border: 1px solid var(--border-glow); border-radius: 20px; padding: 48px 40px; width: min(400px, 88vw); text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.5); backdrop-filter: blur(20px); }
@@ -1893,27 +1865,18 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb:hover{background:#aeb7b0 !imp
     <div class="toast-container" id="toast-container"></div>
 
     <div class="auth-overlay auth-login-showcase" id="auth-overlay">
-        <div class="auth-login-visual" id="auth-login-visual">
-            <div class="auth-hero-glow"></div>
-            <div class="auth-particle auth-p1"></div><div class="auth-particle auth-p2"></div><div class="auth-particle auth-p3"></div><div class="auth-particle auth-p4"></div>
-            <div class="auth-hero-copy">
-                <div class="auth-hero-kicker">✦ INDEX Study Assistant</div>
-                <h1>Study Smarter.<br><span>Achieve More.</span></h1>
-                <p>Plan your sessions, stay focused, track your progress, and keep your study journey moving forward.</p>
-                <div class="auth-hero-pills"><span>⏱ Focus</span><span>🎯 Goals</span><span>📊 Progress</span><span>☁ Sync</span></div>
-            </div>
-        </div>
+        <div class="auth-login-visual" id="auth-login-visual" aria-hidden="true"></div>
         <div class="auth-login-panel">
-        <div class="auth-card" id="auth-card-loading">
-            <div class="auth-loading-spinner" style="margin: 0 auto;"></div>
-        </div>
-        <div class="auth-card hidden" id="auth-card-login" style="display:none;">
-            <div class="auth-logo">INDEX</div>
-            <div class="auth-subtitle" id="auth-subtitle-text">Sign in to sync your study data across all your devices</div>
-            <button class="google-signin-btn" onclick="signInWithGoogle()" id="google-signin-btn">
-                <svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.7-6.1 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6 29.6 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6 29.6 4 24 4 16.3 4 9.6 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.5 0 10.4-1.9 14.3-5.1l-6.6-5.6C29.7 35 27 36 24 36c-5.2 0-9.6-3.3-11.2-8l-6.6 5.1C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.2 4.3-4.1 5.7l6.6 5.6C40.9 36.6 44 30.9 44 24c0-1.3-.1-2.7-.4-3.5z"/></svg>
-                <span id="google-signin-label">Sign in with Google</span>
-            </button>
+            <div class="auth-card" id="auth-card-loading">
+                <div class="auth-loading-spinner" style="margin: 0 auto;"></div>
+            </div>
+            <div class="auth-card hidden" id="auth-card-login" style="display:none;">
+                <div class="auth-logo">INDEX</div>
+                <div class="auth-subtitle" id="auth-subtitle-text">Sign in to sync your study data across all your devices</div>
+                <button class="google-signin-btn" onclick="signInWithGoogle()" id="google-signin-btn">
+                    <svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.7-6.1 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6 29.6 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6 29.6 4 24 4 16.3 4 9.6 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.5 0 10.4-1.9 14.3-5.1l-6.6-5.6C29.7 35 27 36 24 36c-5.2 0-9.6-3.3-11.2-8l-6.6 5.1C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.2 4.3-4.1 5.7l6.6 5.6C40.9 36.6 44 30.9 44 24c0-1.3-.1-2.7-.4-3.5z"/></svg>
+                    <span id="google-signin-label">Sign in with Google</span>
+                </button>
             </div>
         </div>
     </div>
@@ -2363,26 +2326,6 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb:hover{background:#aeb7b0 !imp
     </div>
     <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-database-compat.js"></script>
-    <script>
-        (() => {
-            const visual = document.getElementById('auth-login-visual');
-            if (!visual) return;
-            visual.addEventListener('mousemove', (e) => {
-                const r = visual.getBoundingClientRect();
-                const x = (e.clientX - r.left) / r.width - 0.5;
-                const y = (e.clientY - r.top) / r.height - 0.5;
-                visual.style.setProperty('--mx', `${x * 12}px`);
-                visual.style.setProperty('--my', `${y * 8}px`);
-                const glow = visual.querySelector('.auth-hero-glow');
-                if (glow) glow.style.marginLeft = `calc(var(--mx, 0px) * .35)`;
-                if (glow) glow.style.marginTop = `calc(var(--my, 0px) * .35)`;
-            });
-            visual.addEventListener('mouseleave', () => {
-                visual.style.setProperty('--mx', '0px');
-                visual.style.setProperty('--my', '0px');
-            });
-        })();
-    </script>
     <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
     <script>
         // ----------------------------------------------------------------
