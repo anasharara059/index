@@ -30,7 +30,7 @@ jobs:
         run: npm run build
 
       - name: Upload Windows installer
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: INDEX-Study-Assistant-Windows
           path: release/*.exe
