@@ -112,6 +112,7 @@ async function createMainWindow() {
     minWidth: 1100,
     minHeight: 720,
     backgroundColor: '#08090d',
+    icon: path.join(__dirname, 'build', 'icon.ico'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,

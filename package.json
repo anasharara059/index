@@ -7,7 +7,7 @@
   "scripts": {
     "start": "electron .",
     "dist": "electron-builder --win nsis",
-    "build": "electron-builder --win nsis --publish never"
+    "build": "electron-builder --win nsis"
   },
   "devDependencies": {
     "electron": "^38.1.0",
@@ -23,10 +23,15 @@
       "overlay.html"
     ],
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "icon": "build/icon.ico"
     },
     "directories": {
       "output": "release"
+    },
+    "nsis": {
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico"
     }
   }
 }
