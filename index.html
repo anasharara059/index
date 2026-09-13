@@ -1858,6 +1858,25 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb:hover{background:#aeb7b0 !imp
   html[data-theme="light"] .header-navigation{padding:11px 16px !important;}
   html[data-theme="light"] .screens-container{padding:0 16px !important;margin:18px auto !important;}
 }
+
+        /* Fix account dropdown contrast in light theme */
+        html[data-theme="light"] .account-dropdown-menu {
+            background: linear-gradient(160deg, #141622, #1a1c2e) !important;
+            color: #ffffff !important;
+        }
+        html[data-theme="light"] .account-dropdown-menu .account-menu-item,
+        html[data-theme="light"] .account-dropdown-menu .account-menu-label {
+            color: #ffffff !important;
+        }
+        html[data-theme="light"] .account-dropdown-menu .account-menu-item:hover {
+            color: var(--accent-orange) !important;
+        }
+        html[data-theme="light"] .account-dropdown-menu .account-menu-item.danger:hover {
+            color: var(--danger) !important;
+        }
+        html[data-theme="light"] .account-dropdown-menu .account-menu-divider {
+            background: rgba(255,255,255,0.18) !important;
+        }
 </style>
 
 </head>
