@@ -7,7 +7,7 @@
   "scripts": {
     "start": "electron .",
     "dist": "electron-builder --win nsis",
-    "build": "electron-builder --win nsis"
+    "build": "electron-builder --win nsis --publish never"
   },
   "devDependencies": {
     "electron": "^38.1.0",
