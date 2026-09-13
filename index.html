@@ -1859,6 +1859,12 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb:hover{background:#aeb7b0 !imp
   html[data-theme="light"] .screens-container{padding:0 16px !important;margin:18px auto !important;}
 }
 
+/* Login state hardening: Firebase controls the transition, not the old auth card styles. */
+#auth-overlay{z-index:99999;}
+#auth-card-login{min-width:0;}
+#auth-card-loading{background:transparent!important;border:none!important;box-shadow:none!important;}
+
+
 /* ===== Professional Login Screen (functional, preserves original auth IDs) ===== */
 .auth-overlay#auth-overlay{padding:0;gap:0;background:#07131a;overflow:hidden;}
 .auth-overlay#auth-overlay .auth-login-shell{width:100%;height:100%;display:grid;grid-template-columns:minmax(0,1.65fr) minmax(390px,.85fr);background:#07131a;}
@@ -1894,14 +1900,15 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb:hover{background:#aeb7b0 !imp
 .auth-real-footer{margin-top:22px;text-align:center;color:#74828b;font-size:11px;}
 #auth-card-loading{position:absolute;z-index:10;top:50%;left:50%;transform:translate(-50%,-50%);}
 @media(max-width:900px){.auth-overlay#auth-overlay .auth-login-shell{grid-template-columns:1fr;}.auth-visual{display:none;}.auth-real-panel{padding:28px 18px;}.auth-real-card{padding:30px 24px;}}
+
 </style>
 
 </head>
 <body>
     <div class="toast-container" id="toast-container"></div>
 
-    <div class="auth-overlay" id="auth-overlay">
-        <div class="auth-login-shell" id="auth-card-login">
+        <div class="auth-overlay" id="auth-overlay">
+        <div class="auth-login-shell" id="auth-card-login" style="display:none;">
             <div class="auth-visual" aria-label="INDEX Study Assistant features">
                 <div class="auth-feature-showcase">
                     <div class="showcase-kicker">INDEX STUDY ASSISTANT</div>
@@ -1940,7 +1947,7 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb:hover{background:#aeb7b0 !imp
                 </div>
             </div>
         </div>
-        <div class="auth-card" id="auth-card-loading" style="display:none;">
+        <div class="auth-card" id="auth-card-loading">
             <div class="auth-loading-spinner" style="margin:0 auto;"></div>
         </div>
     </div>
@@ -2862,13 +2869,20 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb:hover{background:#aeb7b0 !imp
 
         auth.onAuthStateChanged(async (user) => {
             if (!user) {
-                document.getElementById('auth-card-loading').style.display = 'none';
-                hideAllAuthOverlays();
                 if (appHasBooted) { location.reload(); return; }
-                document.getElementById('auth-card-login').style.display = 'block';
+                const loading = document.getElementById('auth-card-loading');
+                const login = document.getElementById('auth-card-login');
+                if (loading) loading.style.display = 'none';
+                if (login) login.style.display = 'grid';
                 document.getElementById('auth-overlay').classList.remove('hidden');
                 return;
             }
+
+            const loading = document.getElementById('auth-card-loading');
+            const login = document.getElementById('auth-card-login');
+            if (login) login.style.display = 'none';
+            if (loading) loading.style.display = 'block';
+            document.getElementById('auth-overlay').classList.remove('hidden');
 
             currentUser = user;
             currentUserNamespace = user.uid;
