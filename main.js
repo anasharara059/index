@@ -1,5 +1,56 @@
 const { app, BrowserWindow, ipcMain, screen } = require('electron');
 const path = require('path');
+const http = require('http');
+const fs = require('fs');
+
+let localServer;
+
+function startLocalServer() {
+  return new Promise((resolve, reject) => {
+    localServer = http.createServer((req, res) => {
+      try {
+        const requestedPath = decodeURIComponent((req.url || '/').split('?')[0]);
+        const relativePath = requestedPath === '/' ? '/index.html' : requestedPath;
+        const filePath = path.resolve(__dirname, `.${relativePath}`);
+        const root = path.resolve(__dirname);
+
+        if (!filePath.startsWith(root + path.sep) && filePath !== root) {
+          res.writeHead(403);
+          res.end('Forbidden');
+          return;
+        }
+
+        const stat = fs.statSync(filePath);
+        if (!stat.isFile()) throw new Error('Not a file');
+
+        const ext = path.extname(filePath).toLowerCase();
+        const contentTypes = {
+          '.html': 'text/html; charset=utf-8',
+          '.js': 'text/javascript; charset=utf-8',
+          '.css': 'text/css; charset=utf-8',
+          '.json': 'application/json; charset=utf-8',
+          '.png': 'image/png',
+          '.jpg': 'image/jpeg',
+          '.jpeg': 'image/jpeg',
+          '.svg': 'image/svg+xml',
+          '.ico': 'image/x-icon'
+        };
+
+        res.writeHead(200, { 'Content-Type': contentTypes[ext] || 'application/octet-stream' });
+        fs.createReadStream(filePath).pipe(res);
+      } catch (_err) {
+        res.writeHead(404);
+        res.end('Not found');
+      }
+    });
+
+    localServer.once('error', reject);
+    localServer.listen(0, 'localhost', () => {
+      const { port } = localServer.address();
+      resolve(`http://localhost:${port}`);
+    });
+  });
+}
 
 let mainWindow;
 let overlayWindow;
@@ -54,7 +105,7 @@ function createOverlayWindow() {
   });
 }
 
-function createMainWindow() {
+async function createMainWindow() {
   mainWindow = new BrowserWindow({
     width: 1440,
     height: 950,
@@ -68,7 +119,8 @@ function createMainWindow() {
     }
   });
 
-  mainWindow.loadFile(path.join(__dirname, 'index.html'));
+  const appUrl = await startLocalServer();
+  mainWindow.loadURL(appUrl);
 
   mainWindow.on('closed', () => {
     mainWindow = null;
@@ -78,13 +130,20 @@ function createMainWindow() {
   });
 }
 
-app.whenReady().then(() => {
-  createMainWindow();
+app.whenReady().then(async () => {
+  await createMainWindow();
   createOverlayWindow();
 
   app.on('activate', () => {
     if (!mainWindow) createMainWindow();
   });
+});
+
+app.on('before-quit', () => {
+  if (localServer) {
+    localServer.close();
+    localServer = null;
+  }
 });
 
 app.on('window-all-closed', () => {
