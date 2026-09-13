@@ -27,11 +27,6 @@
     },
     "directories": {
       "output": "release"
-    },
-    "publish": [
-      {
-        "provider": "github"
-      }
-    ]
+    }
   }
 }
