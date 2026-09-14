@@ -16,7 +16,7 @@
     <meta name="apple-mobile-web-app-title" content="INDEX">
     <link rel="apple-touch-icon" href="icon-192.png">
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=mPzgQhjupSlruE-nD50_PrQGrUTwpUCkz189u7b0ILRpldsYPONhNDROnnt0yi6RyohMb36TDY6Tl6Q_hc_VpjEsUh_xjlv8k8hEs1HseAffCzZMqoS9QYuQmGJJXznnIgEPYzIjj8RCTiwRvmomEWx0RvzdWZ7Mj84qe-0niWCAXE9zYVxsbB_EAoJxVcoPisivRgbmoqmPcXZGASzqjxXzXhaPOxMXJhonVWvkOEgNQV-MmlCHEu5H-pK5cc54H_RzdtGBAu70bX3S9_Yw7H2-NF8Z-Iapjo52HOLwTjokbOJN49-iHFCiskvED1Kvibutdue9ksknF6wB9Dqry0hhTmNnT_sFCAAmbWvbYMg" charset="UTF-8"></script><script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <style>
         :root {
             --bg-deep: #08090d;
@@ -380,7 +380,115 @@
         .add-item-pill-btn { background: var(--accent-orange); border: none; color: #000; padding: 10px 22px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.3s ease; box-shadow: 0 4px 18px rgba(62, 92, 138, 0.25); }
         .add-item-pill-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(62, 92, 138, 0.4); }
         .empty-state-box { text-align: center; padding: 60px 20px; color: var(--text-gray); border: 1.5px dashed var(--border-soft); border-radius: 20px; font-size: 14px; font-weight: 600; animation: fadeIn 0.5s ease-out; }
-        .goals-cards-grid, .habits-cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+
+        /* ===== Study Calendar / Weekly Planner ===== */
+
+        /* ===== Pro Calendar Enhancements ===== */
+        .study-calendar-wrap { position:relative; }
+        .study-calendar { position:relative; }
+        .cal-cell.drop-target { background:rgba(217,165,74,.08); box-shadow:inset 0 0 0 1px rgba(217,165,74,.28); }
+        .cal-event[draggable="true"] { cursor:grab; }
+        .cal-event.dragging { opacity:.38; cursor:grabbing; }
+        .cal-event.conflict { border-color:rgba(255,92,92,.72); background:rgba(255,92,92,.11); }
+        .cal-event .ce-conflict { display:inline-block; margin-inline-start:4px; color:#ff6b6b; font-weight:900; }
+        .planner-now-line { position:absolute; left:58px; right:0; height:2px; background:var(--accent-orange); z-index:8; pointer-events:none; box-shadow:0 0 8px rgba(217,165,74,.42); }
+        .planner-now-dot { position:absolute; inset-inline-start:-5px; top:-4px; width:10px; height:10px; border-radius:50%; background:var(--accent-orange); box-shadow:0 0 0 3px rgba(217,165,74,.12); }
+        .planner-now-label { position:absolute; inset-inline-start:7px; top:-15px; font-size:8px; font-weight:900; color:var(--accent-orange); background:var(--bg-dark,#101010); padding:2px 5px; border-radius:5px; white-space:nowrap; }
+        .planner-conflict-banner { margin:0 18px 12px; padding:9px 11px; border:1px solid rgba(255,92,92,.32); background:rgba(255,92,92,.07); border-radius:9px; color:#ff8585; font-size:9px; font-weight:800; display:none; }
+        .planner-smart-note { color:var(--text-gray); font-size:9px; margin-top:5px; }
+        .planner-focus-item.priority-high { border-color:rgba(255,92,92,.4); }
+        .planner-focus-item.priority-medium { border-color:rgba(217,165,74,.38); }
+
+        .study-planner { margin-bottom: 22px; border: 1px solid var(--border-soft); border-radius: 20px; background: linear-gradient(145deg, rgba(255,255,255,.045), rgba(255,255,255,.018)); overflow: hidden; }
+        .study-planner-head { display:flex; align-items:center; justify-content:space-between; gap:14px; padding:16px 18px; border-bottom:1px solid var(--border-soft); flex-wrap:wrap; }
+        .study-planner-title { display:flex; align-items:center; gap:10px; font-weight:900; font-size:15px; }
+        .study-planner-title small { display:block; color:var(--text-gray); font-size:10px; font-weight:600; margin-top:2px; }
+        .planner-head-actions { display:flex; align-items:center; gap:7px; flex-wrap:wrap; }
+        .planner-btn { border:1px solid var(--border-soft); background:rgba(255,255,255,.035); color:var(--text-light); border-radius:9px; padding:7px 10px; cursor:pointer; font-size:11px; font-weight:800; transition:.2s; }
+        .planner-btn:hover { border-color:var(--accent-orange); color:var(--accent-orange); transform:translateY(-1px); }
+        .planner-btn.primary { background:rgba(217,165,74,.13); border-color:rgba(217,165,74,.38); color:var(--accent-orange); }
+        .planner-week-label { min-width:145px; text-align:center; font-size:12px; font-weight:900; }
+        .planner-summary { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; padding:12px 18px; border-bottom:1px solid var(--border-soft); }
+        .planner-stat { border:1px solid var(--border-soft); border-radius:11px; padding:9px 10px; background:rgba(255,255,255,.025); }
+        .planner-stat b { display:block; font-size:15px; color:var(--text-light); }
+        .planner-stat span { color:var(--text-gray); font-size:9px; font-weight:700; }
+        .planner-progress { height:5px; border-radius:99px; background:rgba(255,255,255,.07); margin-top:7px; overflow:hidden; }
+        .planner-progress > i { display:block; height:100%; width:0; background:var(--accent-orange); border-radius:inherit; transition:width .35s; }
+        .planner-focus { padding:12px 18px; border-bottom:1px solid var(--border-soft); }
+        .planner-focus-title { font-size:11px; font-weight:900; color:var(--accent-orange); margin-bottom:8px; }
+        .planner-focus-list { display:flex; gap:7px; overflow-x:auto; padding-bottom:2px; }
+        .planner-focus-item { min-width:190px; max-width:240px; border:1px solid var(--border-soft); border-radius:10px; padding:8px 10px; background:rgba(255,255,255,.025); cursor:pointer; }
+        .planner-focus-item:hover { border-color:rgba(217,165,74,.45); }
+        .planner-focus-item strong { display:block; font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .planner-focus-item span { display:block; color:var(--text-gray); font-size:9px; margin-top:3px; }
+        .study-calendar-wrap { overflow-x:auto; }
+        .study-calendar { min-width:820px; display:grid; grid-template-columns:58px repeat(7,minmax(105px,1fr)); }
+        .cal-corner { border-bottom:1px solid var(--border-soft); background:rgba(0,0,0,.10); }
+        .cal-day-head { min-height:56px; padding:8px 7px; border-inline-start:1px solid var(--border-soft); border-bottom:1px solid var(--border-soft); text-align:center; background:rgba(255,255,255,.018); }
+        .cal-day-head.today { background:rgba(217,165,74,.09); }
+        .cal-day-head strong { display:block; font-size:10px; }
+        .cal-day-head span { display:block; margin-top:3px; color:var(--text-gray); font-size:9px; }
+        .cal-day-head.today span { color:var(--accent-orange); font-weight:900; }
+        .cal-time { height:68px; padding:7px 5px; color:var(--text-gray); font-size:8px; text-align:center; border-top:1px solid rgba(255,255,255,.055); }
+        .cal-cell { position:relative; height:68px; border-inline-start:1px solid var(--border-soft); border-top:1px solid rgba(255,255,255,.055); background:rgba(0,0,0,.025); }
+        .cal-cell:hover { background:rgba(255,255,255,.025); }
+        .cal-event { position:absolute; inset:4px 4px auto 4px; min-height:58px; border:1px solid rgba(217,165,74,.38); background:rgba(217,165,74,.13); border-radius:8px; padding:6px 7px; cursor:pointer; overflow:hidden; z-index:2; }
+        .cal-event:hover { border-color:var(--accent-orange); box-shadow:0 5px 16px rgba(0,0,0,.22); }
+        .cal-event.done { opacity:.62; border-color:rgba(0,210,106,.4); background:rgba(0,210,106,.08); }
+        .cal-event .ce-time { color:var(--accent-orange); font-size:8px; font-weight:900; }
+        .cal-event.done .ce-time { color:var(--success); }
+        .cal-event strong { display:block; font-size:9px; line-height:1.25; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .cal-event span { display:block; color:var(--text-gray); font-size:8px; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .planner-empty { padding:16px; color:var(--text-gray); font-size:10px; text-align:center; border-top:1px solid var(--border-soft); }
+        .calendar-quick-add { padding:12px 18px; border-top:1px solid var(--border-soft); display:flex; justify-content:flex-end; }
+        .calendar-modal-note { color:var(--text-gray); font-size:10px; line-height:1.5; margin:-3px 0 10px; }
+        .calendar-form-grid { display:grid; grid-template-columns:1fr 1fr; gap:9px; }
+        .calendar-form-grid .full { grid-column:1/-1; }
+        @media(max-width:700px) {
+            .planner-summary { grid-template-columns:repeat(2,1fr); }
+            .planner-week-label { min-width:120px; }
+            .calendar-form-grid { grid-template-columns:1fr; }
+            .calendar-form-grid .full { grid-column:auto; }
+        }
+
+        
+/* ===== Study Calendar Pro UX v3 ===== */
+.cal-cell.drop-target{outline:2px dashed rgba(99,102,241,.55);outline-offset:-3px;background:rgba(99,102,241,.07)}
+.cal-cell.drop-preview{background:rgba(99,102,241,.10)}
+.cal-cell.today-column{background:linear-gradient(180deg,rgba(99,102,241,.075),rgba(99,102,241,.025))}
+.planner-day-head.today{border-color:rgba(99,102,241,.55)!important;box-shadow:0 0 0 2px rgba(99,102,241,.08)}
+.planner-now-line{height:2px;pointer-events:none;z-index:20}
+.planner-now-line svg{display:block;width:100%;height:100%;overflow:visible}
+.cal-event.conflict{border-color:rgba(220,38,38,.65)!important;box-shadow:0 0 0 1px rgba(220,38,38,.14)}
+.cal-event .ce-conflict{width:14px;height:14px;flex:0 0 14px;display:inline-flex;align-items:center;justify-content:center}
+.cal-event .ce-conflict svg{width:14px;height:14px;display:block}
+.planner-conflict-banner{display:none;align-items:center;gap:8px;margin:8px 0 10px;padding:8px 10px;border:1px solid rgba(220,38,38,.25);border-radius:10px;font-size:12px}
+.planner-conflict-banner.show{display:flex}
+.planner-filterbar{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.planner-filterbar select{min-width:145px;max-width:220px}
+.planner-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.planner-progress-card{display:flex;align-items:center;gap:10px}
+.planner-progress-ring{width:42px;height:42px;flex:0 0 42px}
+.planner-progress-ring svg{width:100%;height:100%;display:block;transform:rotate(-90deg)}
+.planner-progress-ring .ring-bg{fill:none;stroke:currentColor;opacity:.14;stroke-width:4}
+.planner-progress-ring .ring-value{fill:none;stroke:currentColor;stroke-width:4;stroke-linecap:round}
+.planner-progress-copy strong{display:block;font-size:12px}
+.planner-progress-copy span{display:block;font-size:10px;opacity:.7;margin-top:2px}
+.planner-event-popover{position:fixed;z-index:9999;width:220px;max-width:calc(100vw - 24px);padding:8px;border:1px solid rgba(148,163,184,.24);border-radius:14px;background:rgba(18,24,38,.97);box-shadow:0 18px 45px rgba(0,0,0,.28);backdrop-filter:blur(14px)}
+.planner-event-popover .pep-title{padding:6px 7px 8px;font-size:12px;font-weight:800;line-height:1.35;overflow-wrap:anywhere}
+.planner-event-popover button{width:100%;border:0;background:transparent;color:inherit;display:flex;align-items:center;gap:9px;padding:9px 8px;border-radius:9px;cursor:pointer;text-align:start;font:inherit}
+.planner-event-popover button:hover{background:rgba(148,163,184,.12)}
+.planner-event-popover .danger:hover{background:rgba(220,38,38,.12)}
+.planner-drop-warning{position:fixed;z-index:10000;display:none;max-width:300px;padding:9px 11px;border-radius:10px;border:1px solid rgba(220,38,38,.28);background:rgba(40,18,22,.97);font-size:11px;line-height:1.4;box-shadow:0 12px 30px rgba(0,0,0,.2)}
+.goal-task-item{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:8px!important;min-width:0}
+.lecture-main-row{display:grid!important;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:9px;min-width:0}
+.lecture-title-wrap{min-width:0}
+.goal-task-text{display:block;min-width:0;white-space:normal!important;word-break:normal!important;overflow-wrap:anywhere!important;line-height:1.35}
+.lecture-status-actions{display:flex!important;flex-wrap:wrap!important;align-items:center;gap:6px;padding-inline-start:32px;min-width:0}
+.lecture-status-actions button{width:32px!important;min-width:32px!important;height:30px!important;flex:0 0 auto}
+@media(max-width:650px){.lecture-main-row{gap:7px}.lecture-status-actions{padding-inline-start:0}.lecture-status-actions button{width:30px!important;min-width:30px!important}}
+
+.goals-cards-grid, .habits-cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
         .goal-card { background: linear-gradient(160deg, rgba(217, 165, 74, 0.07), rgba(62, 92, 138, 0.05) 70%); border: 1px solid var(--border-soft); border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 16px; transition: all 0.3s ease; position: relative; overflow: hidden; }
         .goal-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent-orange); opacity: 0; transition: opacity 0.3s; }
         .goal-card:hover { transform: translateY(-6px); border-color: rgba(217, 165, 74, 0.3); box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4); }
@@ -2265,6 +2373,42 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb:hover{background:#aeb7b0 !imp
                     </div>
                     <button class="add-item-pill-btn" onclick="openGoalModal()" id="goals-add-btn">+ <span id="goals-add-btn-txt">New Subject</span></button>
                 </div>
+
+                <section class="study-planner" id="study-planner">
+                    <div class="study-planner-head">
+                        <div class="study-planner-title">
+                            <span style="font-size:20px;">🗓️</span>
+                            <div>
+                                <span id="planner-title-text">Study Calendar</span>
+                                <small id="planner-subtitle-text">Plan your lectures, track your week, and stay focused.</small>
+                            </div>
+                        </div>
+                        <div class="planner-head-actions">
+                            <button class="planner-btn" onclick="changePlannerWeek(-1)">‹</button>
+                            <button class="planner-btn" onclick="goToPlannerToday()" id="planner-today-btn">Today</button>
+                            <div class="planner-week-label" id="planner-week-label">This week</div>
+                            <button class="planner-btn" onclick="changePlannerWeek(1)">›</button>
+                            <button class="planner-btn primary" onclick="openScheduleLectureModal()">+ Schedule</button>
+                            <button class="planner-btn" onclick="autoPlanCurrentWeek()" title="Plan unfinished lectures into open study slots">✨ Auto Plan</button>
+                        </div>
+                    </div>
+                    <div class="planner-summary" id="planner-summary"></div>
+                    <div class="planner-conflict-banner" id="planner-conflict-banner"></div>
+      <div class="planner-toolbar" style="margin-top:10px;">
+        <div class="planner-filterbar">
+          <select id="planner-filter-subject" onchange="plannerFilterChanged()"><option value="">All Subjects</option></select>
+          <select id="planner-filter-branch" onchange="plannerFilterChanged()"><option value="">All Branches</option></select>
+        </div>
+        <div class="planner-progress-card" id="planner-progress-card"></div>
+      </div>
+
+                    <div class="planner-focus" id="planner-focus"></div>
+                    <div class="study-calendar-wrap">
+                        <div class="study-calendar" id="study-calendar-grid"></div>
+                    </div>
+                    <div class="planner-empty" id="planner-empty" style="display:none;">No scheduled lectures for this week yet. Use + Schedule or Auto Plan.</div>
+                </section>
+
                 <div class="goals-cards-grid" id="goals-grid-wrapper"></div>
                 <div class="empty-state-box" id="goals-empty-state" style="display:none;">No goals yet — add your first one!</div>
             </div>
@@ -2325,6 +2469,50 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb:hover{background:#aeb7b0 !imp
             </div>
         </div>
     </div>
+
+    <div class="modal-overlay" id="schedule-lecture-modal">
+        <div class="modal-box" style="max-width:520px;">
+            <h3 id="schedule-modal-heading">Schedule Lecture</h3>
+            <div class="calendar-modal-note">Turn a lecture into a focused study block. It stays linked to the Subject → Branch → Lecture.</div>
+            <div class="calendar-form-grid">
+                <div class="full">
+                    <label class="field-label">Lecture</label>
+                    <select id="schedule-task-select"></select>
+                </div>
+                <div>
+                    <label class="field-label">Date</label>
+                    <input type="date" id="schedule-date-input">
+                </div>
+                <div>
+                    <label class="field-label">Start time</label>
+                    <input type="time" id="schedule-time-input" value="18:00">
+                </div>
+                <div>
+                    <label class="field-label">Duration</label>
+                    <select id="schedule-duration-input">
+                        <option value="25">25 min</option>
+                        <option value="45" selected>45 min</option>
+                        <option value="60">60 min</option>
+                        <option value="90">90 min</option>
+                        <option value="120">120 min</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="field-label">Type</label>
+                    <select id="schedule-type-input">
+                        <option value="study">📚 Study</option>
+                        <option value="watch">▶ Watch</option>
+                        <option value="revision">↻ Revision</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn cancel" onclick="closeScheduleLectureModal()">Cancel</button>
+                <button class="modal-btn confirm" onclick="saveScheduleLecture()">Schedule</button>
+            </div>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="habit-modal">
         <div class="modal-box">
             <h3 id="habit-modal-heading">Add New Habit</h3>
@@ -4428,6 +4616,9 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb:hover{background:#aeb7b0 !imp
             const today = new Date(); today.setHours(0, 0, 0, 0);
             return new Date(iso + 'T00:00:00') < today;
         }
+        let currentPlannerWeekOffset = 0;
+        let scheduledStudyEvents = [];
+        try { scheduledStudyEvents = JSON.parse(localStorage.getItem('index_scheduledStudyEvents') || '[]'); } catch (e) { scheduledStudyEvents = []; }
         let currentOpenSubjectGroupTag = null;
         const UNASSIGNED_SUBJECT_KEY = '__unassigned__';
         function openSubjectGroup(tagKey) {
@@ -4438,929 +4629,345 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb:hover{background:#aeb7b0 !imp
             currentOpenSubjectGroupTag = null;
             renderGoalsScreen();
         }
-        function renderGoalsScreen() {
-            const d = languageDictionary[currentSystemLanguage];
-            const grid = document.getElementById('goals-grid-wrapper');
-            const emptyState = document.getElementById('goals-empty-state');
-            if (!grid) return;
-            grid.innerHTML = '';
 
-            const headerTitleEl = document.getElementById('goals-header-title');
-            const addBtnTxtEl = document.getElementById('goals-add-btn-txt');
-            const addBtn = document.getElementById('goals-add-btn');
-            const backBtn = document.getElementById('goals-back-btn');
-            const backBtnTxtEl = document.getElementById('goals-back-btn-txt');
-            if (backBtnTxtEl) backBtnTxtEl.innerText = d.goalsBackBtnTxt || 'Back';
 
-            // Reset if the open subject tag no longer exists
-            if (currentOpenSubjectGroupTag && currentOpenSubjectGroupTag !== UNASSIGNED_SUBJECT_KEY && !currentTagsList.includes(currentOpenSubjectGroupTag)) {
-                currentOpenSubjectGroupTag = null;
-            }
-
-            if (!currentOpenSubjectGroupTag) {
-                // ---------- OVERVIEW MODE: one card per Subject (tag) ----------
-                if (backBtn) backBtn.style.display = 'none';
-                if (headerTitleEl) headerTitleEl.innerText = d.goalsHeaderTitle || 'Subjects';
-                if (addBtnTxtEl) addBtnTxtEl.innerText = d.goalsAddBtnTxt || 'New Subject';
-                if (addBtn) addBtn.onclick = () => openTagModal();
-
-                const groups = {};
-                currentTagsList.forEach(tag => { groups[tag] = []; });
-                goalsArray.forEach(g => {
-                    const key = (g.linkedTag && currentTagsList.includes(g.linkedTag)) ? g.linkedTag : UNASSIGNED_SUBJECT_KEY;
-                    if (!groups[key]) groups[key] = [];
-                    groups[key].push(g);
-                });
-
-                const tagKeysToRender = [...currentTagsList];
-                if (groups[UNASSIGNED_SUBJECT_KEY] && groups[UNASSIGNED_SUBJECT_KEY].length) tagKeysToRender.push(UNASSIGNED_SUBJECT_KEY);
-
-                if (tagKeysToRender.length === 0) { emptyState.innerText = d.goalsEmptyState; emptyState.style.display = 'block'; return; }
-                emptyState.style.display = 'none';
-
-                tagKeysToRender.forEach(tagKey => {
-                    const branchesForTag = groups[tagKey] || [];
-                    const totalLectures = branchesForTag.reduce((s, g) => s + (Array.isArray(g.tasks) ? g.tasks.length : 0), 0);
-                    const doneLectures = branchesForTag.reduce((s, g) => s + (Array.isArray(g.tasks) ? g.tasks.filter(t => t.done).length : 0), 0);
-                    const isUnassigned = tagKey === UNASSIGNED_SUBJECT_KEY;
-                    const displayName = isUnassigned ? (d.goalsUnassignedGroup || 'No Subject') : tagKey;
-                    const dotColor = isUnassigned ? 'var(--text-gray)' : getTagColor(tagKey);
-                    const branchWord = branchesForTag.length === 1 ? (d.subjectBranchSingular || 'branch') : (d.subjectBranchPlural || 'branches');
-
-                    const card = document.createElement('div');
-                    card.className = 'goal-card subject-group-card';
-                    card.style.cursor = 'pointer';
-                    card.innerHTML = `
-                        <div class="goal-card-top">
-                            <div>
-                                <div class="goal-card-title" style="display:flex;align-items:center;gap:8px;">
-                                    <span style="width:10px;height:10px;border-radius:50%;background:${dotColor};display:inline-block;flex-shrink:0;"></span>
-                                    ${escapeGoalHtml(displayName)}
-                                </div>
-                                <span class="goal-linked-tag-pill">📂 ${branchesForTag.length} ${branchWord}</span>
-                            </div>
-                            ${!isUnassigned ? `<button class="item-delete-btn" data-role="delete-subject-tag">✕</button>` : ''}
-                        </div>
-                        <div class="goal-tasks-toggle is-open">
-                            <span>📚 ${d.goalTasksHeader || 'Lectures'} ${totalLectures ? `(<span class="gt-count">${doneLectures}/${totalLectures}</span>)` : ''}</span>
-                        </div>`;
-                    card.addEventListener('click', () => openSubjectGroup(tagKey));
-                    const delBtn = card.querySelector('[data-role="delete-subject-tag"]');
-                    if (delBtn) {
-                        delBtn.addEventListener('click', (e) => {
-                            e.stopPropagation();
-                            deleteTagFromSystem(tagKey);
-                        });
+        function plannerMinutes(time) {
+            const p = String(time || '00:00').split(':').map(Number);
+            return (p[0] || 0) * 60 + (p[1] || 0);
+        }
+        function plannerPriority(task) {
+            if (!task) return 'normal';
+            if (task.priority === 'high' || task.priority === 'urgent') return 'high';
+            if (task.priority === 'medium') return 'medium';
+            if (task.needsRevision) return 'high';
+            return 'normal';
+        }
+        function plannerEventEndMinutes(e) {
+            return plannerMinutes(e.time) + Number(e.duration || 45);
+        }
+        function plannerEventsConflict(a, b) {
+            if (!a || !b || a.id === b.id || a.date !== b.date) return false;
+            return plannerMinutes(a.time) < plannerEventEndMinutes(b) &&
+                   plannerMinutes(b.time) < plannerEventEndMinutes(a);
+        }
+        function plannerConflictIds(events) {
+            const ids = new Set();
+            for (let i = 0; i < events.length; i++) {
+                for (let j = i + 1; j < events.length; j++) {
+                    if (plannerEventsConflict(events[i], events[j])) {
+                        ids.add(events[i].id);
+                        ids.add(events[j].id);
                     }
-                    grid.appendChild(card);
-                });
-                refreshTimerSidebar();
-                return;
-            }
-
-            // ---------- DETAIL MODE: branches (goals) inside the open Subject ----------
-            if (backBtn) backBtn.style.display = 'inline-flex';
-            const isUnassignedGroup = currentOpenSubjectGroupTag === UNASSIGNED_SUBJECT_KEY;
-            if (headerTitleEl) headerTitleEl.innerText = isUnassignedGroup ? (d.goalsUnassignedGroup || 'No Subject') : currentOpenSubjectGroupTag;
-            if (addBtnTxtEl) addBtnTxtEl.innerText = d.goalsAddBranchBtnTxt || 'New Branch';
-            if (addBtn) addBtn.onclick = () => openGoalModal(isUnassignedGroup ? '' : currentOpenSubjectGroupTag);
-
-            const visibleGoals = goalsArray.filter(g => {
-                const key = (g.linkedTag && currentTagsList.includes(g.linkedTag)) ? g.linkedTag : UNASSIGNED_SUBJECT_KEY;
-                return key === currentOpenSubjectGroupTag;
-            });
-
-            if (visibleGoals.length === 0) { emptyState.innerText = d.goalsBranchEmptyState || 'No branches yet — add your first one!'; emptyState.style.display = 'block'; return; }
-            emptyState.style.display = 'none';
-
-            // A single review queue makes all lectures marked for revision easy to find.
-            const revisionTasks = visibleGoals.flatMap(goal => (goal.tasks || []).filter(task => task.needsRevision && !task.done).map(task => ({ goal, task })));
-            if (revisionTasks.length) {
-                const revisionQueue = document.createElement('div');
-                revisionQueue.className = 'revision-queue';
-                revisionQueue.innerHTML = `
-                    <div class="revision-queue-title">↻ ${currentSystemLanguage === 'ar' ? 'قائمة المراجعة' : 'Revision queue'} (${revisionTasks.length})</div>
-                    <div class="revision-queue-list">${revisionTasks.map(({ goal, task }) => `<button class="revision-queue-item" data-goal-id="${goal.id}">${escapeGoalHtml(task.text)}</button>`).join('')}</div>`;
-                revisionQueue.querySelectorAll('[data-goal-id]').forEach(button => button.addEventListener('click', () => {
-                    document.querySelector(`[data-goal-card-id="${button.dataset.goalId}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }));
-                grid.appendChild(revisionQueue);
-            }
-            visibleGoals.forEach(goal => {
-                if (!Array.isArray(goal.tasks)) goal.tasks = [];
-                const doneTasksCount = goal.tasks.filter(t => t.done).length;
-                const isPanelOpen = expandedGoalTasksSet.has(goal.id);
-
-                const tasksListHtml = goal.tasks.length > 0
-                    ? goal.tasks.map(task => {
-                        if (!Array.isArray(task.reminders)) task.reminders = [];
-                        if (typeof task.studyCount !== 'number') task.studyCount = 0;
-                        if (typeof task.videoWatched !== 'boolean') task.videoWatched = false;
-                        if (typeof task.needsRevision !== 'boolean') task.needsRevision = false;
-                        const remindersOpen = expandedReminderTasksSet.has(task.id);
-                        const totalReminders = task.reminders.length;
-                        const remindersHtml = task.reminders.length > 0
-                            ? task.reminders.slice().sort((a, b) => a.date.localeCompare(b.date)).map(r => `
-                                <div class="lecture-reminder-chip ${isReminderOverdue(r.date) && !task.done ? 'is-overdue' : ''}">
-                                    <span class="lr-icon">🔔</span>
-                                    <span class="lr-date">${formatReminderDateLabel(r.date)}</span>
-                                    <button class="lecture-reminder-del" onclick="event.stopPropagation(); deleteLectureReminder('${goal.id}','${task.id}','${r.id}')">✕</button>
-                                </div>`).join('')
-                            : '';
-                        return `
-                        <div class="goal-task-wrapper" data-task-id="${task.id}">
-                        <div class="goal-task-item ${task.done ? 'is-done' : ''} ${task.needsRevision && !task.done ? 'is-revision' : ''}">
-                            <div class="goal-task-drag-handle" title="${currentSystemLanguage === 'ar' ? 'اسحب لإعادة الترتيب' : 'Drag to reorder'}">⠿</div>
-                            <div class="goal-task-checkbox ${task.done ? 'checked' : ''}" onclick="event.stopPropagation(); toggleGoalTaskDone('${goal.id}','${task.id}')">${task.done ? '✓' : ''}</div>
-                            <div class="goal-task-text" onclick="toggleLectureReminderPanel('${task.id}')" title="${d.lectureRemindersHint || 'Click to add a review reminder'}">${escapeGoalHtml(task.text)}${totalReminders > 0 ? `<div class="timer-task-reminder-badge ${task.reminders.some(r => isReminderOverdue(r.date)) && !task.done ? 'is-overdue' : ''}">🔔 ${totalReminders}</div>` : ''}</div>
-                            <div class="lecture-status-actions" aria-label="Lecture status">
-                                <button class="lecture-state-btn ${task.studyCount ? 'is-active' : ''}" title="${currentSystemLanguage === 'ar' ? 'زيادة عدد مرات الدراسة' : 'Add one study session'}" onclick="event.stopPropagation(); incrementLectureStudy('${goal.id}','${task.id}')">📖 ${task.studyCount}</button>
-                                <button class="lecture-state-btn video ${task.videoWatched ? 'is-active' : ''}" title="${currentSystemLanguage === 'ar' ? 'تمت مشاهدة الفيديو' : 'Video watched'}" onclick="event.stopPropagation(); toggleLectureVideo('${goal.id}','${task.id}')">▶</button>
-                                <button class="lecture-state-btn ${task.needsRevision ? 'is-active' : ''}" title="${currentSystemLanguage === 'ar' ? 'تحتاج مراجعة' : 'Needs revision'}" onclick="event.stopPropagation(); toggleLectureRevision('${goal.id}','${task.id}')">↻</button>
-                                <button class="lecture-state-btn done ${task.done ? 'is-active' : ''}" title="${currentSystemLanguage === 'ar' ? 'تمت المحاضرة' : 'Lecture completed'}" onclick="event.stopPropagation(); toggleGoalTaskDone('${goal.id}','${task.id}')">✓</button>
-                                <button class="lecture-state-btn edit" title="${currentSystemLanguage === 'ar' ? 'تعديل الاسم' : 'Edit lecture'}" onclick="event.stopPropagation(); editGoalTask('${goal.id}','${task.id}')">✎</button>
-                            </div>
-                            <button class="goal-task-delete" onclick="event.stopPropagation(); deleteGoalTask('${goal.id}','${task.id}')">✕</button>
-                        </div>
-                        <div class="lecture-reminders-panel ${remindersOpen ? 'is-open' : ''}">
-                            ${remindersHtml}
-                            <div class="lecture-reminder-add-row">
-                                <input type="date" class="lecture-reminder-date-input" id="reminder-date-${task.id}">
-                                <button class="lecture-reminder-save-btn" onclick="addLectureReminder('${goal.id}','${task.id}')">${d.lectureReminderSaveBtn || 'Add reminder'}</button>
-                            </div>
-                        </div>
-                        </div>`;
-                    }).join('')
-                    : `<div class="goal-tasks-empty-hint">${d.goalTasksEmptyHint || 'No lectures yet — add one below.'}</div>`;
-
-                const card = document.createElement('div');
-                card.className = `goal-card`;
-                card.dataset.goalCardId = goal.id;
-                card.innerHTML = `
-                    <div class="goal-card-top">
-                        <div>
-                            <div class="goal-card-title">${escapeGoalHtml(goal.title)}</div>
-                            ${goal.linkedTag ? `<span class="goal-linked-tag-pill">🔗 ${escapeGoalHtml(goal.linkedTag)}</span>` : ''}
-                        </div>
-                        <button class="item-delete-btn" onclick="deleteGoal('${goal.id}')">✕</button>
-                    </div>
-                    <div class="goal-tasks-toggle is-open">
-                        <span>📚 ${d.goalTasksHeader || 'Lectures'} ${goal.tasks.length ? `(<span class="gt-count">${doneTasksCount}/${goal.tasks.length}</span>)` : ''}</span>
-                    </div>
-                    <div class="lecture-status-legend">📖 ${currentSystemLanguage === 'ar' ? 'عدد مرات الدراسة' : 'study count'} &nbsp; • &nbsp; ▶ ${currentSystemLanguage === 'ar' ? 'شاهدت الفيديو' : 'video watched'} &nbsp; • &nbsp; ↻ ${currentSystemLanguage === 'ar' ? 'للمراجعة' : 'revision'} &nbsp; • &nbsp; ✓ ${currentSystemLanguage === 'ar' ? 'مكتملة' : 'completed'}</div>
-                    <div class="goal-tasks-panel is-open">
-                        <div class="goal-tasks-list">${tasksListHtml}</div>
-                        <div class="goal-task-add-row">
-                            <input type="text" class="goal-task-input" id="goal-task-input-${goal.id}" placeholder="${d.goalTaskPlaceholder || 'e.g. Lecture 1: Introduction'}" onkeypress="if(event.key==='Enter') addGoalTask('${goal.id}')">
-                            <button class="goal-task-add-confirm" onclick="addGoalTask('${goal.id}')">+</button>
-                        </div>
-                    </div>`;
-                grid.appendChild(card);
-                const tasksListContainer = card.querySelector('.goal-tasks-list');
-                if (tasksListContainer) enableTaskDragAndDrop(tasksListContainer, goal.id);
-            });
-            refreshTimerSidebar();
-        }
-        function commitTaskOrder(container, goalId) {
-            const goal = goalsArray.find(g => g.id === goalId);
-            if (!goal) return;
-            const orderedIds = Array.from(container.querySelectorAll('.goal-task-wrapper')).map(w => w.dataset.taskId);
-            goal.tasks.sort((a, b) => orderedIds.indexOf(a.id) - orderedIds.indexOf(b.id));
-            dbSet('goals', goalsArray);
-        }
-        function enableTaskDragAndDrop(container, goalId) {
-            container.querySelectorAll('.goal-task-drag-handle').forEach(handle => {
-                handle.addEventListener('pointerdown', (e) => {
-                    if (e.button !== undefined && e.button !== 0) return;
-                    e.preventDefault();
-                    const wrapper = handle.closest('.goal-task-wrapper');
-                    if (!wrapper) return;
-                    let dragWrapper = wrapper;
-                    dragWrapper.classList.add('is-dragging');
-
-                    function onMove(ev) {
-                        if (!dragWrapper) return;
-                        const y = ev.clientY;
-                        const siblings = Array.from(container.querySelectorAll('.goal-task-wrapper')).filter(w => w !== dragWrapper);
-                        let target = null;
-                        for (const sib of siblings) {
-                            const rect = sib.getBoundingClientRect();
-                            const mid = rect.top + rect.height / 2;
-                            if (y < mid) { target = sib; break; }
-                        }
-                        if (target) container.insertBefore(dragWrapper, target);
-                        else container.appendChild(dragWrapper);
-                    }
-                    function onUp() {
-                        document.removeEventListener('pointermove', onMove);
-                        document.removeEventListener('pointerup', onUp);
-                        document.removeEventListener('pointercancel', onUp);
-                        if (dragWrapper) {
-                            dragWrapper.classList.remove('is-dragging');
-                            commitTaskOrder(container, goalId);
-                        }
-                        dragWrapper = null;
-                    }
-                    document.addEventListener('pointermove', onMove);
-                    document.addEventListener('pointerup', onUp, { once: true });
-                    document.addEventListener('pointercancel', onUp, { once: true });
-                });
-            });
-        }
-        function toggleGoalTasksPanel(goalId) {
-            if (expandedGoalTasksSet.has(goalId)) expandedGoalTasksSet.delete(goalId);
-            else expandedGoalTasksSet.add(goalId);
-            renderGoalsScreen();
-        }
-        function addGoalTask(goalId) {
-            const goal = goalsArray.find(g => g.id === goalId);
-            if (!goal) return;
-            const input = document.getElementById(`goal-task-input-${goalId}`);
-            const text = input ? input.value.trim() : '';
-            if (!text) return;
-            if (!Array.isArray(goal.tasks)) goal.tasks = [];
-            goal.tasks.push({ id: generateUniqueRecordId(), text: text, done: false, reminders: [], studyCount: 0, videoWatched: false, needsRevision: false });
-            expandedGoalTasksSet.add(goalId);
-            dbSet('goals', goalsArray);
-            renderGoalsScreen();
-            const newInput = document.getElementById(`goal-task-input-${goalId}`);
-            if (newInput) newInput.focus();
-        }
-        function toggleGoalTaskDone(goalId, taskId) {
-            const goal = goalsArray.find(g => g.id === goalId);
-            if (!goal || !Array.isArray(goal.tasks)) return;
-            const task = goal.tasks.find(t => t.id === taskId);
-            if (!task) return;
-            // Mark done/undone: item stays in place and just dims — it is never removed or struck through.
-            task.done = !task.done;
-            expandedGoalTasksSet.add(goalId);
-            dbSet('goals', goalsArray);
-            renderGoalsScreen();
-        }
-        function updateLectureTask(goalId, taskId, updater) {
-            const goal = goalsArray.find(g => g.id === goalId);
-            const task = goal && Array.isArray(goal.tasks) ? goal.tasks.find(t => t.id === taskId) : null;
-            if (!task) return;
-            updater(task);
-            expandedGoalTasksSet.add(goalId);
-            dbSet('goals', goalsArray);
-            renderGoalsScreen();
-            refreshTimerSidebar();
-        }
-        function incrementLectureStudy(goalId, taskId) {
-            updateLectureTask(goalId, taskId, task => { task.studyCount = (Number(task.studyCount) || 0) + 1; });
-        }
-        function toggleLectureVideo(goalId, taskId) {
-            updateLectureTask(goalId, taskId, task => { task.videoWatched = !task.videoWatched; });
-        }
-        function toggleLectureRevision(goalId, taskId) {
-            updateLectureTask(goalId, taskId, task => { task.needsRevision = !task.needsRevision; });
-        }
-        function editGoalTask(goalId, taskId) {
-            const goal = goalsArray.find(g => g.id === goalId);
-            const task = goal && Array.isArray(goal.tasks) ? goal.tasks.find(t => t.id === taskId) : null;
-            if (!task) return;
-            const label = currentSystemLanguage === 'ar' ? 'اسم المحاضرة' : 'Lecture title';
-            const nextText = window.prompt(label, task.text);
-            if (nextText === null) return;
-            const cleaned = nextText.trim();
-            if (!cleaned) return;
-            updateLectureTask(goalId, taskId, taskToUpdate => { taskToUpdate.text = cleaned; });
-        }
-        function deleteGoalTask(goalId, taskId) {
-            const goal = goalsArray.find(g => g.id === goalId);
-            if (!goal || !Array.isArray(goal.tasks)) return;
-            goal.tasks = goal.tasks.filter(t => t.id !== taskId);
-            expandedGoalTasksSet.add(goalId);
-            expandedReminderTasksSet.delete(taskId);
-            dbSet('goals', goalsArray);
-            renderGoalsScreen();
-        }
-        function toggleLectureReminderPanel(taskId) {
-            if (expandedReminderTasksSet.has(taskId)) expandedReminderTasksSet.delete(taskId);
-            else expandedReminderTasksSet.add(taskId);
-            renderGoalsScreen();
-            renderTimerTasksPanel();
-        }
-        function addLectureReminder(goalId, taskId) {
-            const goal = goalsArray.find(g => g.id === goalId);
-            if (!goal || !Array.isArray(goal.tasks)) return;
-            const task = goal.tasks.find(t => t.id === taskId);
-            if (!task) return;
-            const dateInput = document.getElementById(`reminder-date-${taskId}`);
-            const dateVal = dateInput ? dateInput.value : '';
-            if (!dateVal) return;
-            if (!Array.isArray(task.reminders)) task.reminders = [];
-            task.reminders.push({ id: generateUniqueRecordId(), date: dateVal });
-            expandedReminderTasksSet.add(taskId);
-            dbSet('goals', goalsArray);
-            renderGoalsScreen();
-            renderTimerTasksPanel();
-            const d = languageDictionary[currentSystemLanguage];
-            showToast(d.toastReminderAdded || 'Reminder added!', task.text, 'success');
-        }
-        function deleteLectureReminder(goalId, taskId, reminderId) {
-            const goal = goalsArray.find(g => g.id === goalId);
-            if (!goal || !Array.isArray(goal.tasks)) return;
-            const task = goal.tasks.find(t => t.id === taskId);
-            if (!task || !Array.isArray(task.reminders)) return;
-            task.reminders = task.reminders.filter(r => r.id !== reminderId);
-            expandedReminderTasksSet.add(taskId);
-            dbSet('goals', goalsArray);
-            renderGoalsScreen();
-            renderTimerTasksPanel();
-        }
-        function renderLinkedGoalChip() {
-            const subjectPill = document.getElementById('timer-current-subject-pill');
-            if (subjectPill) subjectPill.innerText = currentlySelectedTag;
-            const chip = document.getElementById('linked-goal-chip');
-            const emptyCta = document.getElementById('linked-goal-empty-cta');
-            if (!chip) return;
-            const branchesForTag = goalsArray.filter(g => g.linkedTag === currentlySelectedTag);
-            if (!branchesForTag.some(g => g.id === timerSelectedBranchId)) {
-                const savedBranchId = timerSelectedBranchByTagMap[currentlySelectedTag];
-                if (savedBranchId && branchesForTag.some(g => g.id === savedBranchId)) {
-                    timerSelectedBranchId = savedBranchId;
-                } else {
-                    timerSelectedBranchId = branchesForTag.length > 0 ? branchesForTag[0].id : null;
                 }
             }
-            const linkedGoal = branchesForTag.find(g => g.id === timerSelectedBranchId);
-            if (!linkedGoal) {
-                chip.classList.remove('is-visible');
-                if (emptyCta) {
-                    const d = languageDictionary[currentSystemLanguage];
-                    emptyCta.innerText = (d.linkedGoalEmptyCta || '+ Link a subject to this tag');
-                    emptyCta.style.display = 'block';
-                }
-                return;
-            }
-            if (emptyCta) emptyCta.style.display = 'none';
-            if (!Array.isArray(linkedGoal.tasks)) linkedGoal.tasks = [];
-            const totalLectures = linkedGoal.tasks.length;
-            const doneLectures = linkedGoal.tasks.filter(t => t.done).length;
-            const pct = totalLectures > 0 ? Math.min(100, Math.round((doneLectures / totalLectures) * 100)) : 0;
-            document.getElementById('lg-chip-title').innerText = linkedGoal.title;
-            document.getElementById('lg-chip-progress').innerText = `${doneLectures}/${totalLectures} (${pct}%)`;
-            document.getElementById('lg-chip-fill').style.width = pct + '%';
-            chip.classList.add('is-visible');
+            return ids;
         }
-        let timerTasksFilterState = 'pending';
-        let timerTasksScopeState = 'subject';
-        function setTimerTasksFilter(filter) {
-            timerTasksFilterState = filter;
-            document.querySelectorAll('.timer-tasks-filter-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.filter === filter);
-            });
-            renderTimerTasksPanel();
+        function plannerTimeToRowOffset(time) {
+            const startHour = 8;
+            const m = plannerMinutes(time) - startHour * 60;
+            return Math.max(0, (m / 60) * 68);
         }
-        function setTimerTasksScope(scope) {
-            timerTasksScopeState = scope;
-            document.querySelectorAll('.timer-tasks-scope-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.scope === scope);
-            });
-            renderTimerTasksPanel();
+        
+        
+        function plannerStartDrag(ev, eventId) {
+            ev.dataTransfer.setData('text/plain', eventId);
+            ev.dataTransfer.effectAllowed = 'move';
+            ev.currentTarget.classList.add('dragging');
+            setTimeout(() => ev.currentTarget.classList.add('dragging'), 0);
         }
-        function deleteTaskFromTimerPanel(goalId, taskId) {
-            deleteGoalTask(goalId, taskId);
+        function plannerEndDrag(ev) {
+            ev.currentTarget.classList.remove('dragging');
+            document.querySelectorAll('.cal-cell.drop-target').forEach(x => x.classList.remove('drop-target'));
         }
-        function onTimerBranchSelectChange() {
-            const goalSelect = document.getElementById('timer-quick-add-goal-select');
-            timerSelectedBranchId = goalSelect ? goalSelect.value : null;
-            persistSelectedBranchForCurrentTag();
-            refreshTimerSidebar();
+        
+        function plannerLeaveDrop(ev) {
+            ev.currentTarget.classList.remove('drop-target');
         }
-        function selectLectureIntoSessionTitle(text) {
-            const titleInput = document.getElementById('session-current-title');
-            if (titleInput) {
-                titleInput.value = text;
-                titleInput.focus();
-            }
+        
+        function plannerEventConflictText(isConflict) {
+            return isConflict ? `<span class="ce-conflict" title="${currentSystemLanguage === 'ar' ? 'يوجد تعارض زمني' : 'Time conflict'}">⚠</span>` : '';
         }
-        function renderTimerTasksPanel() {
-            const listEl = document.getElementById('timer-tasks-panel-list');
-            if (!listEl) return;
-            const d = languageDictionary[currentSystemLanguage];
-            let allTasks = [];
+
+        function plannerWeekStart(offset = currentPlannerWeekOffset) {
+            const d = new Date();
+            d.setHours(0,0,0,0);
+            const day = d.getDay();
+            d.setDate(d.getDate() - day + (offset * 7));
+            return d;
+        }
+        function plannerISO(d) { return getLocalISODate(d); }
+        function saveScheduledEvents() {
+            localStorage.setItem('index_scheduledStudyEvents', JSON.stringify(scheduledStudyEvents));
+        }
+        function plannerDateLabel(d) {
+            return d.toLocaleDateString(currentSystemLanguage === 'ar' ? 'ar-EG' : 'en-US', { month:'short', day:'numeric' });
+        }
+        function plannerWeekRangeLabel(start) {
+            const end = new Date(start); end.setDate(end.getDate()+6);
+            const locale = currentSystemLanguage === 'ar' ? 'ar-EG' : 'en-US';
+            return `${start.toLocaleDateString(locale,{month:'short',day:'numeric'})} — ${end.toLocaleDateString(locale,{month:'short',day:'numeric',year:'numeric'})}`;
+        }
+        function getLectureRef(event) {
+            const goal = goalsArray.find(g => g.id === event.goalId);
+            const task = goal && Array.isArray(goal.tasks) ? goal.tasks.find(t => t.id === event.taskId) : null;
+            return { goal, task };
+        }
+        function getPlannerEventsForWeek(start) {
+            const end = new Date(start); end.setDate(end.getDate()+7);
+            return scheduledStudyEvents.filter(e => e.date >= plannerISO(start) && e.date < plannerISO(end));
+        }
+        function changePlannerWeek(delta) {
+            currentPlannerWeekOffset += delta;
+            renderStudyPlanner();
+        }
+        function goToPlannerToday() {
+            currentPlannerWeekOffset = 0;
+            renderStudyPlanner();
+        }
+        function openScheduleLectureModal(goalId = '', taskId = '') {
+            const select = document.getElementById('schedule-task-select');
+            if (!select) return;
+            const localeAr = currentSystemLanguage === 'ar';
+            const options = [];
             goalsArray.forEach(goal => {
                 (goal.tasks || []).forEach(task => {
-                    allTasks.push({
-                        goalId: goal.id, goalTitle: goal.title, taskId: task.id, text: task.text, done: task.done,
-                        reminders: Array.isArray(task.reminders) ? task.reminders : [],
-                        matchesTag: !!(goal.linkedTag && goal.linkedTag === currentlySelectedTag)
-                    });
+                    if (!task.done) options.push({ value:`${goal.id}::${task.id}`, label:`${goal.linkedTag || 'Subject'} · ${goal.title} · ${task.text}` });
                 });
             });
-
-            const progressRow = document.getElementById('timer-tasks-progress-row');
-            if (progressRow) {
-                if (allTasks.length > 0) {
-                    const doneCount = allTasks.filter(t => t.done).length;
-                    const pct = Math.round((doneCount / allTasks.length) * 100);
-                    progressRow.style.display = 'flex';
-                    document.getElementById('timer-tasks-progress-fill').style.width = pct + '%';
-                    document.getElementById('timer-tasks-progress-txt').innerText = `${doneCount}/${allTasks.length}`;
-                } else {
-                    progressRow.style.display = 'none';
-                }
+            select.innerHTML = options.length
+                ? options.map(o => `<option value="${o.value}">${escapeGoalHtml(o.label)}</option>`).join('')
+                : `<option value="">${localeAr ? 'لا توجد محاضرات غير مكتملة' : 'No unfinished lectures'}</option>`;
+            if (goalId && taskId) select.value = `${goalId}::${taskId}`;
+            const dateInput = document.getElementById('schedule-date-input');
+            if (dateInput) {
+                const base = new Date(plannerWeekStart());
+                base.setDate(base.getDate() + (currentPlannerWeekOffset === 0 ? Math.min(1, 6 - base.getDay()) : 1));
+                dateInput.value = plannerISO(base);
             }
-
-            const branchesForTag = goalsArray.filter(g => g.linkedTag === currentlySelectedTag);
-            const goalSelect = document.getElementById('timer-quick-add-goal-select');
-            if (goalSelect) {
-                if (branchesForTag.length === 0) {
-                    goalSelect.innerHTML = `<option value="">${currentSystemLanguage === 'ar' ? 'لا توجد فروع لهذه المادة' : 'No branches for this subject'}</option>`;
-                    goalSelect.disabled = true;
-                    timerSelectedBranchId = null;
-                } else {
-                    goalSelect.disabled = false;
-                    goalSelect.innerHTML = branchesForTag.map(g => `<option value="${g.id}">${escapeGoalHtml(g.title)}</option>`).join('');
-                    if (!branchesForTag.some(g => g.id === timerSelectedBranchId)) {
-                        const savedBranchId = timerSelectedBranchByTagMap[currentlySelectedTag];
-                        timerSelectedBranchId = (savedBranchId && branchesForTag.some(g => g.id === savedBranchId))
-                            ? savedBranchId
-                            : branchesForTag[0].id;
-                    }
-                    goalSelect.value = timerSelectedBranchId;
-                }
-            }
-
-            const filterRow = document.getElementById('timer-tasks-filter-row');
-            if (filterRow) filterRow.style.display = allTasks.length > 0 ? 'flex' : 'none';
-
-            const scopedTasks = timerTasksScopeState === 'subject'
-                ? allTasks.filter(t => t.goalId === timerSelectedBranchId)
-                : allTasks;
-
-            let visibleTasks = scopedTasks;
-            if (timerTasksFilterState === 'pending') visibleTasks = scopedTasks.filter(t => !t.done);
-            else if (timerTasksFilterState === 'done') visibleTasks = scopedTasks.filter(t => t.done);
-
-            if (allTasks.length === 0) {
-                listEl.innerHTML = `<div class="timer-tasks-empty">${d.timerTasksEmptyState || 'No study tasks yet. Add some from the Goals tab.'}</div>`;
-                return;
-            }
-            if (timerTasksScopeState === 'subject' && scopedTasks.length === 0) {
-                listEl.innerHTML = `<div class="timer-tasks-empty">${d.timerTasksSubjectEmptyState || 'No tasks for this subject yet. Add one below, or switch to All Subjects.'}</div>`;
-                return;
-            }
-            if (visibleTasks.length === 0) {
-                listEl.innerHTML = `<div class="timer-tasks-empty">${d.timerTasksFilterEmptyState || 'Nothing here.'}</div>`;
-                return;
-            }
-            visibleTasks.sort((a, b) => {
-                if (a.done !== b.done) return a.done ? 1 : -1;
-                if (a.matchesTag !== b.matchesTag) return a.matchesTag ? -1 : 1;
-                return 0;
-            });
-            listEl.innerHTML = visibleTasks.map(t => `
-                <div class="timer-task-item ${t.done ? 'is-done' : ''} ${t.matchesTag ? 'is-matching' : ''}">
-                    <div class="goal-task-checkbox ${t.done ? 'checked' : ''}" data-role="toggle-done" data-goal-id="${t.goalId}" data-task-id="${t.taskId}">${t.done ? '✓' : ''}</div>
-                    <div class="timer-task-info" data-role="select-lecture" data-goal-id="${t.goalId}" data-task-id="${t.taskId}" title="${currentSystemLanguage === 'ar' ? 'اضغط لاستخدام هذه المحاضرة كعنوان الجلسة' : 'Click to use this lecture as the session title'}">
-                        <div class="timer-task-text">${escapeGoalHtml(t.text)}</div>
-                        <div class="timer-task-goal-src">📚 ${escapeGoalHtml(t.goalTitle)}</div>
-                        ${t.reminders.length > 0 ? `<div class="timer-task-reminder-badge ${t.reminders.some(r => isReminderOverdue(r.date)) && !t.done ? 'is-overdue' : ''}">🔔 ${t.reminders.length}</div>` : ''}
-                    </div>
-                    <button class="timer-task-delete" data-role="delete-task" data-goal-id="${t.goalId}" data-task-id="${t.taskId}">✕</button>
-                </div>`).join('');
-            listEl.querySelectorAll('[data-role="toggle-done"]').forEach(el => {
-                el.addEventListener('click', (e) => { e.stopPropagation(); toggleGoalTaskDone(el.dataset.goalId, el.dataset.taskId); });
-            });
-            listEl.querySelectorAll('[data-role="delete-task"]').forEach(el => {
-                el.addEventListener('click', (e) => { e.stopPropagation(); deleteTaskFromTimerPanel(el.dataset.goalId, el.dataset.taskId); });
-            });
-            listEl.querySelectorAll('[data-role="select-lecture"]').forEach(el => {
-                el.addEventListener('click', () => {
-                    const goal = goalsArray.find(g => g.id === el.dataset.goalId);
-                    const task = goal && (goal.tasks || []).find(t2 => t2.id === el.dataset.taskId);
-                    if (task) selectLectureIntoSessionTitle(task.text);
-                });
-            });
+            document.getElementById('schedule-lecture-modal').classList.add('modal-open');
         }
-        function refreshTimerSidebar() {
-            renderLinkedGoalChip();
-            renderTimerTasksPanel();
-            applyExamMode();
+        function closeScheduleLectureModal() {
+            document.getElementById('schedule-lecture-modal').classList.remove('modal-open');
         }
-        function getExamModeInfo() {
-            const today = new Date(); today.setHours(0, 0, 0, 0);
-            let nearest = null;
-            goalsArray.forEach(goal => {
-                if (!goal.deadline || goal.linkedTag !== currentlySelectedTag) return;
-                if (goal.current >= goal.target) return;
-                const dueDate = new Date(goal.deadline + 'T00:00:00');
-                const diffDays = Math.round((dueDate - today) / (1000 * 60 * 60 * 24));
-                if (diffDays >= 0 && diffDays <= 3 && (nearest === null || diffDays < nearest.diffDays)) {
-                    nearest = { diffDays, goal };
-                }
-            });
-            return nearest;
+        function saveScheduleLecture() {
+            const select = document.getElementById('schedule-task-select');
+            const val = select ? select.value : '';
+            const date = document.getElementById('schedule-date-input')?.value || '';
+            const time = document.getElementById('schedule-time-input')?.value || '18:00';
+            const duration = parseInt(document.getElementById('schedule-duration-input')?.value || '45', 10);
+            const type = document.getElementById('schedule-type-input')?.value || 'study';
+            if (!val || !date || !time) return;
+            const [goalId, taskId] = val.split('::');
+            const ref = getLectureRef({goalId, taskId});
+            if (!ref.goal || !ref.task) return;
+            scheduledStudyEvents.push({ id: generateUniqueRecordId(), goalId, taskId, date, time, duration, type });
+            saveScheduledEvents();
+            closeScheduleLectureModal();
+            renderStudyPlanner();
+            showToast(currentSystemLanguage === 'ar' ? 'تمت إضافة الموعد' : 'Study block scheduled', ref.task.text, 'success');
         }
-        function applyExamMode() {
-            const banner = document.getElementById('exam-mode-banner');
-            const info = getExamModeInfo();
-            const d = languageDictionary[currentSystemLanguage];
-            if (info) {
-                document.body.setAttribute('data-exam-mode', 'true');
-                if (banner) {
-                    const daysTxt = info.diffDays === 0
-                        ? (d.examModeTodayTxt || "Today!")
-                        : `${info.diffDays} ${d.examModeDaysLeftSuffix || 'day(s) left'}`;
-                    banner.innerText = `⚠️ ${info.goal.title} — ${daysTxt}`;
-                    banner.style.display = 'flex';
-                }
-            } else {
-                document.body.removeAttribute('data-exam-mode');
-                if (banner) banner.style.display = 'none';
-            }
+        function deleteScheduledEvent(eventId) {
+            scheduledStudyEvents = scheduledStudyEvents.filter(e => e.id !== eventId);
+            saveScheduledEvents();
+            renderStudyPlanner();
         }
-        let quickNotesSaveTimer = null;
-        function saveTimerQuickNotes() {
-            const el = document.getElementById('timer-quick-notes');
-            if (!el) return;
-            timerQuickNotesMap[currentlySelectedTag] = el.value;
-            const cc = document.getElementById('timer-notes-charcount');
-            if (cc) cc.innerText = `${el.value.length} ${currentSystemLanguage === 'ar' ? 'حرف' : 'chars'}`;
-            clearTimeout(quickNotesSaveTimer);
-            quickNotesSaveTimer = setTimeout(() => {
-                dbSet('timerQuickNotes', timerQuickNotesMap);
-                const sv = document.getElementById('timer-notes-savestate');
-                if (sv) {
-                    sv.innerText = currentSystemLanguage === 'ar' ? '✓ محفوظ' : '✓ Saved';
-                    sv.classList.add('is-visible');
-                    setTimeout(() => sv.classList.remove('is-visible'), 1200);
-                }
-            }, 500);
+        function plannerEventTypeLabel(type) {
+            if (type === 'watch') return currentSystemLanguage === 'ar' ? 'مشاهدة' : 'Watch';
+            if (type === 'revision') return currentSystemLanguage === 'ar' ? 'مراجعة' : 'Revision';
+            return currentSystemLanguage === 'ar' ? 'مذاكرة' : 'Study';
         }
-        function clearTimerQuickNotes() {
-            const d = languageDictionary[currentSystemLanguage];
-            if (!confirm(d.timerNotesClearConfirm || 'Clear all notes?')) return;
-            delete timerQuickNotesMap[currentlySelectedTag];
-            const el = document.getElementById('timer-quick-notes');
-            if (el) el.value = '';
-            dbSet('timerQuickNotes', timerQuickNotesMap);
-            const cc = document.getElementById('timer-notes-charcount');
-            if (cc) cc.innerText = `0 ${currentSystemLanguage === 'ar' ? 'حرف' : 'chars'}`;
+        function plannerEventTimeLabel(time, duration) {
+            const [hh, mm] = String(time).split(':').map(Number);
+            const start = new Date(2000,0,1,hh||0,mm||0);
+            const end = new Date(start.getTime() + (duration||45)*60000);
+            const opts = {hour:'2-digit',minute:'2-digit'};
+            return `${start.toLocaleTimeString([],opts)}–${end.toLocaleTimeString([],opts)}`;
         }
-        function updateTimerNotesHeaderSubject() {
-            const header = document.getElementById('timer-notes-header');
-            const d = languageDictionary[currentSystemLanguage];
-            if (header) header.innerText = `${d.timerNotesHeader} — ${currentlySelectedTag}`;
-        }
-        function loadTimerNotesForCurrentTag() {
-            const el = document.getElementById('timer-quick-notes');
-            if (!el) return;
-            const text = timerQuickNotesMap[currentlySelectedTag] || '';
-            el.value = text;
-            const cc = document.getElementById('timer-notes-charcount');
-            if (cc) cc.innerText = `${text.length} ${currentSystemLanguage === 'ar' ? 'حرف' : 'chars'}`;
-            updateTimerNotesHeaderSubject();
-        }
-        function openHabitModal() {
-            document.getElementById('modal-habit-name').value = '';
-            document.getElementById('habit-modal').classList.add('modal-open');
-            setTimeout(() => document.getElementById('modal-habit-name').focus(), 100);
-        }
-        function closeHabitModal() { document.getElementById('habit-modal').classList.remove('modal-open'); }
-
-        function openGoalsSettingsModal() {
-            document.getElementById('goals-daily-input').value = studyGoals.daily || 4;
-            document.getElementById('goals-weekly-input').value = studyGoals.weekly || 28;
-            document.getElementById('goals-monthly-input').value = studyGoals.monthly || 120;
-            document.getElementById('goals-settings-modal').classList.add('modal-open');
-        }
-        function closeGoalsSettingsModal() { document.getElementById('goals-settings-modal').classList.remove('modal-open'); }
-        function saveGoalsSettings() {
-            let daily = parseFloat(document.getElementById('goals-daily-input').value);
-            let weekly = parseFloat(document.getElementById('goals-weekly-input').value);
-            let monthly = parseFloat(document.getElementById('goals-monthly-input').value);
-            if (daily > 0) studyGoals.daily = daily;
-            if (weekly > 0) studyGoals.weekly = weekly;
-            if (monthly > 0) studyGoals.monthly = monthly;
-            dbSet('studyGoals', studyGoals);
-            recalculateAndRenderDashboard();
-            closeGoalsSettingsModal();
-            showToast('Goals Saved!', '', 'success');
-        }
-        function saveHabitFromModal() {
-            const name = document.getElementById('modal-habit-name').value.trim();
-            if (!name) return;
-            habitsArray.unshift({ id: generateUniqueRecordId(), name: name, completedDates: [] });
-            dbSet('habits', habitsArray);
-            renderHabitsScreen();
-            closeHabitModal();
-            const d = languageDictionary[currentSystemLanguage];
-            showToast(d.toastHabitAdded, name, 'success');
-        }
-        document.getElementById('modal-habit-name').addEventListener('keypress', function (e) { if (e.key === 'Enter') saveHabitFromModal(); });
-        function todayISODateString() { return getLocalISODate(new Date()); }
-        function toggleHabitToday(habitId) {
-            const habit = habitsArray.find(h => h.id === habitId);
-            if (!habit) return;
-            const today = todayISODateString();
-            const idx = habit.completedDates.indexOf(today);
-            if (idx === -1) habit.completedDates.push(today);
-            else habit.completedDates.splice(idx, 1);
-            dbSet('habits', habitsArray);
-            renderHabitsScreen();
-        }
-        function deleteHabit(habitId) {
-            const d = languageDictionary[currentSystemLanguage];
-            if (!confirm(d.habitDeleteConfirm)) return;
-            habitsArray = habitsArray.filter(h => h.id !== habitId);
-            dbSet('habits', habitsArray);
-            renderHabitsScreen();
-        }
-        function calculateHabitStreak(habit) {
-            let streak = 0;
-            let cursor = new Date(); cursor.setHours(0, 0, 0, 0);
-            while (true) {
-                const iso = getLocalISODate(cursor);
-                if (habit.completedDates.includes(iso)) { streak++; cursor.setDate(cursor.getDate() - 1); }
-                else break;
-            }
-            return streak;
-        }
-        function renderHabitsScreen() {
-            const d = languageDictionary[currentSystemLanguage];
-            const grid = document.getElementById('habits-grid-wrapper');
-            const emptyState = document.getElementById('habits-empty-state');
-            if (!grid) return;
-            grid.innerHTML = '';
-            if (habitsArray.length === 0) { emptyState.style.display = 'block'; return; }
-            emptyState.style.display = 'none';
-            const dayLettersEN = ["S", "S", "M", "T", "W", "T", "F"];
-            const dayLettersAR = ["س", "ح", "ن", "ث", "ر", "خ", "ج"];
-            const dayLetters = currentSystemLanguage === 'ar' ? dayLettersAR : dayLettersEN;
-            let last7Days = [];
-            for (let i = 6; i >= 0; i--) { const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - i); last7Days.push(d); }
-            const todayISO = todayISODateString();
-            habitsArray.forEach(habit => {
-                const doneCount = last7Days.filter(d => habit.completedDates.includes(getLocalISODate(d))).length;
-                const pct = Math.round((doneCount / 7) * 100);
-                const streak = calculateHabitStreak(habit);
-                const isDoneToday = habit.completedDates.includes(todayISO);
-                const dotsHtml = last7Days.map(d => {
-                    const iso = getLocalISODate(d);
-                    const isDone = habit.completedDates.includes(iso);
-                    const isToday = iso === todayISO;
-                    const letter = dayLetters[d.getDay()];
-                    return `<div class="habit-day-dot-wrap"><div class="habit-day-letter">${letter}</div><div class="habit-day-dot ${isDone ? 'done' : ''} ${isToday ? 'is-today' : ''}" title="${iso}"></div></div>`;
-                }).join('');
-                const card = document.createElement('div');
-                card.className = 'habit-card';
-                card.innerHTML = `
-                    <div class="habit-card-top">
-                        <div><div class="habit-card-name">${habit.name}</div><div class="habit-streak-badge">🔥 ${streak} ${d.habitStreakTxt}</div></div>
-                        <button class="item-delete-btn" onclick="deleteHabit('${habit.id}')">✕</button>
-                    </div>
-                    <div class="habit-week-dots">${dotsHtml}</div>
-                    <div class="habit-bottom-row">
-                        <div class="habit-pct-txt"><strong>${pct}%</strong> · ${doneCount}/7</div>
-                        <button class="habit-toggle-btn ${isDoneToday ? 'is-done' : ''}" onclick="toggleHabitToday('${habit.id}')">${isDoneToday ? d.habitDoneTxt : d.habitMarkDoneTxt}</button>
-                    </div>`;
-                grid.appendChild(card);
-            });
-        }
-
-        let currentlyEditingIndex = -1;
-
-        function openEditSessionModal(index) {
-            currentlyEditingIndex = index;
-            const session = archivedSessionsArray[index];
-            if (!session) return;
-
-            document.getElementById('edit-session-date').value = session.date;
-            document.getElementById('edit-session-title').value = session.title;
-            document.getElementById('edit-session-duration').value = parseInt(session.duration) || 25;
-            document.getElementById('edit-session-range').value = session.range || '';
-
-            const tagSelect = document.getElementById('edit-session-tag');
-            tagSelect.innerHTML = '';
-            currentTagsList.forEach(tag => {
-                const opt = document.createElement('option');
-                opt.value = tag;
-                opt.innerText = tag;
-                if (tag === session.tag) opt.selected = true;
-                tagSelect.appendChild(opt);
-            });
-
-            document.getElementById('edit-session-modal').classList.add('modal-open');
-        }
-
-        function closeEditSessionModal() {
-            document.getElementById('edit-session-modal').classList.remove('modal-open');
-            currentlyEditingIndex = -1;
-        }
-
-        function saveEditSession() {
-            if (currentlyEditingIndex < 0 || currentlyEditingIndex >= archivedSessionsArray.length) return;
-
-            const date = document.getElementById('edit-session-date').value;
-            const title = document.getElementById('edit-session-title').value.trim();
-            const tag = document.getElementById('edit-session-tag').value;
-            const duration = parseInt(document.getElementById('edit-session-duration').value);
-            const range = document.getElementById('edit-session-range').value.trim();
-
-            if (!date || !title || !duration || duration < 1) {
-                showToast('Error', 'Please fill in all required fields', 'error');
-                return;
-            }
-
-            archivedSessionsArray[currentlyEditingIndex] = {
-                date: date,
-                title: title,
-                tag: tag,
-                duration: duration + ' Min',
-                range: range || '--:--'
-            };
-
-            dbSet('sessions', archivedSessionsArray);
-            recalculateAndRenderDashboard();
-            renderHistoryGridWithPagination();
-            renderStudyTrendChart();
-            renderProductivityHeatTimeline();
-            updateQuickStats();
-            closeEditSessionModal();
-
-            const d = languageDictionary[currentSystemLanguage];
-            showToast(d.sessionUpdated, title, 'success');
-        }
-
-        function openManualSessionModal() {
-            const today = getLocalISODate(new Date());
-            document.getElementById('manual-session-date').value = today;
-            document.getElementById('manual-session-title').value = '';
-            document.getElementById('manual-session-duration').value = 25;
-            document.getElementById('manual-session-range').value = '';
-
-            const tagSelect = document.getElementById('manual-session-tag');
-            tagSelect.innerHTML = '';
-            currentTagsList.forEach(tag => {
-                const opt = document.createElement('option');
-                opt.value = tag;
-                opt.innerText = tag;
-                if (tag === currentlySelectedTag) opt.selected = true;
-                tagSelect.appendChild(opt);
-            });
-
-            document.getElementById('manual-session-modal').classList.add('modal-open');
-            setTimeout(() => document.getElementById('manual-session-title').focus(), 100);
-        }
-
-        function closeManualSessionModal() {
-            document.getElementById('manual-session-modal').classList.remove('modal-open');
-        }
-
-        function saveManualSession() {
-            const date = document.getElementById('manual-session-date').value;
-            const title = document.getElementById('manual-session-title').value.trim();
-            const tag = document.getElementById('manual-session-tag').value;
-            const duration = parseInt(document.getElementById('manual-session-duration').value);
-            const range = document.getElementById('manual-session-range').value.trim();
-
-            if (!date || !title || !duration || duration < 1) {
-                showToast('Error', 'Please fill in all required fields', 'error');
-                return;
-            }
-
-            const newSession = {
-                date: date,
-                title: title,
-                tag: tag,
-                duration: duration + ' Min',
-                range: range || '--:--'
-            };
-
-            archivedSessionsArray.unshift(newSession);
-            dbSet('sessions', archivedSessionsArray);
-
-            recalculateAndRenderDashboard();
-            renderHistoryGridWithPagination();
-            renderStudyTrendChart();
-            renderProductivityHeatTimeline();
-            updateQuickStats();
-            closeManualSessionModal();
-
-            const d = languageDictionary[currentSystemLanguage];
-            showToast(d.sessionAdded, title, 'success');
-        }
-
-        function updateEditAddModalLabels() {
-            const d = languageDictionary[currentSystemLanguage];
-            document.getElementById('edit-session-heading').innerText = d.editSessionTitle;
-            document.getElementById('edit-date-lbl').innerText = d.manualDateLbl;
-            document.getElementById('edit-title-lbl').innerText = d.manualTitleLbl;
-            document.getElementById('edit-tag-lbl').innerText = d.manualTagLbl;
-            document.getElementById('edit-duration-lbl').innerText = d.manualDurationLbl;
-            document.getElementById('edit-range-lbl').innerText = d.manualTimeRangeLbl;
-            document.getElementById('edit-session-range').placeholder = d.manualTimeRangePlace;
-            document.getElementById('edit-cancel-btn').innerText = d.modalCancel;
-            document.getElementById('edit-save-btn').innerText = d.saveChangesBtn;
-
-            document.getElementById('manual-session-heading').innerText = d.addManualSessionTitle;
-            document.getElementById('manual-date-lbl').innerText = d.manualDateLbl;
-            document.getElementById('manual-title-lbl').innerText = d.manualTitleLbl;
-            document.getElementById('manual-tag-lbl').innerText = d.manualTagLbl;
-            document.getElementById('manual-duration-lbl').innerText = d.manualDurationLbl;
-            document.getElementById('manual-range-lbl').innerText = d.manualTimeRangeLbl;
-            document.getElementById('manual-session-range').placeholder = d.manualTimeRangePlace;
-            document.getElementById('manual-cancel-btn').innerText = d.modalCancel;
-            document.getElementById('manual-save-btn').innerText = d.addSessionBtn;
-            document.getElementById('add-manual-btn-txt').innerText = d.addManualBtn;
-
-            // New analytics labels
-            const trendTitle = document.getElementById('chart-trend-title');
-            if (trendTitle) trendTitle.innerText = d.trendTitle || '📈 Study Trend';
-            const trendLegendDaily = document.getElementById('trend-legend-daily');
-            if (trendLegendDaily) trendLegendDaily.innerText = d.trendDaily || 'Daily';
-            const trendLegendAvg = document.getElementById('trend-legend-avg');
-            if (trendLegendAvg) trendLegendAvg.innerText = d.trendAvg || '7-Day Avg';
-            const prodTitle = document.getElementById('chart-productivity-title');
-            if (prodTitle) prodTitle.innerText = d.productivityTitle || '🕒 Productivity Hours';
-            const prodSubtitle = document.getElementById('productivity-subtitle');
-            if (prodSubtitle) prodSubtitle.innerText = d.productivitySubtitle || 'When you study most during the day';
-        }
-
-
-        function openTagColorModal(tagName) {
-            const modal = document.createElement('div');
-            modal.className = 'modal-overlay modal-open';
-            modal.id = 'tag-color-modal-dynamic';
-            modal.innerHTML = `
-                <div class="modal-box">
-                    <h3>${currentSystemLanguage === 'ar' ? 'لون التاج' : 'Tag Color'}: ${tagName}</h3>
-                    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:16px 0;">
-                        ${['#3498db','#e67e22','#1abc9c','#e84393','#2ecc71','#9b59b6','#e74c3c','#f1c40f','#16a085','#d35400','#8e44ad','#2c3e50','#d9a54a','#3e5c8a','#00d26a','#3498db','#e74c3c','#f39c12'].map(c => `
-                            <div onclick="setTagColor('${tagName}', '${c}'); document.getElementById('tag-color-modal-dynamic').remove();" 
-                                 style="width:40px;height:40px;border-radius:10px;background:${c};cursor:pointer;border:2px solid transparent;transition:all 0.2s;"
-                                 onmouseover="this.style.borderColor='#fff';this.style.transform='scale(1.15)';"
-                                 onmouseout="this.style.borderColor='transparent';this.style.transform='scale(1)';"
-                            ></div>
-                        `).join('')}
-                    </div>
-                    <div style="margin-bottom:16px;">
-                        <label style="font-size:11px;color:var(--text-gray);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:6px;">${currentSystemLanguage === 'ar' ? 'لون مخصص' : 'Custom Color'}</label>
-                        <input type="color" id="custom-tag-color-picker" value="${getTagColor(tagName)}" style="width:100%;height:40px;border-radius:10px;border:none;cursor:pointer;background:transparent;">
-                    </div>
-                    <div class="modal-buttons">
-                        <button class="modal-btn cancel" onclick="document.getElementById('tag-color-modal-dynamic').remove();">${currentSystemLanguage === 'ar' ? 'إلغاء' : 'Cancel'}</button>
-                        <button class="modal-btn confirm" onclick="setTagColor('${tagName}', document.getElementById('custom-tag-color-picker').value); document.getElementById('tag-color-modal-dynamic').remove();">${currentSystemLanguage === 'ar' ? 'حفظ' : 'Save'}</button>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(modal);
-        }
-
-        let customTagColors = {};
-
-        function setTagColor(tag, color) {
-            customTagColors[tag] = color;
-            tagPaletteColors[tag] = color;
-            dbSet('customTagColors', customTagColors);
-            renderTagsChips();
-            recalculateAndRenderDashboard();
-            renderHistoryGridWithPagination();
-            renderWeeklySegmentedChart();
-            showToast(currentSystemLanguage === 'ar' ? 'تم تحديث اللون!' : 'Color Updated!', tag, 'success');
-        }
-
-        async function loadCustomTagColors() {
-            const saved = await dbGet('customTagColors');
-            if (saved) {
-                customTagColors = saved;
-                Object.entries(saved).forEach(([tag, color]) => {
-                    tagPaletteColors[tag] = color;
-                });
-            }
-        }
-
-        document.addEventListener('keydown', function(e) {
-            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-            if (e.code === 'Space') { e.preventDefault(); if (isClockRunning) pauseClock(); else startClock(); }
-            if (e.code === 'KeyS') { e.preventDefault(); stopAndSaveClock(); }
-            if (e.code === 'KeyF') { e.preventDefault(); toggleFocusMode(!document.getElementById('focus-overlay').classList.contains('is-active')); }
-            if (e.code === 'Digit1') { e.preventDefault(); activateScreen('timer-tab', 'screen-timer'); }
-            if (e.code === 'Digit2') { e.preventDefault(); activateScreen('analysis-tab', 'screen-analysis'); }
-            if (e.code === 'Digit3') { e.preventDefault(); activateScreen('goals-tab', 'screen-goals'); }
-            if (e.code === 'Digit4') { e.preventDefault(); activateScreen('habits-tab', 'screen-habits'); }
-        });
-
         
-function toggleAccountMenu(event) {
-    if (event.target.closest('.account-menu-item')) return;
-    event.stopPropagation();
-    const menu = document.getElementById('account-dropdown-menu');
-    const badge = document.getElementById('user-badge');
-    if (!menu) return;
-    if (menu.classList.contains('is-visible')) {
-        menu.classList.remove('is-visible');
-        if (badge) badge.classList.remove('active-menu');
-    } else {
-        menu.classList.add('is-visible');
-        if (badge) badge.classList.add('active-menu');
-    }
+/* ===== Study Calendar Pro UX v3 JS ===== */
+let plannerActiveSubject = '';
+let plannerActiveBranch = '';
+let plannerDragState = null;
+let plannerEventPopoverEl = null;
+let plannerDropWarningEl = null;
+
+function plannerEscapeHtml(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function plannerGetSubjects(){
+  const m=new Map();
+  (goalsArray||[]).forEach(g=>{const s=String(g.linkedTag||'').trim()||'Unassigned';m.set(s,s);});
+  return [...m.values()].sort((a,b)=>a.localeCompare(b));
 }
+function plannerPopulateFilters(){
+  const s=document.getElementById('planner-filter-subject'),b=document.getElementById('planner-filter-branch');
+  if(!s||!b)return;
+  const subjects=plannerGetSubjects(), ps=plannerActiveSubject;
+  s.innerHTML='<option value="">All Subjects</option>'+subjects.map(x=>`<option value="${plannerEscapeHtml(x)}">${plannerEscapeHtml(x)}</option>`).join('');
+  s.value=subjects.includes(ps)?ps:'';
+  plannerActiveSubject=s.value;
+  const branches=(goalsArray||[]).filter(g=>!plannerActiveSubject||(String(g.linkedTag||'').trim()||'Unassigned')===plannerActiveSubject)
+    .map(g=>String(g.title||'').trim()).filter(Boolean).sort((a,b)=>a.localeCompare(b));
+  b.innerHTML='<option value="">All Branches</option>'+branches.map(x=>`<option value="${plannerEscapeHtml(x)}">${plannerEscapeHtml(x)}</option>`).join('');
+  b.value=branches.includes(plannerActiveBranch)?plannerActiveBranch:'';
+  plannerActiveBranch=b.value;
+}
+function plannerFilterChanged(){
+  plannerActiveSubject=document.getElementById('planner-filter-subject')?.value||'';
+  plannerActiveBranch=document.getElementById('planner-filter-branch')?.value||'';
+  renderStudyPlanner();
+}
+function plannerEventPassesFilter(ev){
+  const ref=getLectureRef(ev.goalId,ev.taskId); if(!ref)return false;
+  const subject=String(ref.goal.linkedTag||'').trim()||'Unassigned', branch=String(ref.goal.title||'').trim();
+  return (!plannerActiveSubject||subject===plannerActiveSubject)&&(!plannerActiveBranch||branch===plannerActiveBranch);
+}
+function plannerTodayProgress(events){
+  const today=plannerISO(new Date()), arr=events.filter(e=>String(e.date)===today&&plannerEventPassesFilter(e));
+  const done=arr.filter(e=>getLectureRef(e.goalId,e.taskId)?.task?.done).length,total=arr.length;
+  return {done,total,pct:total?Math.round(done/total*100):0};
+}
+function renderPlannerProgress(events){
+  const box=document.getElementById('planner-progress-card');if(!box)return;
+  const p=plannerTodayProgress(events),r=16,c=2*Math.PI*r,off=c*(1-p.pct/100);
+  box.innerHTML=`<div class="planner-progress-ring"><svg viewBox="0 0 40 40" aria-hidden="true"><circle class="ring-bg" cx="20" cy="20" r="${r}"/><circle class="ring-value" cx="20" cy="20" r="${r}" stroke-dasharray="${c}" stroke-dashoffset="${off}"/></svg></div><div class="planner-progress-copy"><strong>Today: ${p.done}/${p.total} sessions · ${p.pct}%</strong><span>${p.total?'Keep the focus on scheduled sessions.':'No sessions scheduled for today.'}</span></div>`;
+}
+function plannerSnapMinutes(m){return Math.max(0,Math.min(1439,Math.round(m/15)*15));}
+function plannerEventTimeFromMinutes(m){m=Math.max(0,Math.min(1439,m));return `${String(Math.floor(m/60)).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`;}
+function plannerShowDropWarning(msg,x,y){
+  if(!plannerDropWarningEl){plannerDropWarningEl=document.createElement('div');plannerDropWarningEl.className='planner-drop-warning';document.body.appendChild(plannerDropWarningEl);}
+  plannerDropWarningEl.textContent=msg;plannerDropWarningEl.style.display='block';
+  plannerDropWarningEl.style.left=`${Math.min(innerWidth-315,Math.max(12,x+12))}px`;plannerDropWarningEl.style.top=`${Math.min(innerHeight-80,Math.max(12,y+12))}px`;
+}
+function plannerHideDropWarning(){if(plannerDropWarningEl)plannerDropWarningEl.style.display='none';}
+function plannerClosePopover(){if(plannerEventPopoverEl){plannerEventPopoverEl.remove();plannerEventPopoverEl=null;}}
+function plannerConflictSvg(){return `<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.2 18 17H2L10 2.2Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M10 7v5.1M10 14.6v.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`;}
+function plannerOpenEventPopover(ev,anchor){
+  plannerClosePopover();const ref=getLectureRef(ev.goalId,ev.taskId);if(!ref)return;
+  const pop=document.createElement('div');pop.className='planner-event-popover';
+  pop.innerHTML=`<div class="pep-title">${plannerEscapeHtml(ref.task.text)}</div><button data-a="open"><span>▶</span><span>Open</span></button><button data-a="done"><span>✓</span><span>${ref.task.done?'Mark as incomplete':'Complete'}</span></button><button data-a="edit"><span>✎</span><span>Edit lecture</span></button><button data-a="delete" class="danger"><span>🗑</span><span>Delete from calendar</span></button>`;
+  document.body.appendChild(pop);plannerEventPopoverEl=pop;
+  const rect=(anchor||document.activeElement).getBoundingClientRect(),pw=pop.offsetWidth,ph=pop.offsetHeight;
+  let left=rect.left,top=rect.bottom+7;if(left+pw>innerWidth-10)left=innerWidth-pw-10;if(top+ph>innerHeight-10)top=rect.top-ph-7;
+  pop.style.left=`${Math.max(10,left)}px`;pop.style.top=`${Math.max(10,top)}px`;
+  pop.querySelectorAll('button').forEach(btn=>btn.addEventListener('click',e=>{
+    e.stopPropagation();const a=btn.dataset.a;
+    if(a==='done')toggleGoalTaskDone(ev.goalId,ev.taskId);
+    else if(a==='edit')editGoalTask(ev.goalId,ev.taskId);
+    else if(a==='delete')deleteScheduledEvent(ev.id);
+    else if(a==='open'){plannerClosePopover();openSubjectGroup(ref.goal.linkedTag||'');setTimeout(()=>document.querySelector(`[data-lecture-id="${CSS.escape(ev.taskId)}"]`)?.scrollIntoView({behavior:'smooth',block:'center'}),120);return;}
+    plannerClosePopover();renderGoalsScreen();
+  }));
+}
+document.addEventListener('click',e=>{if(plannerEventPopoverEl&&!plannerEventPopoverEl.contains(e.target)&&!e.target.closest('.cal-event'))plannerClosePopover();});
+
+function plannerApplyDrop(eventId,date,startTime){
+  const ev=scheduledStudyEvents.find(e=>e.id===eventId);if(!ev)return false;
+  const oldDate=ev.date,oldStart=ev.startTime,parts=startTime.split(':').map(Number),start=plannerSnapMinutes(parts[0]*60+parts[1]),duration=Number(ev.duration||45);
+  if(start<480||start+duration>1260){plannerShowDropWarning('This session must fit between 08:00 and 21:00.',innerWidth/2,80);return false;}
+  const candidate={...ev,date,startTime:plannerEventTimeFromMinutes(start)};
+  if(scheduledStudyEvents.some(o=>o.id!==ev.id&&o.date===date&&plannerEventsConflict(candidate,o))){
+    plannerShowDropWarning('Conflict — this session overlaps another appointment.',innerWidth/2,80);return false;
+  }
+  ev.date=date;ev.startTime=candidate.startTime;saveScheduledEvents();return oldDate!==ev.date||oldStart!==ev.startTime;
+}
+function plannerStartDrag(e,id){plannerClosePopover();plannerDragState={eventId:id};e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',id);e.currentTarget.classList.add('dragging');}
+function plannerEndDrag(){document.querySelectorAll('.cal-event.dragging').forEach(x=>x.classList.remove('dragging'));document.querySelectorAll('.cal-cell.drop-target,.cal-cell.drop-preview').forEach(x=>x.classList.remove('drop-target','drop-preview'));plannerHideDropWarning();plannerDragState=null;}
+function plannerAllowDrop(e){
+  e.preventDefault();const cell=e.currentTarget;cell.classList.add('drop-target','drop-preview');if(!plannerDragState)return;
+  const ev=scheduledStudyEvents.find(x=>x.id===plannerDragState.eventId);if(!ev)return;
+  const r=cell.getBoundingClientRect(),y=Math.max(0,Math.min(r.height,e.clientY-r.top)),start=plannerSnapMinutes(Number(cell.dataset.hour)*60+(y/r.height)*60),candidate={...ev,date:cell.dataset.date,startTime:plannerEventTimeFromMinutes(start)};
+  if(scheduledStudyEvents.some(o=>o.id!==ev.id&&o.date===candidate.date&&plannerEventsConflict(candidate,o)))plannerShowDropWarning('Conflict — release on another 15-minute slot.',e.clientX,e.clientY);else plannerHideDropWarning();
+}
+function plannerLeaveDrop(e){e.currentTarget.classList.remove('drop-target','drop-preview');}
+function plannerDrop(e){e.preventDefault();const cell=e.currentTarget;cell.classList.remove('drop-target','drop-preview');plannerHideDropWarning();if(!plannerDragState)return;const r=cell.getBoundingClientRect(),y=Math.max(0,Math.min(r.height,e.clientY-r.top)),start=plannerSnapMinutes(Number(cell.dataset.hour)*60+(y/r.height)*60);plannerApplyDrop(plannerDragState.eventId,cell.dataset.date,plannerEventTimeFromMinutes(start));plannerDragState=null;renderStudyPlanner();}
+function updatePlannerNowLine(){
+  const host=document.getElementById('planner-week-grid');if(!host)return;host.querySelectorAll('.planner-now-line').forEach(x=>x.remove());
+  const now=new Date(),ws=plannerWeekStart(now,currentPlannerWeekOffset),day=Math.floor((new Date(now.getFullYear(),now.getMonth(),now.getDate())-ws)/86400000),mins=now.getHours()*60+now.getMinutes()+now.getSeconds()/60;
+  if(day<0||day>6||mins<480||mins>1260)return;const cols=host.querySelectorAll('.planner-day-column'),col=cols[day];if(!col)return;
+  const line=document.createElement('div');line.className='planner-now-line';line.style.position='absolute';line.style.left='0';line.style.right='0';line.style.top=`${plannerTimeToRowOffset(mins)}px`;
+  line.innerHTML='<svg viewBox="0 0 100 2" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="1" x2="100" y2="1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+  col.style.position='relative';col.appendChild(line);
+}
+
+function renderStudyPlanner() {
+  plannerPopulateFilters();
+            const grid = document.getElementById('study-calendar-grid');
+            const summary = document.getElementById('planner-summary');
+            const focus = document.getElementById('planner-focus');
+            const label = document.getElementById('planner-week-label');
+            if (!grid || !summary || !focus || !label) return;
+            const start = plannerWeekStart();
+            const events = getPlannerEventsForWeek(start);
+            label.innerText = plannerWeekRangeLabel(start);
+
+            const refs = events.map(e => ({e, ...getLectureRef(e)})).filter(x => x.goal && x.task);
+            const conflictIds = plannerConflictIds(events);
+  renderPlannerProgress(allPlannerEvents || events);
+            const conflictBanner = document.getElementById('planner-conflict-banner');
+            if (conflictBanner) {
+                const count = conflictIds.size;
+                conflictBanner.style.display = count ? 'block' : 'none';
+                conflictBanner.innerText = count
+                    ? `⚠ ${currentSystemLanguage === 'ar' ? `يوجد ${count} موعدًا داخل تعارض زمني. اسحب أي موعد إلى خانة أخرى لإصلاحه.` : `${count} scheduled blocks are in a time conflict. Drag a block to another slot to fix it.`}`
+                    : '';
+            }
+            const done = refs.filter(x => x.task.done).length;
+            const revision = refs.filter(x => x.task.needsRevision && !x.task.done).length;
+            const total = refs.length;
+            const progress = total ? Math.round((done/total)*100) : 0;
+            summary.innerHTML = `
+                <div class="planner-stat"><b>${total}</b><span>${currentSystemLanguage==='ar'?'جلسات مجدولة':'Scheduled blocks'}</span></div>
+                <div class="planner-stat"><b>${done}</b><span>${currentSystemLanguage==='ar'?'مكتملة':'Completed'}</span></div>
+                <div class="planner-stat"><b>${revision}</b><span>${currentSystemLanguage==='ar'?'للمراجعة':'For revision'}</span></div>
+                <div class="planner-stat"><b>${progress}%</b><span>${currentSystemLanguage==='ar'?'تقدم الأسبوع':'Week progress'}</span><div class="planner-progress"><i style="width:${progress}%"></i></div></div>`;
+
+            const today = plannerISO(new Date());
+            const focusItems = refs.filter(x => x.e.date === today && !x.task.done);
+            focus.innerHTML = `
+                <div class="planner-focus-title">🎯 ${currentSystemLanguage==='ar'?'تركيز اليوم':'Today’s Focus'}</div>
+                <div class="planner-focus-list">
+                    ${focusItems.length ? focusItems.map(x => `<div class="planner-focus-item priority-${plannerPriority(x.task)}" onclick="scrollToScheduledEvent('${x.e.id}')"><strong>${plannerPriority(x.task)==='high'?'🔥 ':plannerPriority(x.task)==='medium'?'• ':''}${escapeGoalHtml(x.task.text)}</strong><span>${escapeGoalHtml(x.goal.title)} · ${plannerEventTimeLabel(x.e.time,x.e.duration)}</span></div>`).join('') : `<div style="color:var(--text-gray);font-size:10px;">${currentSystemLanguage==='ar'?'لا توجد محاضرات مجدولة لليوم.':'No scheduled lectures for today.'}</div>`}
+                </div>`;
+
+            const dayNames = currentSystemLanguage === 'ar'
+                ? ['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت']
+                : ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+            const hours = [8,9,10,11,12,13,14,15,16,17,18,19,20,21];
+            let cells = `<div class="cal-corner"></div>`;
+            for (let i=0;i<7;i++) {
+                const d = new Date(start); d.setDate(d.getDate()+i);
+                cells += `<div class="cal-day-head ${plannerISO(d)===today?'today':''}"><strong>${dayNames[i]}</strong><span>${plannerDateLabel(d)}</span></div>`;
+            }
+            hours.forEach(hour => {
+                cells += `<div class="cal-time">${String(hour).padStart(2,'0')}:00</div>`;
+                for (let i=0;i<7;i++) {
+                    const d = new Date(start); d.setDate(d.getDate()+i);
+                    const date = plannerISO(d);
+                    const cellEvents = refs.filter(x => x.e.date === date && parseInt(String(x.e.time).split(':')[0],10) === hour);
+                    cells += `<div class="cal-cell" data-calendar-date="${date}" data-calendar-hour="${hour}"
+                        ondragover="plannerAllowDrop(event)" ondragleave="plannerLeaveDrop(event)" ondrop="plannerDrop(event)">
+                        ${cellEvents.map(x => {
+                            const typeIcon = x.e.type==='watch'?'▶':(x.e.type==='revision'?'↻':'📚');
+                            const isConflict = conflictIds.has(x.e.id);
+                            return `<div class="cal-event ${x.task.done?'done':''} ${isConflict?'conflict':''}" id="cal-event-${x.e.id}" draggable="true"
+                                ondragstart="plannerStartDrag(event,'${x.e.id}')" ondragend="plannerEndDrag(event)"
+                                onclick="event.stopPropagation(); openScheduleEventActions('${x.e.id}')">
+                                <div class="ce-time">${typeIcon} ${escapeGoalHtml(plannerEventTimeLabel(x.e.time,x.e.duration))}${plannerEventConflictText(isConflict)}</div>
+                                <strong>${escapeGoalHtml(x.task.text)}</strong>
+                                <span>${escapeGoalHtml(x.goal.title)}</span>
+                            </div>`;
+                        }).join('')}
+                    </div>`;
+                }
+            });
+            grid.innerHTML = cells;
+            document.getElementById('planner-empty').style.display = events.length ? 'none' : 'block';
+            updatePlannerNowLine();
+        }
+        function scrollToScheduledEvent(eventId) {
+            const el = document.getElementById(`cal-event-${eventId}`);
+            if (el) el.scrollIntoView({behavior:'smooth',block:'center',inline:'center'});
+        }
+        function openScheduleEventActions(eventId, anchor){ const ev=scheduledStudyEvents.find(e=>e.id===eventId); if(ev) plannerOpenEventPopover(ev,anchor||document.activeElement); }
 
 function hideAccountMenu() {
     const menu = document.getElementById('account-dropdown-menu');
@@ -5911,6 +5518,249 @@ let appHasBooted = false;
             if (btn) btn.style.display = "none";
             deferredInstallPrompt = null;
         });
-    </script>
+    
+        setInterval(() => {
+            if (document.getElementById('study-planner')) updatePlannerNowLine();
+        }, 60000);
+
+</script>
 </body>
 </html>
+
+<script>
+setInterval(updatePlannerNowLine, 60000);
+</script>
+
+<style>
+
+/* =========================================================
+   DARK MODE — Light-mode-equivalent visual system
+   ========================================================= */
+html[data-theme="dark"], body.dark-mode, body[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+html[data-theme="dark"] body,
+body.dark-mode,
+body[data-theme="dark"] {
+  --dm-bg: #0f1117;
+  --dm-surface: #171a22;
+  --dm-surface-2: #1d212b;
+  --dm-surface-3: #242936;
+  --dm-border: rgba(255,255,255,.10);
+  --dm-border-strong: rgba(255,255,255,.16);
+  --dm-text: #f3f5f8;
+  --dm-text-2: #c9ced8;
+  --dm-muted: #9299a8;
+  --dm-shadow: 0 14px 35px rgba(0,0,0,.28);
+}
+
+/* Main page/background */
+html[data-theme="dark"] body,
+body.dark-mode,
+body[data-theme="dark"] {
+  background: var(--dm-bg) !important;
+  color: var(--dm-text) !important;
+}
+
+/* Glass cards / panels */
+html[data-theme="dark"] .glass-card,
+html[data-theme="dark"] .dashboard-scaled-panel,
+html[data-theme="dark"] .study-planner,
+body.dark-mode .glass-card,
+body.dark-mode .dashboard-scaled-panel,
+body.dark-mode .study-planner,
+body[data-theme="dark"] .glass-card,
+body[data-theme="dark"] .dashboard-scaled-panel,
+body[data-theme="dark"] .study-planner {
+  background: var(--dm-surface) !important;
+  border-color: var(--dm-border) !important;
+  box-shadow: var(--dm-shadow) !important;
+  color: var(--dm-text) !important;
+}
+
+/* Nested cards, inputs, dropdowns */
+html[data-theme="dark"] .goal-card,
+html[data-theme="dark"] .goal-task-item,
+html[data-theme="dark"] .planner-focus-item,
+html[data-theme="dark"] .planner-day-column,
+html[data-theme="dark"] .planner-day-head,
+html[data-theme="dark"] .cal-cell,
+html[data-theme="dark"] .summary-card,
+html[data-theme="dark"] .stat-card,
+html[data-theme="dark"] .modal-content,
+html[data-theme="dark"] .dropdown-menu,
+html[data-theme="dark"] .popover,
+body.dark-mode .goal-card,
+body.dark-mode .goal-task-item,
+body.dark-mode .planner-focus-item,
+body.dark-mode .planner-day-column,
+body.dark-mode .planner-day-head,
+body.dark-mode .cal-cell,
+body.dark-mode .summary-card,
+body.dark-mode .stat-card,
+body.dark-mode .modal-content,
+body.dark-mode .dropdown-menu,
+body.dark-mode .popover,
+body[data-theme="dark"] .goal-card,
+body[data-theme="dark"] .goal-task-item,
+body[data-theme="dark"] .planner-focus-item,
+body[data-theme="dark"] .planner-day-column,
+body[data-theme="dark"] .planner-day-head,
+body[data-theme="dark"] .cal-cell,
+body[data-theme="dark"] .summary-card,
+body[data-theme="dark"] .stat-card,
+body[data-theme="dark"] .modal-content,
+body[data-theme="dark"] .dropdown-menu,
+body[data-theme="dark"] .popover {
+  background: var(--dm-surface-2) !important;
+  border-color: var(--dm-border) !important;
+  color: var(--dm-text) !important;
+}
+
+/* Inputs / selects / textareas */
+html[data-theme="dark"] input,
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea,
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea,
+body[data-theme="dark"] input,
+body[data-theme="dark"] select,
+body[data-theme="dark"] textarea {
+  background: var(--dm-surface-2) !important;
+  color: var(--dm-text) !important;
+  border-color: var(--dm-border-strong) !important;
+  color-scheme: dark;
+}
+html[data-theme="dark"] input::placeholder,
+html[data-theme="dark"] textarea::placeholder,
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder,
+body[data-theme="dark"] input::placeholder,
+body[data-theme="dark"] textarea::placeholder {
+  color: var(--dm-muted) !important;
+}
+
+/* Typography */
+html[data-theme="dark"] h1,
+html[data-theme="dark"] h2,
+html[data-theme="dark"] h3,
+html[data-theme="dark"] h4,
+html[data-theme="dark"] h5,
+html[data-theme="dark"] strong,
+body.dark-mode h1, body.dark-mode h2, body.dark-mode h3,
+body.dark-mode h4, body.dark-mode h5, body.dark-mode strong,
+body[data-theme="dark"] h1, body[data-theme="dark"] h2, body[data-theme="dark"] h3,
+body[data-theme="dark"] h4, body[data-theme="dark"] h5, body[data-theme="dark"] strong {
+  color: var(--dm-text);
+}
+html[data-theme="dark"] p,
+html[data-theme="dark"] span,
+html[data-theme="dark"] label,
+html[data-theme="dark"] small,
+body.dark-mode p, body.dark-mode span, body.dark-mode label, body.dark-mode small,
+body[data-theme="dark"] p, body[data-theme="dark"] span, body[data-theme="dark"] label, body[data-theme="dark"] small {
+  /* Don't override explicit semantic/accent classes; only establish readable defaults. */
+}
+html[data-theme="dark"] .muted,
+html[data-theme="dark"] .secondary,
+html[data-theme="dark"] .subtitle,
+body.dark-mode .muted,
+body.dark-mode .secondary,
+body.dark-mode .subtitle,
+body[data-theme="dark"] .muted,
+body[data-theme="dark"] .secondary,
+body[data-theme="dark"] .subtitle {
+  color: var(--dm-muted) !important;
+}
+
+/* Borders, dividers and section headers */
+html[data-theme="dark"] hr,
+body.dark-mode hr,
+body[data-theme="dark"] hr {
+  border-color: var(--dm-border) !important;
+}
+html[data-theme="dark"] .dash-section-header,
+html[data-theme="dark"] .section-header-with-action,
+body.dark-mode .dash-section-header,
+body.dark-mode .section-header-with-action,
+body[data-theme="dark"] .dash-section-header,
+body[data-theme="dark"] .section-header-with-action {
+  border-color: var(--dm-border) !important;
+}
+
+/* Buttons: retain accent buttons, soften neutral ones */
+html[data-theme="dark"] button:not(.primary):not(.btn-primary):not([class*="accent"]),
+body.dark-mode button:not(.primary):not(.btn-primary):not([class*="accent"]),
+body[data-theme="dark"] button:not(.primary):not(.btn-primary):not([class*="accent"]) {
+  background: var(--dm-surface-3);
+  color: var(--dm-text);
+  border-color: var(--dm-border) !important;
+}
+html[data-theme="dark"] button:not(.primary):not(.btn-primary):not([class*="accent"]):hover,
+body.dark-mode button:not(.primary):not(.btn-primary):not([class*="accent"]):hover,
+body[data-theme="dark"] button:not(.primary):not(.btn-primary):not([class*="accent"]):hover {
+  background: #2a303d;
+}
+
+/* Calendar */
+html[data-theme="dark"] .planner-day-column,
+body.dark-mode .planner-day-column,
+body[data-theme="dark"] .planner-day-column {
+  background: rgba(255,255,255,.018) !important;
+}
+html[data-theme="dark"] .planner-day-head,
+body.dark-mode .planner-day-head,
+body[data-theme="dark"] .planner-day-head {
+  background: var(--dm-surface-3) !important;
+}
+html[data-theme="dark"] .cal-cell,
+body.dark-mode .cal-cell,
+body[data-theme="dark"] .cal-cell {
+  background: rgba(255,255,255,.012) !important;
+  border-color: rgba(255,255,255,.065) !important;
+}
+html[data-theme="dark"] .cal-cell:hover,
+body.dark-mode .cal-cell:hover,
+body[data-theme="dark"] .cal-cell:hover {
+  background: rgba(255,255,255,.035) !important;
+}
+html[data-theme="dark"] .cal-cell.today-column,
+body.dark-mode .cal-cell.today-column,
+body[data-theme="dark"] .cal-cell.today-column {
+  background: linear-gradient(180deg,rgba(99,102,241,.12),rgba(99,102,241,.035)) !important;
+}
+html[data-theme="dark"] .planner-day-head.today,
+body.dark-mode .planner-day-head.today,
+body[data-theme="dark"] .planner-day-head.today {
+  background: rgba(99,102,241,.12) !important;
+}
+html[data-theme="dark"] .cal-event,
+body.dark-mode .cal-event,
+body[data-theme="dark"] .cal-event {
+  border-color: rgba(255,255,255,.12) !important;
+  box-shadow: 0 5px 14px rgba(0,0,0,.22);
+}
+html[data-theme="dark"] .planner-now-line,
+body.dark-mode .planner-now-line,
+body[data-theme="dark"] .planner-now-line {
+  color: #a5b4fc !important;
+}
+
+/* Focus and accessibility */
+html[data-theme="dark"] :focus-visible,
+body.dark-mode :focus-visible,
+body[data-theme="dark"] :focus-visible {
+  outline: 2px solid rgba(129,140,248,.85);
+  outline-offset: 2px;
+}
+
+/* Scrollbars */
+html[data-theme="dark"] *,
+body.dark-mode *,
+body[data-theme="dark"] * {
+  scrollbar-color: rgba(255,255,255,.20) transparent;
+}
+
+</style>
