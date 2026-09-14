@@ -16,7 +16,7 @@
     <meta name="apple-mobile-web-app-title" content="INDEX">
     <link rel="apple-touch-icon" href="icon-192.png">
 
-    <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=mPzgQhjupSlruE-nD50_PrQGrUTwpUCkz189u7b0ILRpldsYPONhNDROnnt0yi6RyohMb36TDY6Tl6Q_hc_VpjEsUh_xjlv8k8hEs1HseAffCzZMqoS9QYuQmGJJXznnIgEPYzIjj8RCTiwRvmomEWx0RvzdWZ7Mj84qe-0niWCAXE9zYVxsbB_EAoJxVcoPisivRgbmoqmPcXZGASzqjxXzXhaPOxMXJhonVWvkOEgNQV-MmlCHEu5H-pK5cc54H_RzdtGBAu70bX3S9_Yw7H2-NF8Z-Iapjo52HOLwTjokbOJN49-iHFCiskvED1Kvibutdue9ksknF6wB9Dqry0hhTmNnT_sFCAAmbWvbYMg" charset="UTF-8"></script><script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <style>
         :root {
             --bg-deep: #08090d;
@@ -4887,6 +4887,66 @@ function updatePlannerNowLine(){
   line.innerHTML='<svg viewBox="0 0 100 2" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="1" x2="100" y2="1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
   col.style.position='relative';col.appendChild(line);
 }
+
+function autoPlanCurrentWeek() {
+            const start = plannerWeekStart();
+            const end = new Date(start); end.setDate(end.getDate()+7);
+            const weekStart = plannerISO(start);
+            const weekEnd = plannerISO(end);
+            const scheduledTaskIds = new Set(scheduledStudyEvents.filter(e => e.date >= weekStart && e.date < weekEnd).map(e => e.taskId));
+
+            const pending = [];
+            goalsArray.forEach(goal => (goal.tasks || []).forEach(task => {
+                if (!task.done && !scheduledTaskIds.has(task.id)) {
+                    pending.push({ goal, task, priority: plannerPriority(task) });
+                }
+            }));
+            if (!pending.length) {
+                showToast(currentSystemLanguage === 'ar' ? 'الخطة مكتملة' : 'Nothing to auto-plan',
+                    currentSystemLanguage === 'ar' ? 'لا توجد محاضرات غير مجدولة.' : 'All unfinished lectures are already scheduled.', 'info');
+                return;
+            }
+
+            const rank = {high:0, medium:1, normal:2};
+            pending.sort((a,b) => rank[a.priority]-rank[b.priority]);
+
+            const preferredSlots = [
+                {day:1,time:'18:00'},{day:1,time:'19:00'},{day:2,time:'18:00'},{day:2,time:'19:00'},
+                {day:3,time:'18:00'},{day:3,time:'19:00'},{day:4,time:'18:00'},{day:4,time:'19:00'},
+                {day:5,time:'18:00'},{day:5,time:'19:00'},{day:6,time:'11:00'},{day:6,time:'12:00'}
+            ];
+
+            // Avoid existing conflicts and keep a reasonable spacing between sessions.
+            const chosen = [];
+            for (const slot of preferredSlots) {
+                const d = new Date(start); d.setDate(d.getDate()+slot.day);
+                const date = plannerISO(d);
+                const candidate = { date, time: slot.time, duration:45 };
+                const blocked = scheduledStudyEvents.some(e => plannerEventsConflict(e, candidate)) ||
+                                chosen.some(e => plannerEventsConflict(e, candidate));
+                if (!blocked) chosen.push(candidate);
+            }
+
+            const max = Math.min(pending.length, chosen.length);
+            for (let i=0; i<max; i++) {
+                const item = pending[i], slot = chosen[i];
+                scheduledStudyEvents.push({
+                    id: generateUniqueRecordId(),
+                    goalId: item.goal.id,
+                    taskId: item.task.id,
+                    date: slot.date,
+                    time: slot.time,
+                    duration: item.priority === 'high' ? 60 : 45,
+                    type: item.task.needsRevision ? 'revision' : 'study'
+                });
+            }
+
+            saveScheduledEvents();
+            renderStudyPlanner();
+            showToast(currentSystemLanguage === 'ar' ? 'تم بناء خطة ذكية' : 'Smart week planned',
+                `${max} ${currentSystemLanguage === 'ar' ? 'جلسات حسب الأولوية' : 'priority-aware study blocks'}${pending.length > max ? (currentSystemLanguage === 'ar' ? ' — توجد محاضرات إضافية لم تُجدول.' : ' — some lectures remain unscheduled.') : ''}`,
+                'success');
+        }
 
 function renderStudyPlanner() {
   plannerPopulateFilters();
