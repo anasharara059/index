@@ -412,10 +412,13 @@
         .goal-tasks-toggle .gt-chevron { transition: transform 0.3s ease; font-size: 10px; }
         .goal-tasks-toggle.is-open .gt-chevron { transform: rotate(180deg); }
         .goal-tasks-panel { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
-        .goal-tasks-panel.is-open { max-height: 600px; }
-        .goal-tasks-list { display: flex; flex-direction: column; gap: 6px; padding-top: 10px; }
+        .goal-tasks-panel.is-open { max-height: none; overflow: visible; }
+        /* A branch can contain many lectures. Keep its controls visible while its
+           lecture list scrolls independently instead of cutting items after ~10. */
+        .goal-tasks-list { display: flex; flex-direction: column; gap: 6px; padding-top: 10px; max-height: min(58vh, 560px); overflow-y: auto; overscroll-behavior: contain; padding-inline-end: 5px; scrollbar-gutter: stable; }
         .goal-task-item { display: flex; align-items: center; gap: 10px; background: color-mix(in srgb, var(--text-light) 2.5%, transparent); border: 1px solid var(--border-soft); border-radius: 10px; padding: 8px 10px; animation: fadeIn 0.3s ease-out; }
-        .goal-task-item.is-done { opacity: 0.55; }
+        .goal-task-item.is-done { opacity: 0.62; background: color-mix(in srgb, var(--success) 10%, transparent); }
+        .goal-task-item.is-revision { border-color: rgba(217, 165, 74, 0.55); background: rgba(217, 165, 74, 0.09); }
         .goal-task-checkbox { width: 19px; height: 19px; min-width: 19px; border-radius: 6px; border: 1.5px solid var(--border-soft); background: rgba(0,0,0,0.25); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #000; transition: all 0.2s ease; }
         .goal-task-checkbox.checked { background: var(--success, #00d26a); border-color: transparent; box-shadow: 0 0 8px rgba(0, 210, 106, 0.4); }
         .goal-task-text { flex: 1; font-size: 12.5px; color: var(--text-light); text-align: left; word-break: break-word; }
@@ -442,7 +445,26 @@
         .timer-task-reminder-badge.is-overdue { color: #ff8a7a; }
         .goal-task-delete { background: transparent; border: none; color: var(--text-gray); cursor: pointer; font-size: 13px; opacity: 0.5; transition: all 0.2s; padding: 2px 4px; }
         .goal-task-delete:hover { opacity: 1; color: var(--danger); }
-        .goal-task-add-row { display: flex; gap: 8px; padding-top: 8px; }
+        .lecture-status-actions { display: flex; align-items: center; gap: 4px; margin-inline-start: auto; }
+        .lecture-state-btn { border: 1px solid var(--border-soft); background: color-mix(in srgb, var(--text-light) 4%, transparent); color: var(--text-gray); min-width: 28px; height: 26px; padding: 0 6px; border-radius: 7px; cursor: pointer; font-size: 11px; font-weight: 700; transition: all 0.2s ease; }
+        .lecture-state-btn:hover { color: var(--text-light); border-color: var(--accent-orange); transform: translateY(-1px); }
+        .lecture-state-btn.is-active { background: rgba(217, 165, 74, 0.16); border-color: var(--accent-orange); color: var(--accent-orange); }
+        .lecture-state-btn.video.is-active { background: rgba(52, 152, 219, 0.16); border-color: var(--info); color: var(--info); }
+        .lecture-state-btn.done.is-active { background: rgba(0, 210, 106, 0.16); border-color: var(--success); color: var(--success); }
+        .lecture-state-btn.edit { font-size: 13px; }
+        .lecture-status-legend, .revision-queue { border: 1px solid var(--border-soft); border-radius: 10px; background: color-mix(in srgb, var(--text-light) 2.5%, transparent); color: var(--text-gray); font-size: 11px; }
+        .lecture-status-legend { padding: 8px 10px; line-height: 1.6; }
+        .revision-queue { padding: 12px; margin-bottom: 2px; }
+        .revision-queue-title { color: var(--accent-orange); font-weight: 800; margin-bottom: 7px; }
+        .revision-queue-list { display: flex; flex-wrap: wrap; gap: 6px; }
+        .revision-queue-item { border: 1px solid rgba(217, 165, 74, 0.28); background: rgba(217, 165, 74, 0.08); color: var(--text-light); border-radius: 7px; padding: 5px 8px; font-size: 11px; cursor: pointer; }
+        @media (max-width: 560px) {
+            .goal-tasks-list { max-height: 52vh; }
+            .goal-task-item { flex-wrap: wrap; gap: 7px; }
+            .goal-task-text { min-width: calc(100% - 68px); }
+            .lecture-status-actions { width: 100%; margin-inline-start: 0; padding-inline-start: 28px; }
+        }
+        .goal-task-add-row { display: flex; gap: 8px; padding-top: 8px; position: sticky; bottom: 0; background: var(--bg-deep); padding-bottom: 2px; }
         .goal-task-input { flex: 1; background: rgba(0,0,0,0.3); border: 1px solid var(--border-soft); color: #fff; padding: 9px 12px; border-radius: 10px; font-size: 12.5px; outline: none; transition: all 0.3s; }
         .goal-task-input:focus { border-color: var(--accent-orange); box-shadow: 0 0 12px rgba(217, 165, 74, 0.12); }
         .goal-task-add-confirm { background: var(--accent-orange); border: none; color: #000; width: 34px; min-width: 34px; border-radius: 10px; font-size: 16px; font-weight: 800; cursor: pointer; transition: all 0.2s; }
@@ -4510,6 +4532,20 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb:hover{background:#aeb7b0 !imp
 
             if (visibleGoals.length === 0) { emptyState.innerText = d.goalsBranchEmptyState || 'No branches yet — add your first one!'; emptyState.style.display = 'block'; return; }
             emptyState.style.display = 'none';
+
+            // A single review queue makes all lectures marked for revision easy to find.
+            const revisionTasks = visibleGoals.flatMap(goal => (goal.tasks || []).filter(task => task.needsRevision && !task.done).map(task => ({ goal, task })));
+            if (revisionTasks.length) {
+                const revisionQueue = document.createElement('div');
+                revisionQueue.className = 'revision-queue';
+                revisionQueue.innerHTML = `
+                    <div class="revision-queue-title">↻ ${currentSystemLanguage === 'ar' ? 'قائمة المراجعة' : 'Revision queue'} (${revisionTasks.length})</div>
+                    <div class="revision-queue-list">${revisionTasks.map(({ goal, task }) => `<button class="revision-queue-item" data-goal-id="${goal.id}">${escapeGoalHtml(task.text)}</button>`).join('')}</div>`;
+                revisionQueue.querySelectorAll('[data-goal-id]').forEach(button => button.addEventListener('click', () => {
+                    document.querySelector(`[data-goal-card-id="${button.dataset.goalId}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }));
+                grid.appendChild(revisionQueue);
+            }
             visibleGoals.forEach(goal => {
                 if (!Array.isArray(goal.tasks)) goal.tasks = [];
                 const doneTasksCount = goal.tasks.filter(t => t.done).length;
@@ -4518,6 +4554,9 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb:hover{background:#aeb7b0 !imp
                 const tasksListHtml = goal.tasks.length > 0
                     ? goal.tasks.map(task => {
                         if (!Array.isArray(task.reminders)) task.reminders = [];
+                        if (typeof task.studyCount !== 'number') task.studyCount = 0;
+                        if (typeof task.videoWatched !== 'boolean') task.videoWatched = false;
+                        if (typeof task.needsRevision !== 'boolean') task.needsRevision = false;
                         const remindersOpen = expandedReminderTasksSet.has(task.id);
                         const totalReminders = task.reminders.length;
                         const remindersHtml = task.reminders.length > 0
@@ -4530,10 +4569,17 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb:hover{background:#aeb7b0 !imp
                             : '';
                         return `
                         <div class="goal-task-wrapper" data-task-id="${task.id}">
-                        <div class="goal-task-item ${task.done ? 'is-done' : ''}">
+                        <div class="goal-task-item ${task.done ? 'is-done' : ''} ${task.needsRevision && !task.done ? 'is-revision' : ''}">
                             <div class="goal-task-drag-handle" title="${currentSystemLanguage === 'ar' ? 'اسحب لإعادة الترتيب' : 'Drag to reorder'}">⠿</div>
                             <div class="goal-task-checkbox ${task.done ? 'checked' : ''}" onclick="event.stopPropagation(); toggleGoalTaskDone('${goal.id}','${task.id}')">${task.done ? '✓' : ''}</div>
                             <div class="goal-task-text" onclick="toggleLectureReminderPanel('${task.id}')" title="${d.lectureRemindersHint || 'Click to add a review reminder'}">${escapeGoalHtml(task.text)}${totalReminders > 0 ? `<div class="timer-task-reminder-badge ${task.reminders.some(r => isReminderOverdue(r.date)) && !task.done ? 'is-overdue' : ''}">🔔 ${totalReminders}</div>` : ''}</div>
+                            <div class="lecture-status-actions" aria-label="Lecture status">
+                                <button class="lecture-state-btn ${task.studyCount ? 'is-active' : ''}" title="${currentSystemLanguage === 'ar' ? 'زيادة عدد مرات الدراسة' : 'Add one study session'}" onclick="event.stopPropagation(); incrementLectureStudy('${goal.id}','${task.id}')">📖 ${task.studyCount}</button>
+                                <button class="lecture-state-btn video ${task.videoWatched ? 'is-active' : ''}" title="${currentSystemLanguage === 'ar' ? 'تمت مشاهدة الفيديو' : 'Video watched'}" onclick="event.stopPropagation(); toggleLectureVideo('${goal.id}','${task.id}')">▶</button>
+                                <button class="lecture-state-btn ${task.needsRevision ? 'is-active' : ''}" title="${currentSystemLanguage === 'ar' ? 'تحتاج مراجعة' : 'Needs revision'}" onclick="event.stopPropagation(); toggleLectureRevision('${goal.id}','${task.id}')">↻</button>
+                                <button class="lecture-state-btn done ${task.done ? 'is-active' : ''}" title="${currentSystemLanguage === 'ar' ? 'تمت المحاضرة' : 'Lecture completed'}" onclick="event.stopPropagation(); toggleGoalTaskDone('${goal.id}','${task.id}')">✓</button>
+                                <button class="lecture-state-btn edit" title="${currentSystemLanguage === 'ar' ? 'تعديل الاسم' : 'Edit lecture'}" onclick="event.stopPropagation(); editGoalTask('${goal.id}','${task.id}')">✎</button>
+                            </div>
                             <button class="goal-task-delete" onclick="event.stopPropagation(); deleteGoalTask('${goal.id}','${task.id}')">✕</button>
                         </div>
                         <div class="lecture-reminders-panel ${remindersOpen ? 'is-open' : ''}">
@@ -4549,6 +4595,7 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb:hover{background:#aeb7b0 !imp
 
                 const card = document.createElement('div');
                 card.className = `goal-card`;
+                card.dataset.goalCardId = goal.id;
                 card.innerHTML = `
                     <div class="goal-card-top">
                         <div>
@@ -4560,6 +4607,7 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb:hover{background:#aeb7b0 !imp
                     <div class="goal-tasks-toggle is-open">
                         <span>📚 ${d.goalTasksHeader || 'Lectures'} ${goal.tasks.length ? `(<span class="gt-count">${doneTasksCount}/${goal.tasks.length}</span>)` : ''}</span>
                     </div>
+                    <div class="lecture-status-legend">📖 ${currentSystemLanguage === 'ar' ? 'عدد مرات الدراسة' : 'study count'} &nbsp; • &nbsp; ▶ ${currentSystemLanguage === 'ar' ? 'شاهدت الفيديو' : 'video watched'} &nbsp; • &nbsp; ↻ ${currentSystemLanguage === 'ar' ? 'للمراجعة' : 'revision'} &nbsp; • &nbsp; ✓ ${currentSystemLanguage === 'ar' ? 'مكتملة' : 'completed'}</div>
                     <div class="goal-tasks-panel is-open">
                         <div class="goal-tasks-list">${tasksListHtml}</div>
                         <div class="goal-task-add-row">
@@ -4631,7 +4679,7 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb:hover{background:#aeb7b0 !imp
             const text = input ? input.value.trim() : '';
             if (!text) return;
             if (!Array.isArray(goal.tasks)) goal.tasks = [];
-            goal.tasks.push({ id: generateUniqueRecordId(), text: text, done: false, reminders: [] });
+            goal.tasks.push({ id: generateUniqueRecordId(), text: text, done: false, reminders: [], studyCount: 0, videoWatched: false, needsRevision: false });
             expandedGoalTasksSet.add(goalId);
             dbSet('goals', goalsArray);
             renderGoalsScreen();
@@ -4648,6 +4696,36 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb:hover{background:#aeb7b0 !imp
             expandedGoalTasksSet.add(goalId);
             dbSet('goals', goalsArray);
             renderGoalsScreen();
+        }
+        function updateLectureTask(goalId, taskId, updater) {
+            const goal = goalsArray.find(g => g.id === goalId);
+            const task = goal && Array.isArray(goal.tasks) ? goal.tasks.find(t => t.id === taskId) : null;
+            if (!task) return;
+            updater(task);
+            expandedGoalTasksSet.add(goalId);
+            dbSet('goals', goalsArray);
+            renderGoalsScreen();
+            refreshTimerSidebar();
+        }
+        function incrementLectureStudy(goalId, taskId) {
+            updateLectureTask(goalId, taskId, task => { task.studyCount = (Number(task.studyCount) || 0) + 1; });
+        }
+        function toggleLectureVideo(goalId, taskId) {
+            updateLectureTask(goalId, taskId, task => { task.videoWatched = !task.videoWatched; });
+        }
+        function toggleLectureRevision(goalId, taskId) {
+            updateLectureTask(goalId, taskId, task => { task.needsRevision = !task.needsRevision; });
+        }
+        function editGoalTask(goalId, taskId) {
+            const goal = goalsArray.find(g => g.id === goalId);
+            const task = goal && Array.isArray(goal.tasks) ? goal.tasks.find(t => t.id === taskId) : null;
+            if (!task) return;
+            const label = currentSystemLanguage === 'ar' ? 'اسم المحاضرة' : 'Lecture title';
+            const nextText = window.prompt(label, task.text);
+            if (nextText === null) return;
+            const cleaned = nextText.trim();
+            if (!cleaned) return;
+            updateLectureTask(goalId, taskId, taskToUpdate => { taskToUpdate.text = cleaned; });
         }
         function deleteGoalTask(goalId, taskId) {
             const goal = goalsArray.find(g => g.id === goalId);
