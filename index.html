@@ -380,77 +380,6 @@
         .add-item-pill-btn { background: var(--accent-orange); border: none; color: #000; padding: 10px 22px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.3s ease; box-shadow: 0 4px 18px rgba(62, 92, 138, 0.25); }
         .add-item-pill-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(62, 92, 138, 0.4); }
         .empty-state-box { text-align: center; padding: 60px 20px; color: var(--text-gray); border: 1.5px dashed var(--border-soft); border-radius: 20px; font-size: 14px; font-weight: 600; animation: fadeIn 0.5s ease-out; }
-
-        /* ===== Study Calendar / Weekly Planner ===== */
-
-        /* ===== Pro Calendar Enhancements ===== */
-        .study-calendar-wrap { position:relative; }
-        .study-calendar { position:relative; }
-        .cal-cell.drop-target { background:rgba(217,165,74,.08); box-shadow:inset 0 0 0 1px rgba(217,165,74,.28); }
-        .cal-event[draggable="true"] { cursor:grab; }
-        .cal-event.dragging { opacity:.38; cursor:grabbing; }
-        .cal-event.conflict { border-color:rgba(255,92,92,.72); background:rgba(255,92,92,.11); }
-        .cal-event .ce-conflict { display:inline-block; margin-inline-start:4px; color:#ff6b6b; font-weight:900; }
-        .planner-now-line { position:absolute; left:58px; right:0; height:2px; background:var(--accent-orange); z-index:8; pointer-events:none; box-shadow:0 0 8px rgba(217,165,74,.42); }
-        .planner-now-dot { position:absolute; inset-inline-start:-5px; top:-4px; width:10px; height:10px; border-radius:50%; background:var(--accent-orange); box-shadow:0 0 0 3px rgba(217,165,74,.12); }
-        .planner-now-label { position:absolute; inset-inline-start:7px; top:-15px; font-size:8px; font-weight:900; color:var(--accent-orange); background:var(--bg-dark,#101010); padding:2px 5px; border-radius:5px; white-space:nowrap; }
-        .planner-conflict-banner { margin:0 18px 12px; padding:9px 11px; border:1px solid rgba(255,92,92,.32); background:rgba(255,92,92,.07); border-radius:9px; color:#ff8585; font-size:9px; font-weight:800; display:none; }
-        .planner-smart-note { color:var(--text-gray); font-size:9px; margin-top:5px; }
-        .planner-focus-item.priority-high { border-color:rgba(255,92,92,.4); }
-        .planner-focus-item.priority-medium { border-color:rgba(217,165,74,.38); }
-
-        .study-planner { margin-bottom: 22px; border: 1px solid var(--border-soft); border-radius: 20px; background: linear-gradient(145deg, rgba(255,255,255,.045), rgba(255,255,255,.018)); overflow: hidden; }
-        .study-planner-head { display:flex; align-items:center; justify-content:space-between; gap:14px; padding:16px 18px; border-bottom:1px solid var(--border-soft); flex-wrap:wrap; }
-        .study-planner-title { display:flex; align-items:center; gap:10px; font-weight:900; font-size:15px; }
-        .study-planner-title small { display:block; color:var(--text-gray); font-size:10px; font-weight:600; margin-top:2px; }
-        .planner-head-actions { display:flex; align-items:center; gap:7px; flex-wrap:wrap; }
-        .planner-btn { border:1px solid var(--border-soft); background:rgba(255,255,255,.035); color:var(--text-light); border-radius:9px; padding:7px 10px; cursor:pointer; font-size:11px; font-weight:800; transition:.2s; }
-        .planner-btn:hover { border-color:var(--accent-orange); color:var(--accent-orange); transform:translateY(-1px); }
-        .planner-btn.primary { background:rgba(217,165,74,.13); border-color:rgba(217,165,74,.38); color:var(--accent-orange); }
-        .planner-week-label { min-width:145px; text-align:center; font-size:12px; font-weight:900; }
-        .planner-summary { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; padding:12px 18px; border-bottom:1px solid var(--border-soft); }
-        .planner-stat { border:1px solid var(--border-soft); border-radius:11px; padding:9px 10px; background:rgba(255,255,255,.025); }
-        .planner-stat b { display:block; font-size:15px; color:var(--text-light); }
-        .planner-stat span { color:var(--text-gray); font-size:9px; font-weight:700; }
-        .planner-progress { height:5px; border-radius:99px; background:rgba(255,255,255,.07); margin-top:7px; overflow:hidden; }
-        .planner-progress > i { display:block; height:100%; width:0; background:var(--accent-orange); border-radius:inherit; transition:width .35s; }
-        .planner-focus { padding:12px 18px; border-bottom:1px solid var(--border-soft); }
-        .planner-focus-title { font-size:11px; font-weight:900; color:var(--accent-orange); margin-bottom:8px; }
-        .planner-focus-list { display:flex; gap:7px; overflow-x:auto; padding-bottom:2px; }
-        .planner-focus-item { min-width:190px; max-width:240px; border:1px solid var(--border-soft); border-radius:10px; padding:8px 10px; background:rgba(255,255,255,.025); cursor:pointer; }
-        .planner-focus-item:hover { border-color:rgba(217,165,74,.45); }
-        .planner-focus-item strong { display:block; font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-        .planner-focus-item span { display:block; color:var(--text-gray); font-size:9px; margin-top:3px; }
-        .study-calendar-wrap { overflow-x:auto; }
-        .study-calendar { min-width:820px; display:grid; grid-template-columns:58px repeat(7,minmax(105px,1fr)); }
-        .cal-corner { border-bottom:1px solid var(--border-soft); background:rgba(0,0,0,.10); }
-        .cal-day-head { min-height:56px; padding:8px 7px; border-inline-start:1px solid var(--border-soft); border-bottom:1px solid var(--border-soft); text-align:center; background:rgba(255,255,255,.018); }
-        .cal-day-head.today { background:rgba(217,165,74,.09); }
-        .cal-day-head strong { display:block; font-size:10px; }
-        .cal-day-head span { display:block; margin-top:3px; color:var(--text-gray); font-size:9px; }
-        .cal-day-head.today span { color:var(--accent-orange); font-weight:900; }
-        .cal-time { height:68px; padding:7px 5px; color:var(--text-gray); font-size:8px; text-align:center; border-top:1px solid rgba(255,255,255,.055); }
-        .cal-cell { position:relative; height:68px; border-inline-start:1px solid var(--border-soft); border-top:1px solid rgba(255,255,255,.055); background:rgba(0,0,0,.025); }
-        .cal-cell:hover { background:rgba(255,255,255,.025); }
-        .cal-event { position:absolute; inset:4px 4px auto 4px; min-height:58px; border:1px solid rgba(217,165,74,.38); background:rgba(217,165,74,.13); border-radius:8px; padding:6px 7px; cursor:pointer; overflow:hidden; z-index:2; }
-        .cal-event:hover { border-color:var(--accent-orange); box-shadow:0 5px 16px rgba(0,0,0,.22); }
-        .cal-event.done { opacity:.62; border-color:rgba(0,210,106,.4); background:rgba(0,210,106,.08); }
-        .cal-event .ce-time { color:var(--accent-orange); font-size:8px; font-weight:900; }
-        .cal-event.done .ce-time { color:var(--success); }
-        .cal-event strong { display:block; font-size:9px; line-height:1.25; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-        .cal-event span { display:block; color:var(--text-gray); font-size:8px; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-        .planner-empty { padding:16px; color:var(--text-gray); font-size:10px; text-align:center; border-top:1px solid var(--border-soft); }
-        .calendar-quick-add { padding:12px 18px; border-top:1px solid var(--border-soft); display:flex; justify-content:flex-end; }
-        .calendar-modal-note { color:var(--text-gray); font-size:10px; line-height:1.5; margin:-3px 0 10px; }
-        .calendar-form-grid { display:grid; grid-template-columns:1fr 1fr; gap:9px; }
-        .calendar-form-grid .full { grid-column:1/-1; }
-        @media(max-width:700px) {
-            .planner-summary { grid-template-columns:repeat(2,1fr); }
-            .planner-week-label { min-width:120px; }
-            .calendar-form-grid { grid-template-columns:1fr; }
-            .calendar-form-grid .full { grid-column:auto; }
-        }
-
         .goals-cards-grid, .habits-cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
         .goal-card { background: linear-gradient(160deg, rgba(217, 165, 74, 0.07), rgba(62, 92, 138, 0.05) 70%); border: 1px solid var(--border-soft); border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 16px; transition: all 0.3s ease; position: relative; overflow: hidden; }
         .goal-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent-orange); opacity: 0; transition: opacity 0.3s; }
@@ -487,20 +416,36 @@
         /* A branch can contain many lectures. Keep its controls visible while its
            lecture list scrolls independently instead of cutting items after ~10. */
         .goal-tasks-list { display: flex; flex-direction: column; gap: 6px; padding-top: 10px; max-height: min(58vh, 560px); overflow-y: auto; overscroll-behavior: contain; padding-inline-end: 5px; scrollbar-gutter: stable; }
-        .goal-task-item { display: flex; align-items: center; gap: 10px; background: color-mix(in srgb, var(--text-light) 2.5%, transparent); border: 1px solid var(--border-soft); border-radius: 10px; padding: 8px 10px; animation: fadeIn 0.3s ease-out; }
-        .goal-task-item.is-done { opacity: 0.62; background: color-mix(in srgb, var(--success) 10%, transparent); }
+        /* Professional lecture layout: title stays readable, actions live underneath. */
+        .goal-task-item { display: flex; flex-direction: column; align-items: stretch; gap: 8px; background: linear-gradient(160deg, color-mix(in srgb, var(--text-light) 4%, transparent), color-mix(in srgb, var(--text-light) 1.5%, transparent)); border: 1px solid var(--border-soft); border-radius: 12px; padding: 11px 12px; animation: fadeIn 0.3s ease-out; transition: border-color .2s ease, background .2s ease, box-shadow .2s ease; }
+        .goal-task-item:hover { border-color: color-mix(in srgb, var(--accent-orange) 28%, var(--border-soft)); box-shadow: 0 8px 22px rgba(0,0,0,.16); }
+        .goal-task-item.is-done { opacity: 0.68; background: color-mix(in srgb, var(--success) 9%, transparent); }
         .goal-task-item.is-revision { border-color: rgba(217, 165, 74, 0.55); background: rgba(217, 165, 74, 0.09); }
-        .goal-task-checkbox { width: 19px; height: 19px; min-width: 19px; border-radius: 6px; border: 1.5px solid var(--border-soft); background: rgba(0,0,0,0.25); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #000; transition: all 0.2s ease; }
+        .lecture-main-row { display: flex; align-items: flex-start; gap: 9px; min-width: 0; width: 100%; }
+        .lecture-title-wrap { flex: 1; min-width: 0; }
+        .goal-task-checkbox { width: 20px; height: 20px; min-width: 20px; border-radius: 6px; border: 1.5px solid var(--border-soft); background: rgba(0,0,0,0.25); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #000; transition: all 0.2s ease; }
         .goal-task-checkbox.checked { background: var(--success, #00d26a); border-color: transparent; box-shadow: 0 0 8px rgba(0, 210, 106, 0.4); }
-        .goal-task-text { flex: 1; font-size: 12.5px; color: var(--text-light); text-align: left; word-break: break-word; }
+        .goal-task-text { display: block; width: 100%; font-size: 13.5px; line-height: 1.45; color: var(--text-light); text-align: left; word-break: normal; overflow-wrap: anywhere; cursor: pointer; }
         html[dir="rtl"] .goal-task-text { text-align: right; }
-        .goal-task-item.is-done .goal-task-text { color: var(--text-gray); }
+        .goal-task-item.is-done .goal-task-text { color: var(--text-gray); text-decoration: line-through; text-decoration-thickness: 1px; text-decoration-color: color-mix(in srgb, var(--text-gray) 55%, transparent); }
         .goal-task-wrapper { display: flex; flex-direction: column; gap: 6px; }
         .goal-task-drag-handle { cursor: grab; touch-action: none; color: var(--text-gray); font-size: 15px; padding: 2px 4px; user-select: none; flex-shrink: 0; line-height: 1; }
         .goal-task-drag-handle:active { cursor: grabbing; }
         .goal-task-wrapper.is-dragging { opacity: 0.5; }
         .goal-task-wrapper.is-dragging .goal-task-item { border-color: var(--accent-orange); box-shadow: 0 6px 18px rgba(0,0,0,0.35); }
-        .goal-task-text { cursor: pointer; }
+        .lecture-status-actions { display: flex; align-items: center; justify-content: flex-start; gap: 6px; margin: 0; padding-inline-start: 49px; flex-wrap: wrap; }
+        html[dir="rtl"] .lecture-status-actions { justify-content: flex-start; }
+        .lecture-state-btn { min-width: 34px; height: 30px; padding: 0 8px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
+        .lecture-state-btn:hover { transform: translateY(-1px) scale(1.02); }
+        .lecture-state-btn.edit { font-size: 13px; }
+        .lecture-action-label { font-size: 10px; font-weight: 700; opacity: .75; }
+        .lecture-status-actions .lecture-state-btn[data-action="study"] { min-width: 46px; }
+        .lecture-status-actions .lecture-state-btn[data-action="video"] { border-color: rgba(52,152,219,.25); }
+        .lecture-status-actions .lecture-state-btn[data-action="revision"] { border-color: rgba(217,165,74,.25); }
+        .lecture-status-actions .lecture-state-btn[data-action="done"] { border-color: rgba(0,210,106,.25); }
+        .lecture-status-actions .lecture-state-btn[data-action="edit"] { border-color: rgba(155,89,182,.25); }
+        .goal-task-delete { align-self: flex-start; margin-inline-start: auto; }
+        .lecture-reminders-panel { padding-inline-start: 49px; }
         .lecture-reminders-panel { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; padding-left: 29px; }
         .lecture-reminders-panel.is-open { max-height: 400px; margin-top: 4px; }
         .lecture-reminder-chip { display: flex; align-items: center; gap: 8px; background: rgba(217, 165, 74, 0.08); border: 1px solid rgba(217, 165, 74, 0.2); border-radius: 8px; padding: 6px 10px; font-size: 11px; color: var(--text-light); margin-bottom: 6px; }
@@ -516,15 +461,15 @@
         .timer-task-reminder-badge.is-overdue { color: #ff8a7a; }
         .goal-task-delete { background: transparent; border: none; color: var(--text-gray); cursor: pointer; font-size: 13px; opacity: 0.5; transition: all 0.2s; padding: 2px 4px; }
         .goal-task-delete:hover { opacity: 1; color: var(--danger); }
-        .lecture-status-actions { display: flex; align-items: center; gap: 4px; margin-inline-start: auto; }
-        .lecture-state-btn { border: 1px solid var(--border-soft); background: color-mix(in srgb, var(--text-light) 4%, transparent); color: var(--text-gray); min-width: 28px; height: 26px; padding: 0 6px; border-radius: 7px; cursor: pointer; font-size: 11px; font-weight: 700; transition: all 0.2s ease; }
+                .lecture-state-btn { border: 1px solid var(--border-soft); background: color-mix(in srgb, var(--text-light) 4%, transparent); color: var(--text-gray); min-width: 28px; height: 26px; padding: 0 6px; border-radius: 7px; cursor: pointer; font-size: 11px; font-weight: 700; transition: all 0.2s ease; }
         .lecture-state-btn:hover { color: var(--text-light); border-color: var(--accent-orange); transform: translateY(-1px); }
         .lecture-state-btn.is-active { background: rgba(217, 165, 74, 0.16); border-color: var(--accent-orange); color: var(--accent-orange); }
         .lecture-state-btn.video.is-active { background: rgba(52, 152, 219, 0.16); border-color: var(--info); color: var(--info); }
         .lecture-state-btn.done.is-active { background: rgba(0, 210, 106, 0.16); border-color: var(--success); color: var(--success); }
         .lecture-state-btn.edit { font-size: 13px; }
-        .lecture-status-legend, .revision-queue { border: 1px solid var(--border-soft); border-radius: 10px; background: color-mix(in srgb, var(--text-light) 2.5%, transparent); color: var(--text-gray); font-size: 11px; }
-        .lecture-status-legend { padding: 8px 10px; line-height: 1.6; }
+        .lecture-status-legend, .revision-queue { border: 1px solid var(--border-soft); border-radius: 12px; background: linear-gradient(160deg, color-mix(in srgb, var(--text-light) 3.5%, transparent), transparent); color: var(--text-gray); font-size: 10.5px; }
+        .lecture-status-legend { padding: 8px 10px; line-height: 1.7; letter-spacing: .05px; }
+        .goal-tasks-list { border-top: 1px solid color-mix(in srgb, var(--text-light) 5%, transparent); padding-top: 11px; padding-bottom: 4px; }
         .revision-queue { padding: 12px; margin-bottom: 2px; }
         .revision-queue-title { color: var(--accent-orange); font-weight: 800; margin-bottom: 7px; }
         .revision-queue-list { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -532,8 +477,8 @@
         @media (max-width: 560px) {
             .goal-tasks-list { max-height: 52vh; }
             .goal-task-item { flex-wrap: wrap; gap: 7px; }
-            .goal-task-text { min-width: calc(100% - 68px); }
-            .lecture-status-actions { width: 100%; margin-inline-start: 0; padding-inline-start: 28px; }
+            .goal-task-text { min-width: 0; }
+            .lecture-status-actions { width: 100%; margin: 0; padding-inline-start: 29px; }
         }
         .goal-task-add-row { display: flex; gap: 8px; padding-top: 8px; position: sticky; bottom: 0; background: var(--bg-deep); padding-bottom: 2px; }
         .goal-task-input { flex: 1; background: rgba(0,0,0,0.3); border: 1px solid var(--border-soft); color: #fff; padding: 9px 12px; border-radius: 10px; font-size: 12.5px; outline: none; transition: all 0.3s; }
@@ -2336,34 +2281,6 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb:hover{background:#aeb7b0 !imp
                     </div>
                     <button class="add-item-pill-btn" onclick="openGoalModal()" id="goals-add-btn">+ <span id="goals-add-btn-txt">New Subject</span></button>
                 </div>
-
-                <section class="study-planner" id="study-planner">
-                    <div class="study-planner-head">
-                        <div class="study-planner-title">
-                            <span style="font-size:20px;">🗓️</span>
-                            <div>
-                                <span id="planner-title-text">Study Calendar</span>
-                                <small id="planner-subtitle-text">Plan your lectures, track your week, and stay focused.</small>
-                            </div>
-                        </div>
-                        <div class="planner-head-actions">
-                            <button class="planner-btn" onclick="changePlannerWeek(-1)">‹</button>
-                            <button class="planner-btn" onclick="goToPlannerToday()" id="planner-today-btn">Today</button>
-                            <div class="planner-week-label" id="planner-week-label">This week</div>
-                            <button class="planner-btn" onclick="changePlannerWeek(1)">›</button>
-                            <button class="planner-btn primary" onclick="openScheduleLectureModal()">+ Schedule</button>
-                            <button class="planner-btn" onclick="autoPlanCurrentWeek()" title="Plan unfinished lectures into open study slots">✨ Auto Plan</button>
-                        </div>
-                    </div>
-                    <div class="planner-summary" id="planner-summary"></div>
-                    <div class="planner-conflict-banner" id="planner-conflict-banner"></div>
-                    <div class="planner-focus" id="planner-focus"></div>
-                    <div class="study-calendar-wrap">
-                        <div class="study-calendar" id="study-calendar-grid"></div>
-                    </div>
-                    <div class="planner-empty" id="planner-empty" style="display:none;">No scheduled lectures for this week yet. Use + Schedule or Auto Plan.</div>
-                </section>
-
                 <div class="goals-cards-grid" id="goals-grid-wrapper"></div>
                 <div class="empty-state-box" id="goals-empty-state" style="display:none;">No goals yet — add your first one!</div>
             </div>
@@ -2424,50 +2341,6 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb:hover{background:#aeb7b0 !imp
             </div>
         </div>
     </div>
-
-    <div class="modal-overlay" id="schedule-lecture-modal">
-        <div class="modal-box" style="max-width:520px;">
-            <h3 id="schedule-modal-heading">Schedule Lecture</h3>
-            <div class="calendar-modal-note">Turn a lecture into a focused study block. It stays linked to the Subject → Branch → Lecture.</div>
-            <div class="calendar-form-grid">
-                <div class="full">
-                    <label class="field-label">Lecture</label>
-                    <select id="schedule-task-select"></select>
-                </div>
-                <div>
-                    <label class="field-label">Date</label>
-                    <input type="date" id="schedule-date-input">
-                </div>
-                <div>
-                    <label class="field-label">Start time</label>
-                    <input type="time" id="schedule-time-input" value="18:00">
-                </div>
-                <div>
-                    <label class="field-label">Duration</label>
-                    <select id="schedule-duration-input">
-                        <option value="25">25 min</option>
-                        <option value="45" selected>45 min</option>
-                        <option value="60">60 min</option>
-                        <option value="90">90 min</option>
-                        <option value="120">120 min</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="field-label">Type</label>
-                    <select id="schedule-type-input">
-                        <option value="study">📚 Study</option>
-                        <option value="watch">▶ Watch</option>
-                        <option value="revision">↻ Revision</option>
-                    </select>
-                </div>
-            </div>
-            <div class="modal-buttons">
-                <button class="modal-btn cancel" onclick="closeScheduleLectureModal()">Cancel</button>
-                <button class="modal-btn confirm" onclick="saveScheduleLecture()">Schedule</button>
-            </div>
-        </div>
-    </div>
-
     <div class="modal-overlay" id="habit-modal">
         <div class="modal-box">
             <h3 id="habit-modal-heading">Add New Habit</h3>
@@ -4571,9 +4444,6 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb:hover{background:#aeb7b0 !imp
             const today = new Date(); today.setHours(0, 0, 0, 0);
             return new Date(iso + 'T00:00:00') < today;
         }
-        let currentPlannerWeekOffset = 0;
-        let scheduledStudyEvents = [];
-        try { scheduledStudyEvents = JSON.parse(localStorage.getItem('index_scheduledStudyEvents') || '[]'); } catch (e) { scheduledStudyEvents = []; }
         let currentOpenSubjectGroupTag = null;
         const UNASSIGNED_SUBJECT_KEY = '__unassigned__';
         function openSubjectGroup(tagKey) {
@@ -4584,363 +4454,12 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb:hover{background:#aeb7b0 !imp
             currentOpenSubjectGroupTag = null;
             renderGoalsScreen();
         }
-
-
-        function plannerMinutes(time) {
-            const p = String(time || '00:00').split(':').map(Number);
-            return (p[0] || 0) * 60 + (p[1] || 0);
-        }
-        function plannerPriority(task) {
-            if (!task) return 'normal';
-            if (task.priority === 'high' || task.priority === 'urgent') return 'high';
-            if (task.priority === 'medium') return 'medium';
-            if (task.needsRevision) return 'high';
-            return 'normal';
-        }
-        function plannerEventEndMinutes(e) {
-            return plannerMinutes(e.time) + Number(e.duration || 45);
-        }
-        function plannerEventsConflict(a, b) {
-            if (!a || !b || a.id === b.id || a.date !== b.date) return false;
-            return plannerMinutes(a.time) < plannerEventEndMinutes(b) &&
-                   plannerMinutes(b.time) < plannerEventEndMinutes(a);
-        }
-        function plannerConflictIds(events) {
-            const ids = new Set();
-            for (let i = 0; i < events.length; i++) {
-                for (let j = i + 1; j < events.length; j++) {
-                    if (plannerEventsConflict(events[i], events[j])) {
-                        ids.add(events[i].id);
-                        ids.add(events[j].id);
-                    }
-                }
-            }
-            return ids;
-        }
-        function plannerTimeToRowOffset(time) {
-            const startHour = 8;
-            const m = plannerMinutes(time) - startHour * 60;
-            return Math.max(0, (m / 60) * 68);
-        }
-        function updatePlannerNowLine() {
-            const wrap = document.querySelector('.study-calendar-wrap');
-            const grid = document.getElementById('study-calendar-grid');
-            if (!wrap || !grid) return;
-            const old = grid.querySelector('.planner-now-line');
-            if (old) old.remove();
-            const now = new Date();
-            if (currentPlannerWeekOffset !== 0) return;
-            const hour = now.getHours();
-            if (hour < 8 || hour >= 22) return;
-            const day = now.getDay();
-            const minutes = now.getHours() * 60 + now.getMinutes();
-            const top = 56 + plannerTimeToRowOffset(`${String(hour).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`);
-            const line = document.createElement('div');
-            line.className = 'planner-now-line';
-            line.style.top = `${top}px`;
-            line.style.insetInlineStart = `calc(58px + ${day} * ((100% - 58px) / 7))`;
-            line.style.width = `calc((100% - 58px) / 7)`;
-            line.innerHTML = `<span class="planner-now-dot"></span><span class="planner-now-label">${currentSystemLanguage === 'ar' ? 'الآن' : 'NOW'}</span>`;
-            grid.appendChild(line);
-        }
-        function plannerApplyDrop(eventId, date, hour) {
-            const e = scheduledStudyEvents.find(x => x.id === eventId);
-            if (!e) return;
-            const current = plannerMinutes(e.time);
-            const minutes = Math.min(21*60+45, Math.max(8*60, hour*60 + (current % 60)));
-            const hh = String(Math.floor(minutes/60)).padStart(2,'0');
-            const mm = String(minutes%60).padStart(2,'0');
-            e.date = date;
-            e.time = `${hh}:${mm}`;
-            saveScheduledEvents();
-            renderStudyPlanner();
-            showToast(currentSystemLanguage === 'ar' ? 'تم نقل الموعد' : 'Study block moved', plannerEventTimeLabel(e.time,e.duration), 'success');
-        }
-        function plannerStartDrag(ev, eventId) {
-            ev.dataTransfer.setData('text/plain', eventId);
-            ev.dataTransfer.effectAllowed = 'move';
-            ev.currentTarget.classList.add('dragging');
-            setTimeout(() => ev.currentTarget.classList.add('dragging'), 0);
-        }
-        function plannerEndDrag(ev) {
-            ev.currentTarget.classList.remove('dragging');
-            document.querySelectorAll('.cal-cell.drop-target').forEach(x => x.classList.remove('drop-target'));
-        }
-        function plannerAllowDrop(ev) {
-            ev.preventDefault();
-            ev.dataTransfer.dropEffect = 'move';
-            const cell = ev.currentTarget;
-            cell.classList.add('drop-target');
-        }
-        function plannerLeaveDrop(ev) {
-            ev.currentTarget.classList.remove('drop-target');
-        }
-        function plannerDrop(ev) {
-            ev.preventDefault();
-            const cell = ev.currentTarget;
-            cell.classList.remove('drop-target');
-            const eventId = ev.dataTransfer.getData('text/plain');
-            const date = cell.dataset.calendarDate;
-            const hour = parseInt(cell.dataset.calendarHour || '8', 10);
-            if (eventId && date) plannerApplyDrop(eventId, date, hour);
-        }
-        function plannerEventConflictText(isConflict) {
-            return isConflict ? `<span class="ce-conflict" title="${currentSystemLanguage === 'ar' ? 'يوجد تعارض زمني' : 'Time conflict'}">⚠</span>` : '';
-        }
-
-        function plannerWeekStart(offset = currentPlannerWeekOffset) {
-            const d = new Date();
-            d.setHours(0,0,0,0);
-            const day = d.getDay();
-            d.setDate(d.getDate() - day + (offset * 7));
-            return d;
-        }
-        function plannerISO(d) { return getLocalISODate(d); }
-        function saveScheduledEvents() {
-            localStorage.setItem('index_scheduledStudyEvents', JSON.stringify(scheduledStudyEvents));
-        }
-        function plannerDateLabel(d) {
-            return d.toLocaleDateString(currentSystemLanguage === 'ar' ? 'ar-EG' : 'en-US', { month:'short', day:'numeric' });
-        }
-        function plannerWeekRangeLabel(start) {
-            const end = new Date(start); end.setDate(end.getDate()+6);
-            const locale = currentSystemLanguage === 'ar' ? 'ar-EG' : 'en-US';
-            return `${start.toLocaleDateString(locale,{month:'short',day:'numeric'})} — ${end.toLocaleDateString(locale,{month:'short',day:'numeric',year:'numeric'})}`;
-        }
-        function getLectureRef(event) {
-            const goal = goalsArray.find(g => g.id === event.goalId);
-            const task = goal && Array.isArray(goal.tasks) ? goal.tasks.find(t => t.id === event.taskId) : null;
-            return { goal, task };
-        }
-        function getPlannerEventsForWeek(start) {
-            const end = new Date(start); end.setDate(end.getDate()+7);
-            return scheduledStudyEvents.filter(e => e.date >= plannerISO(start) && e.date < plannerISO(end));
-        }
-        function changePlannerWeek(delta) {
-            currentPlannerWeekOffset += delta;
-            renderStudyPlanner();
-        }
-        function goToPlannerToday() {
-            currentPlannerWeekOffset = 0;
-            renderStudyPlanner();
-        }
-        function openScheduleLectureModal(goalId = '', taskId = '') {
-            const select = document.getElementById('schedule-task-select');
-            if (!select) return;
-            const localeAr = currentSystemLanguage === 'ar';
-            const options = [];
-            goalsArray.forEach(goal => {
-                (goal.tasks || []).forEach(task => {
-                    if (!task.done) options.push({ value:`${goal.id}::${task.id}`, label:`${goal.linkedTag || 'Subject'} · ${goal.title} · ${task.text}` });
-                });
-            });
-            select.innerHTML = options.length
-                ? options.map(o => `<option value="${o.value}">${escapeGoalHtml(o.label)}</option>`).join('')
-                : `<option value="">${localeAr ? 'لا توجد محاضرات غير مكتملة' : 'No unfinished lectures'}</option>`;
-            if (goalId && taskId) select.value = `${goalId}::${taskId}`;
-            const dateInput = document.getElementById('schedule-date-input');
-            if (dateInput) {
-                const base = new Date(plannerWeekStart());
-                base.setDate(base.getDate() + (currentPlannerWeekOffset === 0 ? Math.min(1, 6 - base.getDay()) : 1));
-                dateInput.value = plannerISO(base);
-            }
-            document.getElementById('schedule-lecture-modal').classList.add('modal-open');
-        }
-        function closeScheduleLectureModal() {
-            document.getElementById('schedule-lecture-modal').classList.remove('modal-open');
-        }
-        function saveScheduleLecture() {
-            const select = document.getElementById('schedule-task-select');
-            const val = select ? select.value : '';
-            const date = document.getElementById('schedule-date-input')?.value || '';
-            const time = document.getElementById('schedule-time-input')?.value || '18:00';
-            const duration = parseInt(document.getElementById('schedule-duration-input')?.value || '45', 10);
-            const type = document.getElementById('schedule-type-input')?.value || 'study';
-            if (!val || !date || !time) return;
-            const [goalId, taskId] = val.split('::');
-            const ref = getLectureRef({goalId, taskId});
-            if (!ref.goal || !ref.task) return;
-            scheduledStudyEvents.push({ id: generateUniqueRecordId(), goalId, taskId, date, time, duration, type });
-            saveScheduledEvents();
-            closeScheduleLectureModal();
-            renderStudyPlanner();
-            showToast(currentSystemLanguage === 'ar' ? 'تمت إضافة الموعد' : 'Study block scheduled', ref.task.text, 'success');
-        }
-        function deleteScheduledEvent(eventId) {
-            scheduledStudyEvents = scheduledStudyEvents.filter(e => e.id !== eventId);
-            saveScheduledEvents();
-            renderStudyPlanner();
-        }
-        function plannerEventTypeLabel(type) {
-            if (type === 'watch') return currentSystemLanguage === 'ar' ? 'مشاهدة' : 'Watch';
-            if (type === 'revision') return currentSystemLanguage === 'ar' ? 'مراجعة' : 'Revision';
-            return currentSystemLanguage === 'ar' ? 'مذاكرة' : 'Study';
-        }
-        function plannerEventTimeLabel(time, duration) {
-            const [hh, mm] = String(time).split(':').map(Number);
-            const start = new Date(2000,0,1,hh||0,mm||0);
-            const end = new Date(start.getTime() + (duration||45)*60000);
-            const opts = {hour:'2-digit',minute:'2-digit'};
-            return `${start.toLocaleTimeString([],opts)}–${end.toLocaleTimeString([],opts)}`;
-        }
-        function renderStudyPlanner() {
-            const grid = document.getElementById('study-calendar-grid');
-            const summary = document.getElementById('planner-summary');
-            const focus = document.getElementById('planner-focus');
-            const label = document.getElementById('planner-week-label');
-            if (!grid || !summary || !focus || !label) return;
-            const start = plannerWeekStart();
-            const events = getPlannerEventsForWeek(start);
-            label.innerText = plannerWeekRangeLabel(start);
-
-            const refs = events.map(e => ({e, ...getLectureRef(e)})).filter(x => x.goal && x.task);
-            const conflictIds = plannerConflictIds(events);
-            const conflictBanner = document.getElementById('planner-conflict-banner');
-            if (conflictBanner) {
-                const count = conflictIds.size;
-                conflictBanner.style.display = count ? 'block' : 'none';
-                conflictBanner.innerText = count
-                    ? `⚠ ${currentSystemLanguage === 'ar' ? `يوجد ${count} موعدًا داخل تعارض زمني. اسحب أي موعد إلى خانة أخرى لإصلاحه.` : `${count} scheduled blocks are in a time conflict. Drag a block to another slot to fix it.`}`
-                    : '';
-            }
-            const done = refs.filter(x => x.task.done).length;
-            const revision = refs.filter(x => x.task.needsRevision && !x.task.done).length;
-            const total = refs.length;
-            const progress = total ? Math.round((done/total)*100) : 0;
-            summary.innerHTML = `
-                <div class="planner-stat"><b>${total}</b><span>${currentSystemLanguage==='ar'?'جلسات مجدولة':'Scheduled blocks'}</span></div>
-                <div class="planner-stat"><b>${done}</b><span>${currentSystemLanguage==='ar'?'مكتملة':'Completed'}</span></div>
-                <div class="planner-stat"><b>${revision}</b><span>${currentSystemLanguage==='ar'?'للمراجعة':'For revision'}</span></div>
-                <div class="planner-stat"><b>${progress}%</b><span>${currentSystemLanguage==='ar'?'تقدم الأسبوع':'Week progress'}</span><div class="planner-progress"><i style="width:${progress}%"></i></div></div>`;
-
-            const today = plannerISO(new Date());
-            const focusItems = refs.filter(x => x.e.date === today && !x.task.done);
-            focus.innerHTML = `
-                <div class="planner-focus-title">🎯 ${currentSystemLanguage==='ar'?'تركيز اليوم':'Today’s Focus'}</div>
-                <div class="planner-focus-list">
-                    ${focusItems.length ? focusItems.map(x => `<div class="planner-focus-item priority-${plannerPriority(x.task)}" onclick="scrollToScheduledEvent('${x.e.id}')"><strong>${plannerPriority(x.task)==='high'?'🔥 ':plannerPriority(x.task)==='medium'?'• ':''}${escapeGoalHtml(x.task.text)}</strong><span>${escapeGoalHtml(x.goal.title)} · ${plannerEventTimeLabel(x.e.time,x.e.duration)}</span></div>`).join('') : `<div style="color:var(--text-gray);font-size:10px;">${currentSystemLanguage==='ar'?'لا توجد محاضرات مجدولة لليوم.':'No scheduled lectures for today.'}</div>`}
-                </div>`;
-
-            const dayNames = currentSystemLanguage === 'ar'
-                ? ['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت']
-                : ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-            const hours = [8,9,10,11,12,13,14,15,16,17,18,19,20,21];
-            let cells = `<div class="cal-corner"></div>`;
-            for (let i=0;i<7;i++) {
-                const d = new Date(start); d.setDate(d.getDate()+i);
-                cells += `<div class="cal-day-head ${plannerISO(d)===today?'today':''}"><strong>${dayNames[i]}</strong><span>${plannerDateLabel(d)}</span></div>`;
-            }
-            hours.forEach(hour => {
-                cells += `<div class="cal-time">${String(hour).padStart(2,'0')}:00</div>`;
-                for (let i=0;i<7;i++) {
-                    const d = new Date(start); d.setDate(d.getDate()+i);
-                    const date = plannerISO(d);
-                    const cellEvents = refs.filter(x => x.e.date === date && parseInt(String(x.e.time).split(':')[0],10) === hour);
-                    cells += `<div class="cal-cell" data-calendar-date="${date}" data-calendar-hour="${hour}"
-                        ondragover="plannerAllowDrop(event)" ondragleave="plannerLeaveDrop(event)" ondrop="plannerDrop(event)">
-                        ${cellEvents.map(x => {
-                            const typeIcon = x.e.type==='watch'?'▶':(x.e.type==='revision'?'↻':'📚');
-                            const isConflict = conflictIds.has(x.e.id);
-                            return `<div class="cal-event ${x.task.done?'done':''} ${isConflict?'conflict':''}" id="cal-event-${x.e.id}" draggable="true"
-                                ondragstart="plannerStartDrag(event,'${x.e.id}')" ondragend="plannerEndDrag(event)"
-                                onclick="event.stopPropagation(); openScheduleEventActions('${x.e.id}')">
-                                <div class="ce-time">${typeIcon} ${escapeGoalHtml(plannerEventTimeLabel(x.e.time,x.e.duration))}${plannerEventConflictText(isConflict)}</div>
-                                <strong>${escapeGoalHtml(x.task.text)}</strong>
-                                <span>${escapeGoalHtml(x.goal.title)}</span>
-                            </div>`;
-                        }).join('')}
-                    </div>`;
-                }
-            });
-            grid.innerHTML = cells;
-            document.getElementById('planner-empty').style.display = events.length ? 'none' : 'block';
-            updatePlannerNowLine();
-        }
-        function scrollToScheduledEvent(eventId) {
-            const el = document.getElementById(`cal-event-${eventId}`);
-            if (el) el.scrollIntoView({behavior:'smooth',block:'center',inline:'center'});
-        }
-        function openScheduleEventActions(eventId) {
-            const event = scheduledStudyEvents.find(e => e.id === eventId);
-            if (!event) return;
-            const ref = getLectureRef(event);
-            if (!ref.goal || !ref.task) { deleteScheduledEvent(eventId); return; }
-            const action = prompt(
-                currentSystemLanguage === 'ar'
-                    ? `المحاضرة: ${ref.task.text}\nاكتب: delete للحذف، أو done لتحديدها مكتملة، أو cancel للإغلاق.`
-                    : `Lecture: ${ref.task.text}\nType: delete to remove this block, done to mark complete, or cancel to close.`,
-                ''
-            );
-            if (action === 'delete') deleteScheduledEvent(eventId);
-            else if (action === 'done') toggleGoalTaskDone(ref.goal.id, ref.task.id);
-        }
-        function autoPlanCurrentWeek() {
-            const start = plannerWeekStart();
-            const end = new Date(start); end.setDate(end.getDate()+7);
-            const weekStart = plannerISO(start);
-            const weekEnd = plannerISO(end);
-            const scheduledTaskIds = new Set(scheduledStudyEvents.filter(e => e.date >= weekStart && e.date < weekEnd).map(e => e.taskId));
-
-            const pending = [];
-            goalsArray.forEach(goal => (goal.tasks || []).forEach(task => {
-                if (!task.done && !scheduledTaskIds.has(task.id)) {
-                    pending.push({ goal, task, priority: plannerPriority(task) });
-                }
-            }));
-            if (!pending.length) {
-                showToast(currentSystemLanguage === 'ar' ? 'الخطة مكتملة' : 'Nothing to auto-plan',
-                    currentSystemLanguage === 'ar' ? 'لا توجد محاضرات غير مجدولة.' : 'All unfinished lectures are already scheduled.', 'info');
-                return;
-            }
-
-            const rank = {high:0, medium:1, normal:2};
-            pending.sort((a,b) => rank[a.priority]-rank[b.priority]);
-
-            const preferredSlots = [
-                {day:1,time:'18:00'},{day:1,time:'19:00'},{day:2,time:'18:00'},{day:2,time:'19:00'},
-                {day:3,time:'18:00'},{day:3,time:'19:00'},{day:4,time:'18:00'},{day:4,time:'19:00'},
-                {day:5,time:'18:00'},{day:5,time:'19:00'},{day:6,time:'11:00'},{day:6,time:'12:00'}
-            ];
-
-            // Avoid existing conflicts and keep a reasonable spacing between sessions.
-            const chosen = [];
-            for (const slot of preferredSlots) {
-                const d = new Date(start); d.setDate(d.getDate()+slot.day);
-                const date = plannerISO(d);
-                const candidate = { date, time: slot.time, duration:45 };
-                const blocked = scheduledStudyEvents.some(e => plannerEventsConflict(e, candidate)) ||
-                                chosen.some(e => plannerEventsConflict(e, candidate));
-                if (!blocked) chosen.push(candidate);
-            }
-
-            const max = Math.min(pending.length, chosen.length);
-            for (let i=0; i<max; i++) {
-                const item = pending[i], slot = chosen[i];
-                scheduledStudyEvents.push({
-                    id: generateUniqueRecordId(),
-                    goalId: item.goal.id,
-                    taskId: item.task.id,
-                    date: slot.date,
-                    time: slot.time,
-                    duration: item.priority === 'high' ? 60 : 45,
-                    type: item.task.needsRevision ? 'revision' : 'study'
-                });
-            }
-
-            saveScheduledEvents();
-            renderStudyPlanner();
-            showToast(currentSystemLanguage === 'ar' ? 'تم بناء خطة ذكية' : 'Smart week planned',
-                `${max} ${currentSystemLanguage === 'ar' ? 'جلسات حسب الأولوية' : 'priority-aware study blocks'}${pending.length > max ? (currentSystemLanguage === 'ar' ? ' — توجد محاضرات إضافية لم تُجدول.' : ' — some lectures remain unscheduled.') : ''}`,
-                'success');
-        }
-
         function renderGoalsScreen() {
             const d = languageDictionary[currentSystemLanguage];
             const grid = document.getElementById('goals-grid-wrapper');
             const emptyState = document.getElementById('goals-empty-state');
             if (!grid) return;
             grid.innerHTML = '';
-            renderStudyPlanner();
 
             const headerTitleEl = document.getElementById('goals-header-title');
             const addBtnTxtEl = document.getElementById('goals-add-btn-txt');
@@ -5067,18 +4586,21 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb:hover{background:#aeb7b0 !imp
                         return `
                         <div class="goal-task-wrapper" data-task-id="${task.id}">
                         <div class="goal-task-item ${task.done ? 'is-done' : ''} ${task.needsRevision && !task.done ? 'is-revision' : ''}">
-                            <div class="goal-task-drag-handle" title="${currentSystemLanguage === 'ar' ? 'اسحب لإعادة الترتيب' : 'Drag to reorder'}">⠿</div>
-                            <div class="goal-task-checkbox ${task.done ? 'checked' : ''}" onclick="event.stopPropagation(); toggleGoalTaskDone('${goal.id}','${task.id}')">${task.done ? '✓' : ''}</div>
-                            <div class="goal-task-text" onclick="toggleLectureReminderPanel('${task.id}')" title="${d.lectureRemindersHint || 'Click to add a review reminder'}">${escapeGoalHtml(task.text)}${totalReminders > 0 ? `<div class="timer-task-reminder-badge ${task.reminders.some(r => isReminderOverdue(r.date)) && !task.done ? 'is-overdue' : ''}">🔔 ${totalReminders}</div>` : ''}</div>
-                            <div class="lecture-status-actions" aria-label="Lecture status">
-                                <button class="lecture-state-btn ${task.studyCount ? 'is-active' : ''}" title="${currentSystemLanguage === 'ar' ? 'زيادة عدد مرات الدراسة' : 'Add one study session'}" onclick="event.stopPropagation(); incrementLectureStudy('${goal.id}','${task.id}')">📖 ${task.studyCount}</button>
-                                <button class="lecture-state-btn video ${task.videoWatched ? 'is-active' : ''}" title="${currentSystemLanguage === 'ar' ? 'تمت مشاهدة الفيديو' : 'Video watched'}" onclick="event.stopPropagation(); toggleLectureVideo('${goal.id}','${task.id}')">▶</button>
-                                <button class="lecture-state-btn ${task.needsRevision ? 'is-active' : ''}" title="${currentSystemLanguage === 'ar' ? 'تحتاج مراجعة' : 'Needs revision'}" onclick="event.stopPropagation(); toggleLectureRevision('${goal.id}','${task.id}')">↻</button>
-                                <button class="lecture-state-btn done ${task.done ? 'is-active' : ''}" title="${currentSystemLanguage === 'ar' ? 'تمت المحاضرة' : 'Lecture completed'}" onclick="event.stopPropagation(); toggleGoalTaskDone('${goal.id}','${task.id}')">✓</button>
-                                <button class="lecture-state-btn" title="${currentSystemLanguage === 'ar' ? 'جدولة المحاضرة' : 'Schedule lecture'}" onclick="event.stopPropagation(); openScheduleLectureModal('${goal.id}','${task.id}')">🗓</button>
-                                <button class="lecture-state-btn edit" title="${currentSystemLanguage === 'ar' ? 'تعديل الاسم' : 'Edit lecture'}" onclick="event.stopPropagation(); editGoalTask('${goal.id}','${task.id}')">✎</button>
+                            <div class="lecture-main-row">
+                                <div class="goal-task-drag-handle" title="${currentSystemLanguage === 'ar' ? 'اسحب لإعادة الترتيب' : 'Drag to reorder'}">⠿</div>
+                                <div class="goal-task-checkbox ${task.done ? 'checked' : ''}" onclick="event.stopPropagation(); toggleGoalTaskDone('${goal.id}','${task.id}')">${task.done ? '✓' : ''}</div>
+                                <div class="lecture-title-wrap">
+                                    <div class="goal-task-text" onclick="toggleLectureReminderPanel('${task.id}')" title="${d.lectureRemindersHint || 'Click to add a review reminder'}">${escapeGoalHtml(task.text)}${totalReminders > 0 ? `<div class="timer-task-reminder-badge ${task.reminders.some(r => isReminderOverdue(r.date)) && !task.done ? 'is-overdue' : ''}">🔔 ${totalReminders}</div>` : ''}</div>
+                                </div>
+                                <button class="goal-task-delete" title="${currentSystemLanguage === 'ar' ? 'حذف المحاضرة' : 'Delete lecture'}" onclick="event.stopPropagation(); deleteGoalTask('${goal.id}','${task.id}')">✕</button>
                             </div>
-                            <button class="goal-task-delete" onclick="event.stopPropagation(); deleteGoalTask('${goal.id}','${task.id}')">✕</button>
+                            <div class="lecture-status-actions" aria-label="Lecture status">
+                                <button data-action="study" class="lecture-state-btn ${task.studyCount ? 'is-active' : ''}" title="${currentSystemLanguage === 'ar' ? 'زيادة عدد مرات الدراسة' : 'Add one study session'}" onclick="event.stopPropagation(); incrementLectureStudy('${goal.id}','${task.id}')">📖 <span class="lecture-action-label">${task.studyCount}</span></button>
+                                <button data-action="video" class="lecture-state-btn video ${task.videoWatched ? 'is-active' : ''}" title="${currentSystemLanguage === 'ar' ? 'تمت مشاهدة الفيديو' : 'Video watched'}" onclick="event.stopPropagation(); toggleLectureVideo('${goal.id}','${task.id}')">▶</button>
+                                <button data-action="revision" class="lecture-state-btn ${task.needsRevision ? 'is-active' : ''}" title="${currentSystemLanguage === 'ar' ? 'تحتاج مراجعة' : 'Needs revision'}" onclick="event.stopPropagation(); toggleLectureRevision('${goal.id}','${task.id}')">↻</button>
+                                <button data-action="done" class="lecture-state-btn done ${task.done ? 'is-active' : ''}" title="${currentSystemLanguage === 'ar' ? 'تمت المحاضرة' : 'Lecture completed'}" onclick="event.stopPropagation(); toggleGoalTaskDone('${goal.id}','${task.id}')">✓</button>
+                                <button data-action="edit" class="lecture-state-btn edit" title="${currentSystemLanguage === 'ar' ? 'تعديل اسم المحاضرة' : 'Edit lecture'}" onclick="event.stopPropagation(); editGoalTask('${goal.id}','${task.id}')">✎</button>
+                            </div>
                         </div>
                         <div class="lecture-reminders-panel ${remindersOpen ? 'is-open' : ''}">
                             ${remindersHtml}
@@ -5177,7 +4699,7 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb:hover{background:#aeb7b0 !imp
             const text = input ? input.value.trim() : '';
             if (!text) return;
             if (!Array.isArray(goal.tasks)) goal.tasks = [];
-            goal.tasks.push({ id: generateUniqueRecordId(), text: text, done: false, reminders: [], studyCount: 0, videoWatched: false, needsRevision: false, priority: 'normal' });
+            goal.tasks.push({ id: generateUniqueRecordId(), text: text, done: false, reminders: [], studyCount: 0, videoWatched: false, needsRevision: false });
             expandedGoalTasksSet.add(goalId);
             dbSet('goals', goalsArray);
             renderGoalsScreen();
@@ -5229,8 +4751,6 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb:hover{background:#aeb7b0 !imp
             const goal = goalsArray.find(g => g.id === goalId);
             if (!goal || !Array.isArray(goal.tasks)) return;
             goal.tasks = goal.tasks.filter(t => t.id !== taskId);
-            scheduledStudyEvents = scheduledStudyEvents.filter(e => !(e.goalId === goalId && e.taskId === taskId));
-            saveScheduledEvents();
             expandedGoalTasksSet.add(goalId);
             expandedReminderTasksSet.delete(taskId);
             dbSet('goals', goalsArray);
@@ -6411,11 +5931,6 @@ let appHasBooted = false;
             if (btn) btn.style.display = "none";
             deferredInstallPrompt = null;
         });
-    
-        setInterval(() => {
-            if (document.getElementById('study-planner')) updatePlannerNowLine();
-        }, 60000);
-
-</script>
+    </script>
 </body>
 </html>
