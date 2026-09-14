@@ -4667,8 +4667,40 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb:hover{background:#aeb7b0 !imp
             const m = plannerMinutes(time) - startHour * 60;
             return Math.max(0, (m / 60) * 68);
         }
-        
-        
+        function updatePlannerNowLine() {
+            const wrap = document.querySelector('.study-calendar-wrap');
+            const grid = document.getElementById('study-calendar-grid');
+            if (!wrap || !grid) return;
+            const old = grid.querySelector('.planner-now-line');
+            if (old) old.remove();
+            const now = new Date();
+            if (currentPlannerWeekOffset !== 0) return;
+            const hour = now.getHours();
+            if (hour < 8 || hour >= 22) return;
+            const day = now.getDay();
+            const minutes = now.getHours() * 60 + now.getMinutes();
+            const top = 56 + plannerTimeToRowOffset(`${String(hour).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`);
+            const line = document.createElement('div');
+            line.className = 'planner-now-line';
+            line.style.top = `${top}px`;
+            line.style.insetInlineStart = `calc(58px + ${day} * ((100% - 58px) / 7))`;
+            line.style.width = `calc((100% - 58px) / 7)`;
+            line.innerHTML = `<span class="planner-now-dot"></span><span class="planner-now-label">${currentSystemLanguage === 'ar' ? 'الآن' : 'NOW'}</span>`;
+            grid.appendChild(line);
+        }
+        function plannerApplyDrop(eventId, date, hour) {
+            const e = scheduledStudyEvents.find(x => x.id === eventId);
+            if (!e) return;
+            const current = plannerMinutes(e.time);
+            const minutes = Math.min(21*60+45, Math.max(8*60, hour*60 + (current % 60)));
+            const hh = String(Math.floor(minutes/60)).padStart(2,'0');
+            const mm = String(minutes%60).padStart(2,'0');
+            e.date = date;
+            e.time = `${hh}:${mm}`;
+            saveScheduledEvents();
+            renderStudyPlanner();
+            showToast(currentSystemLanguage === 'ar' ? 'تم نقل الموعد' : 'Study block moved', plannerEventTimeLabel(e.time,e.duration), 'success');
+        }
         function plannerStartDrag(ev, eventId) {
             ev.dataTransfer.setData('text/plain', eventId);
             ev.dataTransfer.effectAllowed = 'move';
@@ -4679,11 +4711,24 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb:hover{background:#aeb7b0 !imp
             ev.currentTarget.classList.remove('dragging');
             document.querySelectorAll('.cal-cell.drop-target').forEach(x => x.classList.remove('drop-target'));
         }
-        
+        function plannerAllowDrop(ev) {
+            ev.preventDefault();
+            ev.dataTransfer.dropEffect = 'move';
+            const cell = ev.currentTarget;
+            cell.classList.add('drop-target');
+        }
         function plannerLeaveDrop(ev) {
             ev.currentTarget.classList.remove('drop-target');
         }
-        
+        function plannerDrop(ev) {
+            ev.preventDefault();
+            const cell = ev.currentTarget;
+            cell.classList.remove('drop-target');
+            const eventId = ev.dataTransfer.getData('text/plain');
+            const date = cell.dataset.calendarDate;
+            const hour = parseInt(cell.dataset.calendarHour || '8', 10);
+            if (eventId && date) plannerApplyDrop(eventId, date, hour);
+        }
         function plannerEventConflictText(isConflict) {
             return isConflict ? `<span class="ce-conflict" title="${currentSystemLanguage === 'ar' ? 'يوجد تعارض زمني' : 'Time conflict'}">⚠</span>` : '';
         }
@@ -4887,66 +4932,6 @@ function updatePlannerNowLine(){
   line.innerHTML='<svg viewBox="0 0 100 2" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="1" x2="100" y2="1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
   col.style.position='relative';col.appendChild(line);
 }
-
-function autoPlanCurrentWeek() {
-            const start = plannerWeekStart();
-            const end = new Date(start); end.setDate(end.getDate()+7);
-            const weekStart = plannerISO(start);
-            const weekEnd = plannerISO(end);
-            const scheduledTaskIds = new Set(scheduledStudyEvents.filter(e => e.date >= weekStart && e.date < weekEnd).map(e => e.taskId));
-
-            const pending = [];
-            goalsArray.forEach(goal => (goal.tasks || []).forEach(task => {
-                if (!task.done && !scheduledTaskIds.has(task.id)) {
-                    pending.push({ goal, task, priority: plannerPriority(task) });
-                }
-            }));
-            if (!pending.length) {
-                showToast(currentSystemLanguage === 'ar' ? 'الخطة مكتملة' : 'Nothing to auto-plan',
-                    currentSystemLanguage === 'ar' ? 'لا توجد محاضرات غير مجدولة.' : 'All unfinished lectures are already scheduled.', 'info');
-                return;
-            }
-
-            const rank = {high:0, medium:1, normal:2};
-            pending.sort((a,b) => rank[a.priority]-rank[b.priority]);
-
-            const preferredSlots = [
-                {day:1,time:'18:00'},{day:1,time:'19:00'},{day:2,time:'18:00'},{day:2,time:'19:00'},
-                {day:3,time:'18:00'},{day:3,time:'19:00'},{day:4,time:'18:00'},{day:4,time:'19:00'},
-                {day:5,time:'18:00'},{day:5,time:'19:00'},{day:6,time:'11:00'},{day:6,time:'12:00'}
-            ];
-
-            // Avoid existing conflicts and keep a reasonable spacing between sessions.
-            const chosen = [];
-            for (const slot of preferredSlots) {
-                const d = new Date(start); d.setDate(d.getDate()+slot.day);
-                const date = plannerISO(d);
-                const candidate = { date, time: slot.time, duration:45 };
-                const blocked = scheduledStudyEvents.some(e => plannerEventsConflict(e, candidate)) ||
-                                chosen.some(e => plannerEventsConflict(e, candidate));
-                if (!blocked) chosen.push(candidate);
-            }
-
-            const max = Math.min(pending.length, chosen.length);
-            for (let i=0; i<max; i++) {
-                const item = pending[i], slot = chosen[i];
-                scheduledStudyEvents.push({
-                    id: generateUniqueRecordId(),
-                    goalId: item.goal.id,
-                    taskId: item.task.id,
-                    date: slot.date,
-                    time: slot.time,
-                    duration: item.priority === 'high' ? 60 : 45,
-                    type: item.task.needsRevision ? 'revision' : 'study'
-                });
-            }
-
-            saveScheduledEvents();
-            renderStudyPlanner();
-            showToast(currentSystemLanguage === 'ar' ? 'تم بناء خطة ذكية' : 'Smart week planned',
-                `${max} ${currentSystemLanguage === 'ar' ? 'جلسات حسب الأولوية' : 'priority-aware study blocks'}${pending.length > max ? (currentSystemLanguage === 'ar' ? ' — توجد محاضرات إضافية لم تُجدول.' : ' — some lectures remain unscheduled.') : ''}`,
-                'success');
-        }
 
 function renderStudyPlanner() {
   plannerPopulateFilters();
