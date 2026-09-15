@@ -1,7 +1,48 @@
 ﻿{
-  "name": "index-study-timer-desktop",
+  "name": "index-study-assistant",
   "version": "1.0.0",
-  "description": "INDEX Study Assistant with an always-on-top desktop timer",
+  "description": "INDEX Study Assistant with an always-on-top desktop timer and Google Calendar",
   "main": "main.js",
-  "private": true
+  "author": "INDEX",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win --x64"
+  },
+  "devDependencies": {
+    "electron": "^28.2.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.index.studyassistant",
+    "productName": "INDEX Study Assistant",
+    "copyright": "Copyright © 2026 INDEX",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "**/*",
+      "!dist/**/*",
+      "!**/*.zip"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "INDEX Study Assistant"
+    }
+  }
 }
