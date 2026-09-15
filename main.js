@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, screen } = require('electron');
+﻿const { app, BrowserWindow, ipcMain, screen } = require('electron');
 const path = require('path');
 const http = require('http');
 const fs = require('fs');
@@ -61,6 +61,20 @@ let lastOverlayState = {
   visible: false
 };
 
+// Keeps the overlay window floating over ANY fullscreen app, game, or video player
+function ensureOverlayOnTop() {
+  if (!overlayWindow || overlayWindow.isDestroyed()) return;
+  try {
+    // 'screen-saver' is the highest z-band level in Windows Desktop Window Manager.
+    // It stays strictly ABOVE fullscreen applications (YouTube fullscreen in Chrome/Edge, VLC, PotPlayer, MPV).
+    overlayWindow.setAlwaysOnTop(true, 'screen-saver');
+    overlayWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+    overlayWindow.moveTop();
+  } catch (err) {
+    try { overlayWindow.setAlwaysOnTop(true); } catch (_) {}
+  }
+}
+
 function createOverlayWindow() {
   overlayWindow = new BrowserWindow({
     width: 205,
@@ -76,8 +90,9 @@ function createOverlayWindow() {
     alwaysOnTop: true,
     skipTaskbar: true,
     show: false,
-    focusable: true,
-    hasShadow: true,
+    focusable: false, // Prevents stealing focus from full-screen media players and games
+    hasShadow: false, // Avoids DWM shadow artifacts when floating over video surfaces
+    type: 'toolbar',  // Utility overlay type keeps Windows from suppressing it on fullscreen
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
@@ -85,7 +100,7 @@ function createOverlayWindow() {
     }
   });
 
-  overlayWindow.setAlwaysOnTop(true, 'floating');
+  ensureOverlayOnTop();
   overlayWindow.loadFile(path.join(__dirname, 'overlay.html'));
 
   overlayWindow.once('ready-to-show', () => {
@@ -98,6 +113,14 @@ function createOverlayWindow() {
       );
     }
     overlayWindow.webContents.send('mini-timer:state', lastOverlayState);
+    ensureOverlayOnTop();
+  });
+
+  // Re-assert topmost on blur in case a fullscreen app steals focus
+  overlayWindow.on('blur', () => {
+    if (lastOverlayState.visible) {
+      ensureOverlayOnTop();
+    }
   });
 
   overlayWindow.on('closed', () => {
@@ -164,8 +187,10 @@ ipcMain.on('mini-timer:update', (_event, state) => {
   overlayWindow.webContents.send('mini-timer:state', lastOverlayState);
 
   if (lastOverlayState.visible) {
-    if (!overlayWindow.isVisible()) overlayWindow.showInactive();
-    overlayWindow.setAlwaysOnTop(true, 'floating');
+    if (!overlayWindow.isVisible()) {
+      overlayWindow.showInactive();
+    }
+    ensureOverlayOnTop();
   } else if (overlayWindow.isVisible()) {
     overlayWindow.hide();
   }
@@ -184,6 +209,7 @@ ipcMain.on('mini-timer:move', (_event, { x, y }) => {
   const clampedX = Math.max(area.x, Math.min(Math.round(x), area.x + area.width - w));
   const clampedY = Math.max(area.y, Math.min(Math.round(y), area.y + area.height - h));
   overlayWindow.setPosition(clampedX, clampedY);
+  ensureOverlayOnTop();
 });
 
 ipcMain.handle('mini-timer:get-position', () => {

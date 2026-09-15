@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -84,7 +84,7 @@
     <span id="status"></span>
     <span id="time">00:00:00</span>
     <span id="label">FOCUS</span>
-    <button id="hide" title="Hide timer">×</button>
+    <button id="hide" title="Hide timer">x</button>
   </div>
 
   <script>
@@ -97,7 +97,6 @@
       window.electronAPI.hideMiniTimer();
     });
 
-    // Keep the overlay movable while preserving the custom frameless UI.
     let dragging = false;
     let startMouseX = 0;
     let startMouseY = 0;
@@ -129,10 +128,6 @@
       time.textContent = state.time || '00:00:00';
       timer.classList.toggle('paused', !!state.paused);
     });
-  </script>
-  <script>
-    // Safe bridge event setup using Electron's exposed IPC helper.
-    // preload forwards the state through a DOM CustomEvent.
   </script>
 </body>
 </html>
