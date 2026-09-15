@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "index-study-assistant",
   "version": "1.0.0",
   "description": "INDEX Study Assistant with an always-on-top desktop timer and Google Calendar",
@@ -16,7 +16,7 @@
   "build": {
     "appId": "com.index.studyassistant",
     "productName": "INDEX Study Assistant",
-    "copyright": "Copyright © 2026 INDEX",
+    "copyright": "Copyright (c) 2026 INDEX",
     "directories": {
       "output": "dist",
       "buildResources": "build"
