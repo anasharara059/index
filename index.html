@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
@@ -2189,45 +2189,35 @@ body.gcal-immersive-mode {
 }
 
 body.gcal-immersive-mode .header-navigation {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    width: 100% !important;
-    z-index: 99999 !important;
-    transform: translateY(-100%);
-    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease !important;
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45) !important;
-    backdrop-filter: blur(24px) !important;
-    -webkit-backdrop-filter: blur(24px) !important;
-}
-
-html[data-theme="light"] body.gcal-immersive-mode .header-navigation {
-    box-shadow: 0 12px 36px rgba(60, 50, 40, 0.14) !important;
-    background: rgba(255, 255, 255, 0.95) !important;
-}
-
-body.gcal-immersive-mode .header-navigation.revealed,
-body.gcal-immersive-mode .header-navigation:hover {
-    transform: translateY(0) !important;
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, margin-top 0.28s ease !important;
 }
 
 body.gcal-immersive-mode .screens-container {
     max-width: 100vw !important;
     width: 100vw !important;
     margin: 0 !important;
-    padding: 0 !important;
-    height: 100vh !important;
+    padding: 0 16px !important;
+    height: calc(100vh - 74px) !important;
     overflow: hidden !important;
+    transition: height 0.28s ease, padding 0.28s ease, margin 0.28s ease !important;
 }
 
 body.gcal-immersive-mode #screen-calendar {
+    height: 100% !important;
+    min-height: 0 !important;
+    border-radius: 16px !important;
+    margin: 0 !important;
+}
+
+body.index-header-collapsed.gcal-immersive-mode .screens-container {
     height: 100vh !important;
-    min-height: 100vh !important;
+    padding: 0 8px !important;
+}
+
+body.index-header-collapsed.gcal-immersive-mode #screen-calendar {
+    height: 100vh !important;
     border-radius: 0 !important;
     border: none !important;
-    box-shadow: none !important;
-    margin: 0 !important;
 }
 
 body.gcal-immersive-mode .toast-container {
@@ -2298,6 +2288,557 @@ body.gcal-immersive-mode .gcal-nav-handle.hidden {
     height: 6px;
     border-radius: 50%;
     background: #00d26a;
+}
+
+/* ====================================================================
+   INDEX ENHANCEMENTS: WHITE MODE, MONTH SELECTOR, HEATMAP, GCAL TOGGLE
+   ==================================================================== */
+
+/* --- 1. Account Dropdown Sizing & Light Theme Contrast --- */
+.account-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0 !important;
+    left: auto !important;
+    min-width: 230px !important;
+    width: max-content !important;
+    max-width: 320px !important;
+    border-radius: 16px !important;
+    padding: 8px 0 !important;
+}
+html[dir="rtl"] .account-dropdown-menu {
+    right: auto !important;
+    left: 0 !important;
+}
+html[data-theme="light"] .account-dropdown-menu {
+    background: #ffffff !important;
+    border: 1px solid #dadce0 !important;
+    box-shadow: 0 12px 36px rgba(60, 64, 67, 0.16) !important;
+}
+html[data-theme="light"] .account-dropdown-menu::before {
+    background: var(--day-green, #26734a) !important;
+}
+html[data-theme="light"] .account-menu-item {
+    color: #202124 !important;
+}
+html[data-theme="light"] .account-menu-item:hover {
+    background: #f1f3f4 !important;
+    color: #1a73e8 !important;
+}
+html[data-theme="light"] .account-menu-item.danger {
+    color: #c5221f !important;
+}
+html[data-theme="light"] .account-menu-item.danger:hover {
+    background: #fce8e6 !important;
+    color: #b31412 !important;
+}
+html[data-theme="light"] .account-menu-divider {
+    background: #e8eaed !important;
+}
+
+/* Auth Card in Light Mode */
+html[data-theme="light"] .auth-real-panel {
+    background: linear-gradient(180deg, #f2ede3 0%, #e6dccb 100%) !important;
+}
+html[data-theme="light"] .auth-real-card {
+    background: #ffffff !important;
+    border-color: #dadce0 !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12) !important;
+}
+html[data-theme="light"] .auth-real-title {
+    color: #202124 !important;
+}
+html[data-theme="light"] .auth-real-subtitle {
+    color: #5f6368 !important;
+}
+html[data-theme="light"] .auth-real-brand-name {
+    color: #202124 !important;
+}
+html[data-theme="light"] .auth-feature {
+    color: #5f6368 !important;
+}
+html[data-theme="light"] .auth-real-footer {
+    color: #80868b !important;
+}
+
+/* --- 2. Calendar White Mode Contrast & Readability --- */
+[data-theme="light"] .gcal-event-card {
+    color: #1f2328 !important;
+    background: color-mix(in srgb, var(--event-color, #1a73e8) 18%, #ffffff) !important;
+    border: 1px solid color-mix(in srgb, var(--event-color, #1a73e8) 45%, #dadce0) !important;
+    border-left: 4px solid var(--event-color, #1a73e8) !important;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08) !important;
+}
+[data-theme="light"] html[dir="rtl"] .gcal-event-card {
+    border-left: 1px solid color-mix(in srgb, var(--event-color, #1a73e8) 45%, #dadce0) !important;
+    border-right: 4px solid var(--event-color, #1a73e8) !important;
+}
+[data-theme="light"] .gcal-event-title {
+    color: #1f2328 !important;
+    font-weight: 700 !important;
+}
+[data-theme="light"] .gcal-event-time {
+    color: #444d56 !important;
+    font-weight: 600 !important;
+    opacity: 1 !important;
+}
+[data-theme="light"] .gcal-event-meta-icons {
+    color: #57606a !important;
+    font-weight: 600 !important;
+}
+[data-theme="light"] .gcal-gutter-hour {
+    color: #57606a !important;
+    font-weight: 700 !important;
+}
+[data-theme="light"] .gcal-day-name {
+    color: #57606a !important;
+    font-weight: 700 !important;
+}
+[data-theme="light"] .gcal-day-number {
+    color: #1f2328 !important;
+    font-weight: 700 !important;
+}
+[data-theme="light"] .gcal-day-col {
+    border-right-color: #e1e4e8 !important;
+    background-image: repeating-linear-gradient(to bottom, transparent, transparent 59px, #e8eaed 60px) !important;
+}
+[data-theme="light"] .gcal-month-cell {
+    border-color: #dadce0 !important;
+}
+[data-theme="light"] .gcal-month-dow {
+    background: #f8fafd !important;
+    color: #5f6368 !important;
+    border-color: #dadce0 !important;
+}
+[data-theme="light"] .gcal-month-num {
+    color: #202124 !important;
+}
+[data-theme="light"] .gcal-agenda-day-header {
+    background: #f1f3f4 !important;
+    color: #1a73e8 !important;
+    border-color: #dadce0 !important;
+}
+[data-theme="light"] .gcal-agenda-item-row {
+    border-color: #e8eaed !important;
+}
+
+/* --- Study Trend Month Selector & Badges --- */
+.trend-nav-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border-soft);
+    color: var(--text-light);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
+}
+.trend-nav-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: var(--accent-orange);
+    color: var(--accent-orange);
+    transform: translateY(-1px);
+}
+.trend-month-picker-btn {
+    height: 32px;
+    padding: 0 12px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border-soft);
+    color: var(--text-light);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
+}
+.trend-month-picker-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: var(--accent-orange);
+    color: var(--accent-orange);
+}
+.trend-month-dropdown {
+    position: absolute;
+    top: calc(100% + 5px);
+    right: 0;
+    z-index: 1000;
+    background: #181920;
+    border: 1px solid var(--border-soft);
+    border-radius: 10px;
+    padding: 6px;
+    max-height: 220px;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    min-width: 140px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+html[dir="rtl"] .trend-month-dropdown {
+    right: auto;
+    left: 0;
+}
+.trend-month-dropdown-item {
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+.trend-month-dropdown-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--accent-orange);
+}
+.trend-month-dropdown-item.active {
+    background: rgba(217, 165, 74, 0.16);
+    color: var(--accent-orange);
+    font-weight: 700;
+}
+.study-trend-avg-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 12px;
+    background: rgba(217, 165, 74, 0.12);
+    border: 1px solid rgba(217, 165, 74, 0.3);
+    color: var(--accent-orange);
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+}
+
+/* Light Mode Overrides for Study Trend */
+html[data-theme="light"] .trend-nav-btn {
+    background: #ffffff !important;
+    border-color: #d6c6b2 !important;
+    color: #3d3127 !important;
+    box-shadow: 0 1px 3px rgba(61,49,39,0.08);
+}
+html[data-theme="light"] .trend-nav-btn:hover {
+    background: #f7f1e8 !important;
+    border-color: var(--accent-orange) !important;
+    color: var(--accent-orange) !important;
+}
+html[data-theme="light"] .trend-month-picker-btn {
+    background: #ffffff !important;
+    border-color: #d6c6b2 !important;
+    color: #3d3127 !important;
+    box-shadow: 0 1px 3px rgba(61,49,39,0.08);
+}
+html[data-theme="light"] .trend-month-picker-btn:hover {
+    background: #f7f1e8 !important;
+    border-color: var(--accent-orange) !important;
+    color: #8c5b0d !important;
+}
+html[data-theme="light"] .trend-month-dropdown {
+    background: #ffffff !important;
+    border-color: #d6c6b2 !important;
+    box-shadow: 0 10px 30px rgba(61,49,39,0.18) !important;
+}
+html[data-theme="light"] .trend-month-dropdown-item {
+    color: #3d3127 !important;
+}
+html[data-theme="light"] .trend-month-dropdown-item:hover {
+    background: #f5ede2 !important;
+    color: #8c5b0d !important;
+}
+html[data-theme="light"] .trend-month-dropdown-item.active {
+    background: rgba(217, 165, 74, 0.2) !important;
+    color: #8c5b0d !important;
+}
+html[data-theme="light"] .study-trend-avg-badge {
+    background: rgba(217, 165, 74, 0.16) !important;
+    border-color: rgba(217, 165, 74, 0.45) !important;
+    color: #8c5b0d !important;
+}
+
+/* --- 3. Calendar Top Bar Header Toggle & Canvas Expansion --- */
+.gcal-header-toggle-btn {
+    height: 36px;
+    padding: 0 14px;
+    border-radius: 18px;
+    border: 1px solid var(--gcal-line);
+    background: transparent;
+    color: var(--gcal-text);
+    font-weight: 600;
+    font-size: 12px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    user-select: none;
+}
+.gcal-header-toggle-btn:hover {
+    background: var(--gcal-surface-hover);
+    border-color: var(--accent-orange);
+    color: var(--accent-orange);
+    transform: translateY(-1px);
+}
+.header-navigation {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s, margin-top 0.3s !important;
+}
+body.index-header-collapsed .header-navigation {
+    transform: translateY(-100%) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    margin-top: -70px !important;
+}
+body.index-header-collapsed #screen-calendar {
+    height: calc(100vh - 24px) !important;
+    min-height: calc(100vh - 24px) !important;
+}
+body.index-header-collapsed .screens-container {
+    margin-top: 12px !important;
+    max-width: 100% !important;
+    padding: 0 16px !important;
+}
+
+/* --- 4. Tag Context Menu & Hidden Tags System --- */
+.tag-context-menu {
+    position: fixed;
+    z-index: 100005;
+    background: #141622;
+    border: 1px solid rgba(217, 165, 74, 0.3);
+    border-radius: 14px;
+    padding: 6px 0;
+    min-width: 180px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(20px);
+    display: flex;
+    flex-direction: column;
+    animation: fadeIn 0.15s ease-out;
+}
+html[data-theme="light"] .tag-context-menu {
+    background: #ffffff;
+    border-color: #dadce0;
+    box-shadow: 0 10px 30px rgba(60, 64, 67, 0.18);
+}
+.tag-context-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 16px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+.tag-context-item:hover {
+    background: rgba(217, 165, 74, 0.12);
+    color: var(--accent-orange);
+}
+html[data-theme="light"] .tag-context-item {
+    color: #202124;
+}
+html[data-theme="light"] .tag-context-item:hover {
+    background: #f1f3f4;
+    color: var(--day-green-deep, #1d5b3a);
+}
+.tag-context-divider {
+    height: 1px;
+    background: var(--border-soft);
+    margin: 4px 10px;
+}
+.mini-tag-hidden-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px dashed var(--border-soft);
+    background: transparent;
+    color: var(--text-gray);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    margin-inline-start: 4px;
+}
+.mini-tag-hidden-btn:hover {
+    border-color: var(--accent-orange);
+    color: var(--accent-orange);
+    transform: scale(1.1);
+}
+.mini-tag-hidden-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: var(--accent-orange);
+    color: #000;
+    font-size: 9px;
+    font-weight: 800;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* --- 5. Analysis Month Selector & 4-Tier Stats Row --- */
+.analysis-month-selector-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, rgba(217, 165, 74, 0.07), rgba(62, 92, 138, 0.05));
+    border: 1px solid rgba(217, 165, 74, 0.2);
+    border-radius: 16px;
+    padding: 12px 20px;
+    margin-bottom: 20px;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+html[data-theme="light"] .analysis-month-selector-bar {
+    background: linear-gradient(135deg, rgba(244, 236, 223, 0.96), rgba(232, 221, 206, 0.92));
+    border-color: rgba(73, 62, 50, 0.16);
+}
+.month-selector-nav-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.month-nav-arrow-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid rgba(217, 165, 74, 0.3);
+    background: rgba(217, 165, 74, 0.1);
+    color: var(--accent-orange);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+.month-nav-arrow-btn:hover {
+    background: var(--accent-orange);
+    color: #000;
+    transform: scale(1.08);
+}
+.month-selector-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.month-selector-dropdown {
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border-soft);
+    background: rgba(0, 0, 0, 0.3);
+    color: var(--text-light);
+    font-size: 13px;
+    font-weight: 600;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+.month-selector-dropdown:focus {
+    border-color: var(--accent-orange);
+}
+html[data-theme="light"] .month-selector-dropdown {
+    background: #ffffff !important;
+    border-color: #dadce0 !important;
+    color: #202124 !important;
+}
+.month-current-quick-btn {
+    height: 34px;
+    padding: 0 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 210, 106, 0.3);
+    background: rgba(0, 210, 106, 0.08);
+    color: var(--success);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.month-current-quick-btn:hover {
+    background: var(--success);
+    color: #000;
+}
+
+/* --- 7. Subject & Branch Drag & Drop Handles --- */
+.subject-drag-handle,
+.branch-drag-handle {
+    cursor: grab;
+    padding: 2px 6px;
+    border-radius: 6px;
+    color: var(--text-gray);
+    font-size: 15px;
+    line-height: 1;
+    user-select: none;
+    transition: color 0.15s, background 0.15s;
+}
+.subject-drag-handle:hover,
+.branch-drag-handle:hover {
+    color: var(--accent-orange);
+    background: rgba(255, 255, 255, 0.05);
+}
+.goal-card.is-dragging,
+.subject-group-card.is-dragging {
+    opacity: 0.35 !important;
+    transform: scale(0.98) !important;
+}
+.goal-card.drop-hover,
+.subject-group-card.drop-hover {
+    border-color: var(--accent-orange) !important;
+    box-shadow: 0 0 16px rgba(217, 165, 74, 0.35) !important;
+}
+
+/* --- 8. Admin User Activity Status Pill --- */
+.admin-user-activity-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    margin-top: 4px;
+}
+.admin-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+}
+.admin-status-pill.online {
+    background: rgba(0, 210, 106, 0.15);
+    color: #00d26a;
+    border: 1px solid rgba(0, 210, 106, 0.35);
+}
+.admin-status-pill.offline {
+    background: rgba(122, 127, 145, 0.12);
+    color: var(--text-gray);
+    border: 1px solid rgba(122, 127, 145, 0.25);
+}
+.status-pulse-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #00d26a;
+    box-shadow: 0 0 6px #00d26a;
+    animation: ringPulse 2s infinite;
+}
+.admin-last-active-txt {
+    color: var(--text-gray);
+    font-size: 11px;
 }
     </style>
 </head>
@@ -2382,9 +2923,6 @@ body.gcal-immersive-mode .gcal-nav-handle.hidden {
         <div class="header-actions">
             <button class="lang-button" id="pwa-install-btn" onclick="triggerPwaInstall()" title="Install INDEX as an app" style="display:none; background: var(--accent-orange); color:#000; font-weight:800; width:auto; padding:0 14px; gap:6px; font-size:12px;">⬇ <span id="pwa-install-btn-txt">Install App</span></button>
             <button class="lang-button" onclick="toggleAppTheme()" id="theme-toggle-btn" title="Toggle light/dark theme">🌙</button>
-            <button class="focus-mode-icon" onclick="toggleDeepFocusMode()" id="deep-focus-toggle" title="Enter Focus Mode" aria-label="Enter Focus Mode">
-                <span class="focus-mode-icon-glyph">◉</span><span class="focus-mode-icon-label" id="deep-focus-label">Focus</span>
-            </button>
             <button class="export-btn" onclick="openGoalsSettingsModal()" id="btn-goals-settings" title="Study Goals">🎯 Goals</button>
             <div class="user-badge" id="user-badge" style="display:none;" onclick="toggleAccountMenu(event)" title="Account Options">
                 <img id="user-badge-photo" src="" alt="">
@@ -2446,7 +2984,10 @@ body.gcal-immersive-mode .gcal-nav-handle.hidden {
                         </div>
                         <button class="linked-goal-empty-cta" id="linked-goal-empty-cta" onclick="openGoalModal(currentlySelectedTag)" style="display:none;">+ Link a goal to this subject</button>
                         <div class="tags-management-section" style="border-top:none; padding-top:2px;">
-                            <div class="tags-label" id="tags-section-header">Subjects & Preparations (Click to select):</div>
+                            <div class="tags-label" id="tags-section-header" style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                                <span>Subjects & Preparations (Click to select):</span>
+                                <button class="manage-hidden-tags-btn" id="manage-hidden-tags-btn" onclick="openManageHiddenTagsModal()" title="Manage Hidden Subjects" style="display:none; background:none; border:1px solid var(--border-soft); border-radius:12px; cursor:pointer; font-size:12px; color:var(--text-gray); padding:2px 8px;">👁️ <span id="hidden-tags-count-badge">0</span></button>
+                            </div>
                             <div class="tags-list" id="tags-box-wrapper"></div>
                         </div>
                     </div>
@@ -2566,7 +3107,30 @@ body.gcal-immersive-mode .gcal-nav-handle.hidden {
 
                 <!-- 📈 Study Trend Line Chart -->
                 <div class="charts-container-box" style="margin-top:10px;">
-                    <div class="charts-box-title" id="chart-trend-title">📈 Study Trend</div>
+                    <div class="charts-box-title" id="chart-trend-title" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <span style="display:inline-flex; align-items:center; gap:6px;">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+                                <span id="trend-title-txt">Study Trend</span>
+                            </span>
+                            <span id="study-trend-avg-display" class="study-trend-avg-badge">Daily Avg: 0h 0m</span>
+                        </div>
+                        <div class="trend-month-selector" style="display:flex; align-items:center; gap:6px;">
+                            <button type="button" class="trend-nav-btn" onclick="navStudyTrendMonth(-1)" title="Previous Month" aria-label="Previous Month">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                            </button>
+                            <div class="trend-month-dropdown-wrapper" style="position:relative; display:inline-block;">
+                                <button type="button" class="trend-month-picker-btn" id="study-trend-month-picker-btn" onclick="toggleStudyTrendMonthDropdown(event)">
+                                    <span id="study-trend-month-display">September 2026</span>
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-inline-start:4px;"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                </button>
+                                <div class="trend-month-dropdown" id="study-trend-month-dropdown" style="display:none;"></div>
+                            </div>
+                            <button type="button" class="trend-nav-btn" onclick="navStudyTrendMonth(1)" title="Next Month" aria-label="Next Month">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            </button>
+                        </div>
+                    </div>
                     <div style="position: relative; height: 320px;">
                         <canvas id="study-trend-chart"></canvas>
                     </div>
@@ -2634,21 +3198,13 @@ body.gcal-immersive-mode .gcal-nav-handle.hidden {
         </div>
                 <!-- ================= SCREEN: GOOGLE CALENDAR (AUTHENTIC MATERIAL UX) ================= -->
         <div class="screen-view glass-card" id="screen-calendar">
-            <!-- Floating Navigation Handle (Reveals INDEX Navigation on Hover/Click) -->
-            <div class="gcal-nav-handle" id="gcal-nav-handle" onclick="gcalRevealHeader()" title="Hover top to show INDEX navigation">
-                <span class="gcal-handle-dot"></span>
-                <span class="gcal-handle-text">INDEX Menu ▾</span>
-                <span class="gcal-handle-bar"></span>
-            </div>
-
             <!-- Google Calendar Top Bar -->
             <header class="gcal-topbar">
                 <div class="gcal-topbar-left">
                     <button class="gcal-menu-toggle" onclick="gcalToggleSidebar()" title="Main menu">☰</button>
-                    <div class="gcal-brand-title" onclick="gcalRevealHeader()" style="cursor:pointer;" title="Click to show INDEX navigation">
+                    <div class="gcal-brand-title">
                         <span class="gcal-brand-icon">📅</span>
                         <span>Calendar</span>
-                        <span style="font-size:11px; opacity:0.6; margin-left:3px;">▾</span>
                     </div>
                     <button class="gcal-today-btn" onclick="gcalGoToday()">Today</button>
                     <div class="gcal-nav-arrows">
@@ -2656,6 +3212,10 @@ body.gcal-immersive-mode .gcal-nav-handle.hidden {
                         <button class="gcal-arrow-btn" onclick="gcalShift(1)" title="Next">›</button>
                     </div>
                     <div class="gcal-date-label" id="gcal-date-label">September 2026</div>
+                    <button class="gcal-header-toggle-btn" id="gcal-header-toggle-btn" onclick="toggleIndexHeaderCollapse()" title="Toggle full canvas">
+                        <svg id="gcal-toggle-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+                        <span id="gcal-toggle-text">Full Canvas</span>
+                    </button>
                 </div>
 
                 <div class="gcal-topbar-center">
@@ -2677,9 +3237,6 @@ body.gcal-immersive-mode .gcal-nav-handle.hidden {
                         <button class="gcal-view-tab" data-view="year" onclick="gcalSetView('year')">Year</button>
                         <button class="gcal-view-tab" data-view="agenda" onclick="gcalSetView('agenda')">Schedule</button>
                     </div>
-                    <button class="gcal-today-btn" onclick="gcalRevealHeader()" title="Show INDEX Navigation Menu" style="display:inline-flex; align-items:center; gap:5px; font-size:12px; padding:0 12px; margin-left:6px;">
-                        <span>🌐 Menu</span>
-                    </button>
                 </div>
             </header>
 
@@ -2890,7 +3447,12 @@ body.gcal-immersive-mode .gcal-nav-handle.hidden {
                         <button class="add-item-pill-btn" onclick="goBackToSubjectsOverview()" id="goals-back-btn" style="display:none; background: rgba(255,255,255,0.08); color: var(--text-light, #eee); box-shadow:none;">← <span id="goals-back-btn-txt">Back</span></button>
                         <span id="goals-header-title">Subjects</span>
                     </div>
-                    <button class="add-item-pill-btn" onclick="openGoalModal()" id="goals-add-btn">+ <span id="goals-add-btn-txt">New Subject</span></button>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <button class="add-item-pill-btn" onclick="openManageHiddenTagsModal()" id="goals-hidden-btn" title="Manage Hidden Subjects" style="display:none; background:rgba(255,255,255,0.06); border:1px solid var(--border-soft); color:var(--text-gray); font-size:13px; font-weight:600; padding:6px 14px; border-radius:20px; cursor:pointer;">
+                            <span>ðŸ‘ï¸</span> <span id="goals-hidden-btn-txt">Hidden</span> (<span id="goals-hidden-count-badge">0</span>)
+                        </button>
+                        <button class="add-item-pill-btn" onclick="openGoalModal()" id="goals-add-btn">+ <span id="goals-add-btn-txt">New Subject</span></button>
+                    </div>
                 </div>
                 <div class="goals-cards-grid" id="goals-grid-wrapper"></div>
                 <div class="empty-state-box" id="goals-empty-state" style="display:none;">No goals yet — add your first one!</div>
@@ -3016,6 +3578,25 @@ body.gcal-immersive-mode .gcal-nav-handle.hidden {
             </div>
         </div>
     </div>
+
+    <!-- Tag Context Menu (Right Click) -->
+
+    <!-- Manage Hidden Tags Modal -->
+    <div class="modal-overlay" id="manage-hidden-tags-modal" onclick="if (event.target === this) closeManageHiddenTagsModal();">
+        <div class="modal-box" style="max-width:460px; width:90%; border-radius:18px; text-align:start;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <h3 id="manage-hidden-heading" style="margin-bottom:0; font-size:18px; font-weight:800; color:var(--accent-orange);">Manage Hidden Subjects</h3>
+                <button type="button" onclick="closeManageHiddenTagsModal()" style="background:none; border:none; color:var(--text-gray); font-size:18px; cursor:pointer; padding:4px 8px;">âœ•</button>
+            </div>
+            <div id="manage-hidden-tags-list" style="margin:16px 0; max-height:280px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;">
+                <!-- Hidden tags rendered here -->
+            </div>
+            <div class="modal-buttons" style="display:flex; justify-content:flex-end; gap:8px; margin-top:12px;">
+                <button class="modal-btn confirm" onclick="closeManageHiddenTagsModal()" id="manage-hidden-close" style="padding:8px 18px; border-radius:8px; font-size:13px; font-weight:700;">Done</button>
+            </div>
+        </div>
+    </div>
+
 <!-- Floating mini timer -->
     <div id="mini-floating-timer" aria-live="polite" title="Drag to move">
         <span class="mini-timer-status"></span>
@@ -3343,10 +3924,17 @@ body.gcal-immersive-mode .gcal-nav-handle.hidden {
         let currentSegmentStartTimeStamp = null; // start time of the currently-running (since last resume) segment
         let sessionTimeSegments = []; // closed "start - end" segments for the in-progress session (one per run between pauses)
         let currentTagsList = ["Medicine", "Surgery", "Anatomy", "Obstetrics", "Pediatrics"];
+        let hiddenTags = [];
+        let customTagColors = {};
         let currentlySelectedTag = "Medicine";
         let archivedSessionsArray = [];
         let paginationCurrentPage = 1;
-        const paginationMaxItemsPerPage = 10;
+        const paginationMaxItemsPerPage = 5;
+        let analysisSelectedYear = new Date().getFullYear();
+        let analysisSelectedMonth = new Date().getMonth();
+        let tagContextMenuTarget = null;
+        let userStatusCache = {};
+        let lastAdminAccessSnap = null;
         let goalsArray = [];
         let timerSelectedBranchId = null;
         // Remembers which branch/lecture was last picked, per subject, so
@@ -3544,14 +4132,90 @@ body.gcal-immersive-mode .gcal-nav-handle.hidden {
             document.getElementById('user-badge-photo').src = user.photoURL || '';
             document.getElementById('nav-btn-admin').style.display = isAdmin ? 'inline-block' : 'none';
 
-            const myAccessRef = ACCESS_REF.child(user.uid);
+                        const myAccessRef = ACCESS_REF.child(user.uid);
+
+            // Setup Firebase RTDB presence for active status directly under user access record
+            try {
+                const myPresenceRef = myAccessRef.child('presence');
+                const globalPresenceRef = rtdb.ref('indexStudyAssistant/presence/' + user.uid);
+                const connectedRef = rtdb.ref('.info/connected');
+
+                connectedRef.on('value', (snap) => {
+                    if (snap.val() === true) {
+                        const offlineData = {
+                            state: 'offline',
+                            lastActive: firebase.database.ServerValue.TIMESTAMP,
+                            clientLastActive: Date.now()
+                        };
+                        const onlineData = {
+                            state: 'online',
+                            lastActive: firebase.database.ServerValue.TIMESTAMP,
+                            clientLastActive: Date.now()
+                        };
+
+                        myPresenceRef.onDisconnect().set(offlineData);
+                        globalPresenceRef.onDisconnect().set(offlineData);
+
+                        myPresenceRef.set(onlineData);
+                        globalPresenceRef.set(onlineData);
+                    }
+                });
+
+                // Heartbeat every 15 seconds while app is active
+                const sendPresenceHeartbeat = () => {
+                    if (auth.currentUser) {
+                        const now = Date.now();
+                        const updateData = {
+                            state: 'online',
+                            lastActive: firebase.database.ServerValue.TIMESTAMP,
+                            clientLastActive: now
+                        };
+                        myPresenceRef.update(updateData).catch(() => {});
+                        globalPresenceRef.update(updateData).catch(() => {});
+                    }
+                };
+                setInterval(sendPresenceHeartbeat, 15000);
+
+                // Throttled user activity tracking (max once per 15s)
+                let lastActivityRecorded = 0;
+                const recordUserActivity = () => {
+                    const now = Date.now();
+                    if (now - lastActivityRecorded > 15000) {
+                        lastActivityRecorded = now;
+                        sendPresenceHeartbeat();
+                    }
+                };
+                ['mousemove', 'keydown', 'click', 'touchstart'].forEach(ev => {
+                    window.addEventListener(ev, recordUserActivity, { passive: true });
+                });
+
+                // Disconnect on beforeunload
+                window.addEventListener('beforeunload', () => {
+                    try {
+                        const offlineData = {
+                            state: 'offline',
+                            lastActive: firebase.database.ServerValue.TIMESTAMP,
+                            clientLastActive: Date.now()
+                        };
+                        myPresenceRef.set(offlineData);
+                        globalPresenceRef.set(offlineData);
+                    } catch(e) {}
+                });
+            } catch (e) { console.warn('Presence init error:', e); }
 
             if (isAdmin) {
-                await myAccessRef.set({
+                await myAccessRef.update({
                     email: user.email || '', displayName: user.displayName || '', photoURL: user.photoURL || '',
                     status: 'approved', isAdmin: true, requestedAt: Date.now(), respondedAt: Date.now()
                 });
-                ACCESS_REF.on('value', renderAdminAccessList);
+                ACCESS_REF.on('value', snap => {
+                    lastAdminAccessSnap = snap;
+                    renderAdminAccessList(snap);
+                });
+                rtdb.ref('indexStudyAssistant/presence').on('value', snap => {
+                    userStatusCache = snap.val() || {};
+                    if (lastAdminAccessSnap) renderAdminAccessList(lastAdminAccessSnap);
+                });
                 try { await bootApp(); }
                 catch (err) { console.error('bootApp failed:', err); }
                 finally { hideAllAuthOverlays(); }
@@ -3562,20 +4226,19 @@ body.gcal-immersive-mode .gcal-nav-handle.hidden {
             myAccessListenerRef = myAccessRef;
             myAccessRef.on('value', async (snap) => {
                 const record = snap.val();
-                if (!record) {
-                    await myAccessRef.set({
+                if (!record || !record.status) {
+                    await myAccessRef.update({
                         email: user.email || '', displayName: user.displayName || '', photoURL: user.photoURL || '',
                         status: 'pending', isAdmin: false, requestedAt: Date.now()
                     });
                     return;
                 }
+                // Keep profile updated without wiping presence
+                myAccessRef.update({
+                    email: user.email || '', displayName: user.displayName || '', photoURL: user.photoURL || ''
+                }).catch(() => {});
+
                 if (record.status === 'approved') {
-                    // Keep the loading spinner up while data is fetched so the
-                    // screen doesn't briefly flash empty/default content before
-                    // your real sessions, goals, and habits are rendered in.
-                    // The try/finally guarantees the overlay is always removed,
-                    // even if something in bootApp throws, so a bad session or
-                    // edge case can never leave the login screen stuck.
                     try { await bootApp(); }
                     catch (err) { console.error('bootApp failed:', err); }
                     finally { hideAllAuthOverlays(); }
@@ -3595,36 +4258,88 @@ body.gcal-immersive-mode .gcal-nav-handle.hidden {
             if (isClockRunning) pauseClock();
         }
 
+        function formatRelativeLastActive(timestamp, isAr) {
+            if (!timestamp) return isAr ? '\u063A\u064A\u0631 \u0645\u0639\u0631\u0648\u0641' : 'Unknown';
+            const diffMs = Date.now() - timestamp;
+            if (diffMs < 0) return isAr ? '\u0627\u0644\u0622\u0646' : 'Just now';
+            const diffSec = Math.floor(diffMs / 1000);
+            if (diffSec < 60) return isAr ? '\u0645\u0646\u0630 \u0644\u062D\u0638\u0627\u062A' : 'Just moments ago';
+            const diffMin = Math.floor(diffSec / 60);
+            if (diffMin < 60) return isAr ? `\u0645\u0646\u0630 ${diffMin} \u062F\u0642\u064A\u0642\u0629` : `${diffMin} min ago`;
+            const diffHours = Math.floor(diffMin / 60);
+            if (diffHours < 24) return isAr ? `\u0645\u0646\u0630 ${diffHours} \u0633\u0627\u0639\u0629` : `${diffHours} hr ago`;
+            const d = new Date(timestamp);
+            return d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function formatRelativeLastActive(timestamp, isAr) {
+            if (!timestamp) return isAr ? '\u063A\u064A\u0631 \u0645\u0639\u0631\u0648\u0641' : 'Unknown';
+            const diffMs = Date.now() - timestamp;
+            if (diffMs < 0) return isAr ? '\u0627\u0644\u0622\u0646' : 'Just now';
+            const diffSec = Math.floor(diffMs / 1000);
+            if (diffSec < 60) return isAr ? '\u0645\u0646\u0630 \u0644\u062D\u0638\u0627\u062A' : 'Just moments ago';
+            const diffMin = Math.floor(diffSec / 60);
+            if (diffMin < 60) return isAr ? `\u0645\u0646\u0630 ${diffMin} \u062F\u0642\u064A\u0642\u0629` : `${diffMin} min ago`;
+            const diffHours = Math.floor(diffMin / 60);
+            if (diffHours < 24) return isAr ? `\u0645\u0646\u0630 ${diffHours} \u0633\u0627\u0639\u0629` : `${diffHours} hr ago`;
+            const d = new Date(timestamp);
+            return d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
         function renderAdminAccessList(snap) {
+            lastAdminAccessSnap = snap;
             const data = snap.val() || {};
             const listEl = document.getElementById('admin-access-list');
             const emptyEl = document.getElementById('admin-empty-state');
             const countEl = document.getElementById('admin-pending-count');
+            if (!listEl) return;
             const entries = Object.entries(data).filter(([uid, rec]) => !rec.isAdmin);
             entries.sort((a, b) => (b[1].requestedAt || 0) - (a[1].requestedAt || 0));
             const pendingCount = entries.filter(([, rec]) => rec.status === 'pending').length;
-            countEl.innerText = pendingCount > 0 ? pendingCount + ' pending' : '';
-            if (entries.length === 0) { listEl.innerHTML = ''; emptyEl.style.display = 'block'; return; }
-            emptyEl.style.display = 'none';
+            if (countEl) countEl.innerText = pendingCount > 0 ? pendingCount + ' pending' : '';
+            if (entries.length === 0) { listEl.innerHTML = ''; if (emptyEl) emptyEl.style.display = 'block'; return; }
+            if (emptyEl) emptyEl.style.display = 'none';
+
+            const isAr = currentSystemLanguage === 'ar';
+
             listEl.innerHTML = entries.map(([uid, rec]) => {
                 const statusColor = rec.status === 'approved' ? 'var(--success)' : rec.status === 'banned' ? 'var(--danger)' : 'var(--warning)';
-                const requestedDate = rec.requestedAt ? new Date(rec.requestedAt).toLocaleString() : '';
+
+                // Merge presence from global RTDB cache or child record
+                const pres = (userStatusCache && userStatusCache[uid]) || rec.presence || {};
+                const lastActiveTimestamp = pres.lastActive || pres.clientLastActive || rec.requestedAt || 0;
+                const elapsedMs = Date.now() - (pres.clientLastActive || pres.lastActive || 0);
+
+                // Online if state is online AND active within last 90 seconds
+                const isOnline = pres.state === 'online' && elapsedMs < 90000;
+
+                const fullDateTooltip = lastActiveTimestamp ? new Date(lastActiveTimestamp).toLocaleString() : '';
+                const relativeText = isOnline ? (isAr ? '\u0627\u0644\u0622\u0646' : 'Active Now') : formatRelativeLastActive(lastActiveTimestamp, isAr);
+
+                const presencePill = isOnline
+                    ? `<span class="admin-status-pill online" style="display:inline-flex; align-items:center; gap:6px; background:rgba(0, 210, 106, 0.15); color:#00d26a; border:1px solid rgba(0, 210, 106, 0.35); padding:3px 10px; border-radius:12px; font-weight:700; font-size:11px;"><span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:#00d26a; box-shadow:0 0 8px #00d26a;"></span> ${isAr ? '\u0645\u062A\u0635\u0644 \u0627\u0644\u0622\u0646' : 'Active Now'}</span>`
+                    : `<span class="admin-status-pill offline" style="display:inline-flex; align-items:center; gap:6px; background:rgba(255, 255, 255, 0.05); color:var(--text-gray); border:1px solid rgba(255, 255, 255, 0.1); padding:3px 10px; border-radius:12px; font-weight:600; font-size:11px;">&#9675; ${isAr ? '\u063A\u064A\u0631 \u0645\u062A\u0635\u0644' : 'Offline'}</span>`;
+
                 let actions = '';
                 if (rec.status === 'pending') {
-                    actions = `<button class="modal-btn confirm" onclick="setAccessStatus('${uid}','approved')">Approve</button>
-                               <button class="modal-btn cancel" onclick="setAccessStatus('${uid}','banned')">Reject</button>`;
+                    actions = `<button class="modal-btn confirm" onclick="setAccessStatus('${uid}','approved')">${isAr ? '\u0642\u0628\u0648\u0644' : 'Approve'}</button>
+                               <button class="modal-btn cancel" onclick="setAccessStatus('${uid}','banned')">${isAr ? '\u0631\u0641\u0636' : 'Reject'}</button>`;
                 } else if (rec.status === 'approved') {
-                    actions = `<button class="modal-btn cancel" onclick="setAccessStatus('${uid}','banned')">Kick / Ban</button>`;
+                    actions = `<button class="modal-btn cancel" onclick="setAccessStatus('${uid}','banned')">${isAr ? '\u062D\u0638\u0631' : 'Kick / Ban'}</button>`;
                 } else if (rec.status === 'banned') {
-                    actions = `<button class="modal-btn confirm" onclick="setAccessStatus('${uid}','approved')">Restore access</button>`;
+                    actions = `<button class="modal-btn confirm" onclick="setAccessStatus('${uid}','approved')">${isAr ? '\u0627\u0633\u062A\u0639\u0627\u062F\u0629' : 'Restore access'}</button>`;
                 }
+
                 return `<div class="glass-card" style="padding:14px 18px; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
                     <div style="display:flex; align-items:center; gap:10px;">
-                        <img src="${rec.photoURL || ''}" style="width:36px;height:36px;border-radius:50%;background:#222;">
+                        <img src="${rec.photoURL || ''}" style="width:36px;height:36px;border-radius:50%;background:#222;" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(rec.displayName || 'User')}&background=random'">
                         <div>
-                            <div style="font-size:13px; color:var(--text-light); font-weight:600;">${rec.displayName || '(no name)'}</div>
-                            <div style="font-size:11px; color:var(--text-gray);">${rec.email || ''}</div>
-                            <div style="font-size:10px; color:var(--text-gray);">Requested: ${requestedDate}</div>
+                            <div style="font-size:13px; color:var(--text-light); font-weight:600;">${escapeGoalHtml(rec.displayName || '(no name)')}</div>
+                            <div style="font-size:11px; color:var(--text-gray);">${escapeGoalHtml(rec.email || '')}</div>
+                            <div style="display:flex; align-items:center; gap:8px; margin-top:4px; flex-wrap:wrap;">
+                                ${presencePill}
+                                <span style="font-size:11px; color:var(--text-gray);" title="${fullDateTooltip}">${isAr ? '\u0622\u062E\u0631 \u0646\u0634\u0627\u0637:' : 'Last Active:'} ${relativeText}</span>
+                            </div>
                         </div>
                     </div>
                     <div style="display:flex; align-items:center; gap:10px;">
@@ -3634,6 +4349,12 @@ body.gcal-immersive-mode .gcal-nav-handle.hidden {
                 </div>`;
             }).join('');
         }
+
+        setInterval(() => {
+            if (lastAdminAccessSnap && document.getElementById('screen-admin')?.classList.contains('active-view')) {
+                renderAdminAccessList(lastAdminAccessSnap);
+            }
+        }, 5000);
 
         function setAccessStatus(uid, status) {
             ACCESS_REF.child(uid).update({ status, respondedAt: Date.now() });
@@ -3688,13 +4409,15 @@ body.gcal-immersive-mode .gcal-nav-handle.hidden {
                 const [
                     savedSessions, savedTags, savedGoals, savedHabits,
                     savedStudyGoals, savedSelectedTag, savedQuickNotes,
-                    savedTheme, savedLanguage
+                    savedTheme, savedLanguage, savedHiddenTags
                 ] = await Promise.all([
                     dbGet('sessions'), dbGet('tags'), dbGet('goals'), dbGet('habits'),
                     dbGet('studyGoals'), dbGet('selectedTag'), dbGet('timerQuickNotes'),
-                    dbGet('appTheme'), dbGet('language')
+                    dbGet('appTheme'), dbGet('language'), dbGet('hiddenTags')
                 ]);
 
+                if (Array.isArray(savedHiddenTags)) hiddenTags = savedHiddenTags;
+                else dbSet('hiddenTags', hiddenTags);
                 if (savedSessions !== undefined) archivedSessionsArray = savedSessions;
                 else dbSet('sessions', archivedSessionsArray);
                 if (savedTags !== undefined) currentTagsList = savedTags;
@@ -3837,13 +4560,13 @@ body.gcal-immersive-mode .gcal-nav-handle.hidden {
             if (screenId === 'screen-calendar') {
                 document.body.classList.add('gcal-immersive-mode');
                 document.getElementById('nav-btn-calendar')?.classList.add('active');
+                if (typeof updateGcalHeaderToggleBtn === 'function') updateGcalHeaderToggleBtn();
                 if (typeof gcalRender === 'function') gcalRender();
             } else {
                 document.body.classList.remove('gcal-immersive-mode');
+                document.body.classList.remove('index-header-collapsed');
                 const gNav = document.querySelector('.header-navigation');
                 if (gNav) gNav.classList.remove('revealed');
-                const gHandle = document.getElementById('gcal-nav-handle');
-                if (gHandle) gHandle.classList.remove('hidden');
             }
             if (screenId === 'screen-goals') { document.getElementById('nav-btn-goals').classList.add('active'); renderGoalsScreen(); }
             if (screenId === 'screen-habits') { document.getElementById('nav-btn-habits').classList.add('active'); renderHabitsScreen(); }
@@ -3982,6 +4705,8 @@ body.gcal-immersive-mode .gcal-nav-handle.hidden {
             renderGoalsScreen();
             renderHabitsScreen();
             updateEditAddModalLabels();
+            if (typeof updateGcalHeaderToggleBtn === 'function') updateGcalHeaderToggleBtn();
+            if (typeof renderStudyTrendChart === 'function') renderStudyTrendChart();
         }
 
         function switchMode(mode) {
@@ -4357,18 +5082,46 @@ body.gcal-immersive-mode .gcal-nav-handle.hidden {
         }
         document.getElementById('modal-tag-input').addEventListener('keypress', function (e) { if (e.key === 'Enter') saveTagFromModal(); });
 
+        function getWeekStartSaturday(referenceDate = new Date()) {
+            const d = new Date(referenceDate);
+            d.setHours(0, 0, 0, 0);
+            const day = d.getDay(); // 0: Sun, 1: Mon, ..., 6: Sat
+            const diff = day === 6 ? 0 : day + 1; // Sat: 0, Sun: 1, ..., Fri: 6
+            d.setDate(d.getDate() - diff);
+            return d;
+        }
+
         function renderTagsChips() {
             const wrapper = document.getElementById('tags-box-wrapper');
+            if (!wrapper) return;
             wrapper.innerHTML = '';
-            currentTagsList.forEach(tag => {
+            const visibleTags = currentTagsList.filter(t => !hiddenTags.includes(t));
+            
+            // Update hidden tags manager button in header
+            const manageBtn = document.getElementById('manage-hidden-tags-btn');
+            const badge = document.getElementById('hidden-tags-count-badge');
+            if (manageBtn && badge) {
+                if (hiddenTags.length > 0) {
+                    manageBtn.style.display = 'inline-flex';
+                    badge.innerText = hiddenTags.length;
+                } else {
+                    manageBtn.style.display = 'none';
+                }
+            }
+
+                        visibleTags.forEach(tag => {
                 const chip = document.createElement('div');
                 chip.className = `mini-tag-chip ${tag === currentlySelectedTag ? 'selected' : ''}`;
-                chip.title = currentSystemLanguage === 'ar' ? 'انقر لتختار · انقر بزر الماوس الأيمن لتغيير اللون' : 'Click to select · Right-click to change color';
+                chip.title = currentSystemLanguage === 'ar' ? 'Ø§Ù†Ù‚Ø± Ù„Ù„Ø§Ø®ØªÙŠØ§Ø± Â· ÙƒÙ„ÙŠÙƒ ÙŠÙ…ÙŠÙ† Ù„Ù„ØªØ¹Ø¯ÙŠÙ„' : 'Click to select Â· Right-click to edit';
                 chip.onclick = () => selectActiveTag(tag);
-                chip.oncontextmenu = (e) => { e.preventDefault(); openTagColorModal(tag); };
+                chip.oncontextmenu = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    openTagSubjectModal(tag, e);
+                };
                 let pressTimer;
                 chip.addEventListener('touchstart', (e) => {
-                    pressTimer = setTimeout(() => { e.preventDefault(); openTagColorModal(tag); }, 600);
+                    pressTimer = setTimeout(() => { e.preventDefault(); openTagSubjectModal(tag, e); }, 600);
                 });
                 chip.addEventListener('touchend', () => clearTimeout(pressTimer));
                 chip.addEventListener('touchmove', () => clearTimeout(pressTimer));
@@ -4378,35 +5131,403 @@ body.gcal-immersive-mode .gcal-nav-handle.hidden {
                 colorDot.style.backgroundColor = getTagColor(tag);
                 const spanName = document.createElement('span');
                 spanName.innerText = tag;
-                const removeBtn = document.createElement('span');
-                removeBtn.className = 'remove-icon';
-                removeBtn.innerText = '✕';
-                removeBtn.onclick = (e) => { e.stopPropagation(); deleteTagFromSystem(tag); };
+
                 chip.appendChild(colorDot);
                 chip.appendChild(spanName);
-                chip.appendChild(removeBtn);
                 wrapper.appendChild(chip);
             });
             const addBtnCircle = document.createElement('div');
             addBtnCircle.className = 'mini-tag-add-btn';
             addBtnCircle.innerHTML = '+';
+            addBtnCircle.title = currentSystemLanguage === 'ar' ? 'إضافة مادة' : 'Add Subject';
             addBtnCircle.onclick = () => openTagModal();
             wrapper.appendChild(addBtnCircle);
         }
 
-        function selectActiveTag(tag) { currentlySelectedTag = tag; dbSet('selectedTag', currentlySelectedTag); renderTagsChips(); refreshTimerSidebar(); loadTimerNotesForCurrentTag(); applySubjectTint(); }
+                function openTagSubjectModal(tagName, event) {
+            const prev = document.getElementById('tag-subject-modal');
+            if (prev) prev.remove();
+
+            const isAr = currentSystemLanguage === 'ar';
+            const currentColor = getTagColor(tagName);
+
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay modal-open';
+            modal.id = 'tag-subject-modal';
+            modal.style.zIndex = '100010';
+
+            const paletteColors = [
+                '#3498db','#e67e22','#1abc9c','#e84393','#2ecc71','#9b59b6',
+                '#e74c3c','#f1c40f','#16a085','#d35400','#8e44ad','#2c3e50',
+                '#d9a54a','#3e5c8a','#00d26a','#00cec9','#0984e3','#6c5ce7'
+            ];
+
+            const safeTagName = (tagName || '').replace(/"/g, '&quot;');
+
+            modal.innerHTML = `
+                <div class="modal-box" style="max-width:380px; width:90%; padding:20px; border-radius:16px; background:rgba(20,23,33,0.96); backdrop-filter:blur(20px); border:1px solid var(--border-soft); box-shadow:0 20px 50px rgba(0,0,0,0.6); text-align:start;">
+                    <!-- Top: Subject Name & Hide Button -->
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:14px;">
+                        <input type="text" id="tag-edit-name-input" value="${safeTagName}" 
+                               placeholder="${isAr ? '\u0627\u0633\u0645 \u0627\u0644\u0645\u0627\u062F\u0629' : 'Subject Name'}"
+                               style="flex:1; height:40px; padding:0 12px; border-radius:8px; background:rgba(255,255,255,0.06); border:1px solid var(--border-soft); color:var(--text-light); font-size:14px; font-weight:700; outline:none; margin-bottom:0; text-align:start; transition:border-color 0.2s;" />
+                        <button type="button" id="tag-hide-btn" title="${isAr ? '\u0625\u062E\u0641\u0627\u0621 \u0627\u0644\u0645\u0627\u062F\u0629' : 'Hide Subject'}"
+                                style="height:40px; padding:0 12px; border-radius:8px; background:rgba(255,255,255,0.06); border:1px solid var(--border-soft); color:var(--text-light); font-size:13px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:6px; flex-shrink:0; transition:all 0.2s;">
+                            <span style="font-size:14px;">&#128065;&#65039;</span>
+                            <span>${isAr ? '\u0625\u062E\u0641\u0627\u0621' : 'Hide'}</span>
+                        </button>
+                    </div>
+
+                    <!-- Middle: Compact Color Picker -->
+                    <div style="margin-bottom:16px;">
+                        <div style="font-size:11px; color:var(--text-gray); font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px;">
+                            ${isAr ? '\u0644\u0648\u0646 \u0627\u0644\u0645\u0627\u062F\u0629' : 'Subject Color'}
+                        </div>
+                        <div style="display:grid; grid-template-columns:repeat(6, 1fr); gap:6px; margin-bottom:10px;">
+                            ${paletteColors.map(c => `
+                                <div class="tag-color-swatch" data-color="${c}"
+                                     style="height:32px; border-radius:6px; background:${c}; cursor:pointer; border:2px solid ${c.toLowerCase() === currentColor.toLowerCase() ? '#fff' : 'transparent'}; transition:all 0.15s; display:flex; align-items:center; justify-content:center;"
+                                     onclick="selectTagColorSwatch('${c}')">
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <label style="font-size:12px; color:var(--text-gray); margin-bottom:0;">${isAr ? '\u0644\u0648\u0646 \u0645\u062E\u0635\u0635:' : 'Custom:'}</label>
+                            <input type="color" id="tag-custom-color-input" value="${currentColor.startsWith('#') ? currentColor : '#3498db'}" 
+                                   style="width:36px; height:32px; border-radius:6px; border:none; cursor:pointer; background:transparent; padding:0; margin-bottom:0;"
+                                   onchange="onTagCustomColorChange(this.value)" />
+                            <span id="tag-chosen-color-preview" style="display:inline-block; width:16px; height:16px; border-radius:50%; background:${currentColor};"></span>
+                        </div>
+                    </div>
+
+                    <!-- Bottom: Action Buttons -->
+                    <div class="modal-buttons" style="display:flex; justify-content:flex-end; gap:8px; margin-top:10px;">
+                        <button type="button" class="modal-btn cancel" id="tag-modal-cancel-btn" style="padding:8px 16px; border-radius:8px; font-size:13px;">
+                            ${isAr ? '\u0625\u0644\u063A\u0627\u0621' : 'Cancel'}
+                        </button>
+                        <button type="button" class="modal-btn confirm" id="tag-subject-save-btn" style="padding:8px 18px; border-radius:8px; font-size:13px; font-weight:700;">
+                            ${isAr ? '\u062D\u0641\u0638' : 'Save'}
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+
+            let selectedColor = currentColor;
+
+            window.selectTagColorSwatch = function(color) {
+                selectedColor = color;
+                document.querySelectorAll('.tag-color-swatch').forEach(el => {
+                    el.style.borderColor = el.getAttribute('data-color') === color ? '#fff' : 'transparent';
+                });
+                const customInp = document.getElementById('tag-custom-color-input');
+                if (customInp) customInp.value = color;
+                const prevEl = document.getElementById('tag-chosen-color-preview');
+                if (prevEl) prevEl.style.backgroundColor = color;
+            };
+
+            window.onTagCustomColorChange = function(color) {
+                selectedColor = color;
+                document.querySelectorAll('.tag-color-swatch').forEach(el => {
+                    el.style.borderColor = el.getAttribute('data-color') === color ? '#fff' : 'transparent';
+                });
+                const prevEl = document.getElementById('tag-chosen-color-preview');
+                if (prevEl) prevEl.style.backgroundColor = color;
+            };
+
+            // Dismiss handlers (Cancel, click outside, Escape)
+            const closeModal = () => {
+                document.removeEventListener('keydown', onEscKey);
+                modal.remove();
+            };
+            const onEscKey = (e) => {
+                if (e.key === 'Escape') closeModal();
+            };
+            document.addEventListener('keydown', onEscKey);
+
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+
+            const cancelBtn = document.getElementById('tag-modal-cancel-btn');
+            if (cancelBtn) cancelBtn.onclick = closeModal;
+
+            // Name input Enter key
+            const nameInp = document.getElementById('tag-edit-name-input');
+            if (nameInp) {
+                nameInp.focus();
+                nameInp.select();
+                nameInp.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const saveBtn = document.getElementById('tag-subject-save-btn');
+                        if (saveBtn) saveBtn.click();
+                    }
+                });
+            }
+
+            // Hide button
+            document.getElementById('tag-hide-btn').onclick = () => {
+                try {
+                    hideTagFromSystem(tagName);
+                } finally {
+                    closeModal();
+                }
+            };
+
+            // Save button
+            document.getElementById('tag-subject-save-btn').onclick = () => {
+                try {
+                    const newName = (document.getElementById('tag-edit-name-input').value || '').trim();
+                    if (!newName) {
+                        closeModal();
+                        return;
+                    }
+
+                    const trimmedOld = (tagName || '').trim();
+                    const trimmedNew = newName.trim();
+
+                    // 1. Update colors
+                    customTagColors[trimmedNew] = selectedColor;
+                    tagPaletteColors[trimmedNew] = selectedColor;
+                    if (trimmedNew !== trimmedOld) {
+                        delete customTagColors[trimmedOld];
+                        delete tagPaletteColors[trimmedOld];
+                    }
+                    dbSet('customTagColors', customTagColors);
+
+                    // 2. Rename across system if name changed
+                    if (trimmedNew !== trimmedOld) {
+                        // In-place replacement to prevent duplicate tags
+                        const idx = currentTagsList.findIndex(t => t.trim().toLowerCase() === trimmedOld.toLowerCase());
+                        if (idx !== -1) {
+                            currentTagsList[idx] = trimmedNew;
+                        } else {
+                            currentTagsList.push(trimmedNew);
+                        }
+                        currentTagsList = [...new Set(currentTagsList)];
+
+                        // Update hiddenTags if present
+                        const hIdx = hiddenTags.findIndex(t => t.trim().toLowerCase() === trimmedOld.toLowerCase());
+                        if (hIdx !== -1) {
+                            hiddenTags[hIdx] = trimmedNew;
+                            hiddenTags = [...new Set(hiddenTags)];
+                        }
+
+                        // Update currentlySelectedTag
+                        if (currentlySelectedTag && currentlySelectedTag.trim().toLowerCase() === trimmedOld.toLowerCase()) {
+                            currentlySelectedTag = trimmedNew;
+                            dbSet('selectedTag', currentlySelectedTag);
+                        }
+
+                        // Update currentOpenSubjectGroupTag if currently in this subject's branches
+                        if (typeof currentOpenSubjectGroupTag !== 'undefined' && currentOpenSubjectGroupTag && currentOpenSubjectGroupTag.trim().toLowerCase() === trimmedOld.toLowerCase()) {
+                            currentOpenSubjectGroupTag = trimmedNew;
+                        }
+
+                        // Update branch remembrance map
+                        if (typeof timerSelectedBranchByTagMap !== 'undefined' && timerSelectedBranchByTagMap && timerSelectedBranchByTagMap[trimmedOld]) {
+                            timerSelectedBranchByTagMap[trimmedNew] = timerSelectedBranchByTagMap[trimmedOld];
+                            delete timerSelectedBranchByTagMap[trimmedOld];
+                            try { localStorage.setItem('index_lastBranchByTag', JSON.stringify(timerSelectedBranchByTagMap)); } catch (e) {}
+                        }
+
+                        // Update goals / branches
+                        let goalsChanged = false;
+                        goalsArray.forEach(g => {
+                            if (g.linkedTag && g.linkedTag.trim().toLowerCase() === trimmedOld.toLowerCase()) {
+                                g.linkedTag = trimmedNew;
+                                goalsChanged = true;
+                            }
+                        });
+                        if (goalsChanged) dbSet('goals', goalsArray);
+
+                        // Update past sessions history
+                        let sessionsChanged = false;
+                        archivedSessionsArray.forEach(s => {
+                            if (s.tag && s.tag.trim().toLowerCase() === trimmedOld.toLowerCase()) {
+                                s.tag = trimmedNew;
+                                sessionsChanged = true;
+                            }
+                        });
+                        if (sessionsChanged) dbSet('sessions', archivedSessionsArray);
+
+                        // Update calendar visible subjects filter if exists
+                        if (typeof gcalVisibleSubjects !== 'undefined' && Array.isArray(gcalVisibleSubjects)) {
+                            const gIdx = gcalVisibleSubjects.findIndex(t => t.trim().toLowerCase() === trimmedOld.toLowerCase());
+                            if (gIdx !== -1) {
+                                gcalVisibleSubjects[gIdx] = trimmedNew;
+                                dbSet('gcalVisibleSubjects', gcalVisibleSubjects);
+                            }
+                        }
+
+                        // Persist lists
+                        dbSet('tags', currentTagsList);
+                        dbSet('hiddenTags', hiddenTags);
+                    }
+
+                    if (currentlySelectedTag === trimmedNew) {
+                        applySubjectTint();
+                    }
+
+                    renderTagsChips();
+                    renderGoalsScreen();
+                    if (typeof refreshTimerSidebar === 'function') refreshTimerSidebar();
+                    recalculateAndRenderDashboard();
+                    renderHistoryGridWithPagination();
+                    if (typeof renderWeeklySegmentedChart === 'function') renderWeeklySegmentedChart();
+                    if (typeof gcalRenderCurrentView === 'function') gcalRenderCurrentView();
+
+                    showToast(isAr ? '\u062A\u0645 \u062D\u0641\u0638 \u0627\u0644\u062A\u0639\u062F\u064A\u0644\u0627\u062A' : 'Subject updated successfully', trimmedNew, 'success');
+                } catch (err) {
+                    console.error('Error in subject modal save:', err);
+                } finally {
+                    closeModal();
+                }
+            };
+        }
+
+        function hideTagFromSystem(tag) {
+            if (!tag) return;
+            const trimmed = tag.trim();
+            if (!hiddenTags.some(t => t.trim().toLowerCase() === trimmed.toLowerCase())) {
+                hiddenTags.push(trimmed);
+                dbSet('hiddenTags', hiddenTags);
+            }
+
+            const visibleTags = currentTagsList.filter(t => !hiddenTags.includes(t));
+            if (currentlySelectedTag && currentlySelectedTag.trim().toLowerCase() === trimmed.toLowerCase()) {
+                if (visibleTags.length > 0) {
+                    currentlySelectedTag = visibleTags[0];
+                    dbSet('selectedTag', currentlySelectedTag);
+                    applySubjectTint();
+                }
+            }
+
+            renderTagsChips();
+            renderGoalsScreen();
+            if (typeof refreshTimerSidebar === 'function') refreshTimerSidebar();
+
+            const isAr = currentSystemLanguage === 'ar';
+            showToast(isAr ? '\u062A\u0645 \u0625\u062E\u0641\u0627\u0621 \u0627\u0644\u0645\u0627\u062F\u0629 \u2014 \u064A\u0645\u0643\u0646\u0643 \u0627\u0633\u062A\u0639\u0627\u062F\u062A\u0647\u0627 \u0645\u0646 \u0635\u0641\u062D\u0629 \u0627\u0644\u0645\u0648\u0627\u062F' : 'Subject hidden. Restore it from the Subjects tab anytime.', trimmed, 'info');
+        }
+
+        function unhideTag(tag) {
+            if (!tag) return;
+            const trimmed = tag.trim();
+            hiddenTags = hiddenTags.filter(t => t.trim().toLowerCase() !== trimmed.toLowerCase());
+            dbSet('hiddenTags', hiddenTags);
+
+            if (!currentTagsList.some(t => t.trim().toLowerCase() === trimmed.toLowerCase())) {
+                currentTagsList.push(trimmed);
+                dbSet('tags', currentTagsList);
+            }
+
+            renderTagsChips();
+            renderGoalsScreen();
+            if (typeof refreshTimerSidebar === 'function') refreshTimerSidebar();
+            renderManageHiddenTagsList();
+
+            const isAr = currentSystemLanguage === 'ar';
+            showToast(isAr ? '\u062A\u0645 \u0625\u0638\u0647\u0627\u0631 \u0627\u0644\u0645\u0627\u062F\u0629' : 'Subject unhidden', trimmed, 'success');
+        }
+
+        function openManageHiddenTagsModal() {
+            const modal = document.getElementById('manage-hidden-tags-modal');
+            if (!modal) return;
+            const heading = document.getElementById('manage-hidden-heading');
+            const closeBtn = document.getElementById('manage-hidden-close');
+            const isAr = currentSystemLanguage === 'ar';
+            if (heading) heading.innerText = isAr ? '\u0625\u062F\u0627\u0631\u0629 \u0627\u0644\u0645\u0648\u0627\u062F \u0627\u0644\u0645\u062E\u0641\u064A\u0629' : 'Manage Hidden Subjects';
+            if (closeBtn) closeBtn.innerText = isAr ? '\u062A\u0645' : 'Done';
+
+            renderManageHiddenTagsList();
+            modal.classList.add('modal-open');
+        }
+
+        function closeManageHiddenTagsModal() {
+            const modal = document.getElementById('manage-hidden-tags-modal');
+            if (modal) modal.classList.remove('modal-open');
+        }
+
+        function renderManageHiddenTagsList() {
+            const listContainer = document.getElementById('manage-hidden-tags-list');
+            if (!listContainer) return;
+            listContainer.innerHTML = '';
+            const isAr = currentSystemLanguage === 'ar';
+
+            if (hiddenTags.length === 0) {
+                listContainer.innerHTML = `
+                    <div style="text-align:center; padding:24px 12px; color:var(--text-gray); font-size:13px;">
+                        ${isAr ? '\u0644\u0627 \u062A\u0648\u062C\u062F \u0645\u0648\u0627\u062F \u0645\u062E\u0641\u064A\u0629 \u062D\u0627\u0644\u064A\u0627\u064B.' : 'No hidden subjects currently.'}
+                    </div>
+                `;
+                return;
+            }
+
+            hiddenTags.forEach(tag => {
+                const item = document.createElement('div');
+                item.style.display = 'flex';
+                item.style.alignItems = 'center';
+                item.style.justifyContent = 'space-between';
+                item.style.padding = '10px 14px';
+                item.style.background = 'rgba(255,255,255,0.04)';
+                item.style.borderRadius = '8px';
+                item.style.border = '1px solid var(--border-soft)';
+
+                const tagColor = getTagColor(tag);
+                const safeTag = (tag || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+
+                item.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span style="width:12px; height:12px; border-radius:50%; background:${tagColor}; display:inline-block; flex-shrink:0;"></span>
+                        <span style="font-weight:600; font-size:14px; color:var(--text-light);">${safeTag}</span>
+                    </div>
+                    <button type="button" class="modal-btn confirm" style="padding:6px 14px; font-size:12px; border-radius:6px; font-weight:700;" onclick="unhideTag('${safeTag}')">
+                        &#128065;&#65039; ${isAr ? '\u0625\u0638\u0647\u0627\u0631' : 'Unhide'}
+                    </button>
+                `;
+                listContainer.appendChild(item);
+            });
+        }
+
+        function openTagContextMenu(e, tag) { openTagSubjectModal(tag, e); }
+        function closeTagContextMenu() {}
+        function openTagRenameModal(tag) { openTagSubjectModal(tag); }
+        function closeTagRenameModal() {}
+        function onTagContextMenuColor() {}
+        function onTagContextMenuRename() {}
+        function onTagContextMenuHide() {}
+
+        function selectActiveTag(tag) {
+            currentlySelectedTag = tag;
+            dbSet('selectedTag', currentlySelectedTag);
+            renderTagsChips();
+            refreshTimerSidebar();
+            loadTimerNotesForCurrentTag();
+            applySubjectTint();
+        }
+
         function deleteTagFromSystem(tag) {
             currentTagsList = currentTagsList.filter(t => t !== tag);
-            if (currentlySelectedTag === tag && currentTagsList.length > 0) currentlySelectedTag = currentTagsList[0];
-            dbSet('tags', currentTagsList); dbSet('selectedTag', currentlySelectedTag);
-            renderTagsChips(); recalculateAndRenderDashboard();
+            hiddenTags = hiddenTags.filter(t => t !== tag);
+            const visibleTags = currentTagsList.filter(t => !hiddenTags.includes(t));
+            if (currentlySelectedTag === tag && visibleTags.length > 0) currentlySelectedTag = visibleTags[0];
+            dbSet('tags', currentTagsList);
+            dbSet('hiddenTags', hiddenTags);
+            dbSet('selectedTag', currentlySelectedTag);
+            renderTagsChips();
+            recalculateAndRenderDashboard();
+            renderGoalsScreen();
+            if (typeof refreshTimerSidebar === 'function') refreshTimerSidebar();
         }
 
         function updateQuickStats() {
             let today = getLocalISODate(new Date());
             let todayMinutes = archivedSessionsArray.filter(s => s.date === today).reduce((sum, s) => sum + (parseInt(s.duration) || 0), 0);
-            let weekStart = new Date(); weekStart.setDate(weekStart.getDate() - weekStart.getDay());
-            let weekMinutes = archivedSessionsArray.filter(s => new Date(s.date) >= weekStart).reduce((sum, s) => sum + (parseInt(s.duration) || 0), 0);
+            let weekStart = getWeekStartSaturday();
+            let weekMinutes = archivedSessionsArray.filter(s => new Date(s.date + 'T00:00:00') >= weekStart).reduce((sum, s) => sum + (parseInt(s.duration) || 0), 0);
             let streak = 0;
             let cursor = new Date(); cursor.setHours(0, 0, 0, 0);
             while (true) {
@@ -4476,28 +5597,86 @@ body.gcal-immersive-mode .gcal-nav-handle.hidden {
         // Ticks every second on its own clock, regardless of the Timer/Analysis/Goals state.
         setInterval(updateDailyCountdownWidget, 1000);
 
+        const MONTH_NAMES_EN = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        const MONTH_NAMES_AR = ["\u064A\u0646\u0627\u064A\u0631", "\u0641\u0628\u0631\u0627\u064A\u0631", "\u0645\u0627\u0631\u0633", "\u0623\u0628\u0631\u064A\u0644", "\u0645\u0627\u064A\u0648", "\u064A\u0648\u0646\u064A\u0648", "\u064A\u0648\u0644\u064A\u0648", "\u0623\u063A\u0633\u0637\u0633", "\u0633\u0628\u062A\u0645\u0628\u0631", "\u0623\u0643\u062A\u0648\u0628\u0631", "\u0646\u0648\u0641\u0645\u0628\u0631", "\u062F\u064A\u0633\u0645\u0628\u0631"];
+
+                let trendSelectedYear = new Date().getFullYear();
+        let trendSelectedMonth = new Date().getMonth();
+
+        function navStudyTrendMonth(direction) {
+            trendSelectedMonth += direction;
+            if (trendSelectedMonth < 0) {
+                trendSelectedMonth = 11;
+                trendSelectedYear -= 1;
+            } else if (trendSelectedMonth > 11) {
+                trendSelectedMonth = 0;
+                trendSelectedYear += 1;
+            }
+            renderStudyTrendChart();
+        }
+
+        function selectStudyTrendMonth(monthIdx, yearVal) {
+            trendSelectedMonth = monthIdx;
+            if (yearVal !== undefined) trendSelectedYear = yearVal;
+            const drop = document.getElementById('study-trend-month-dropdown');
+            if (drop) drop.style.display = 'none';
+            renderStudyTrendChart();
+        }
+
+        function toggleStudyTrendMonthDropdown(e) {
+            if (e) e.stopPropagation();
+            const drop = document.getElementById('study-trend-month-dropdown');
+            if (!drop) return;
+            if (drop.style.display === 'block') {
+                drop.style.display = 'none';
+                return;
+            }
+            drop.innerHTML = '';
+            const isAr = currentSystemLanguage === 'ar';
+            const monthNames = isAr ? MONTH_NAMES_AR : MONTH_NAMES_EN;
+            monthNames.forEach((name, idx) => {
+                const item = document.createElement('div');
+                item.className = 'trend-month-dropdown-item' + (idx === trendSelectedMonth ? ' active' : '');
+                item.innerText = name + ' ' + trendSelectedYear;
+                item.onclick = () => selectStudyTrendMonth(idx, trendSelectedYear);
+                drop.appendChild(item);
+            });
+            drop.style.display = 'block';
+        }
+
+        window.addEventListener('click', (e) => {
+            if (!e.target.closest('.trend-month-dropdown-wrapper')) {
+                const drop = document.getElementById('study-trend-month-dropdown');
+                if (drop) drop.style.display = 'none';
+            }
+        });
+
         function recalculateAndRenderDashboard() {
             const todayISO = getLocalISODate(new Date());
             const yesterdayDate = new Date(); yesterdayDate.setDate(yesterdayDate.getDate() - 1);
             const yesterdayISO = getLocalISODate(yesterdayDate);
-            const weekStart = new Date();
-            weekStart.setHours(0, 0, 0, 0);
-            weekStart.setDate(weekStart.getDate() - weekStart.getDay());
-            const monthPrefix = getLocalISODate(new Date()).slice(0, 7);
-            let todayMinutes = 0, yesterdayMinutes = 0, weekMinutes = 0, monthMinutes = 0;
-            let totalAccumulatedStudyMinutes = 0;
+            const weekStart = getWeekStartSaturday();
+            const monthPrefix = todayISO.slice(0, 7);
+            const yearPrefix = todayISO.slice(0, 4);
+
+            let todayMinutes = 0, yesterdayMinutes = 0, weekMinutes = 0, monthMinutes = 0, yearMinutes = 0;
             let tagMinutesSumMap = {};
             currentTagsList.forEach(t => tagMinutesSumMap[t] = 0);
+
             archivedSessionsArray.forEach(session => {
                 let minutesVal = parseInt(session.duration) || 0;
                 if (tagMinutesSumMap[session.tag] !== undefined) tagMinutesSumMap[session.tag] += minutesVal;
                 else tagMinutesSumMap[session.tag] = minutesVal;
-                totalAccumulatedStudyMinutes += minutesVal;
+                
                 if (session.date === todayISO) todayMinutes += minutesVal;
                 if (session.date === yesterdayISO) yesterdayMinutes += minutesVal;
-                if (new Date(session.date) >= weekStart) weekMinutes += minutesVal;
+                if (new Date(session.date + 'T00:00:00') >= weekStart) weekMinutes += minutesVal;
                 if (session.date.startsWith(monthPrefix)) monthMinutes += minutesVal;
+                if (session.date.startsWith(yearPrefix)) yearMinutes += minutesVal;
             });
+
+
+
             let dailyHours = (todayMinutes / 60).toFixed(1);
             let yesterdayHours = (yesterdayMinutes / 60).toFixed(1);
             let weeklyHours = (weekMinutes / 60).toFixed(1);
@@ -4567,18 +5746,41 @@ body.gcal-immersive-mode .gcal-nav-handle.hidden {
                     monthParent.className = 'subtext gray';
                 }
             }
+
+            // Subject / Tag Distribution: Exclude hidden tags from calculation so visible tags sum strictly to 100%
             const barsContainer = document.getElementById('bars-dynamic-wrapper');
             if (barsContainer) {
                 barsContainer.innerHTML = '';
-                currentTagsList.forEach(tag => {
-                    let tagMinutes = tagMinutesSumMap[tag] || 0;
-                    let tagPercentage = totalAccumulatedStudyMinutes > 0 ? Math.round((tagMinutes / totalAccumulatedStudyMinutes) * 100) : 0;
-                    const item = document.createElement('div');
-                    item.className = 'chart-progress-item';
-                    item.innerHTML = '<div class="chart-progress-labels"><span>' + tag + '</span><span style="color: var(--accent-orange); font-weight:700;">' + tagPercentage + '% (' + tagMinutes + ' Min)</span></div><div class="chart-progress-rail"><div class="chart-progress-fill" style="width: ' + tagPercentage + '%"></div></div>';
-                    barsContainer.appendChild(item);
-                });
+                const visibleTags = currentTagsList.filter(t => !hiddenTags.includes(t));
+                const visibleAccumulatedStudyMinutes = visibleTags.reduce((acc, t) => acc + (tagMinutesSumMap[t] || 0), 0);
+                
+                if (visibleTags.length === 0) {
+                    barsContainer.innerHTML = `<div style="text-align:center; padding:24px; color:var(--text-gray); font-size:12px;">${currentSystemLanguage === 'ar' ? '\u0644\u0627 \u062A\u0648\u062C\u062F \u0645\u0648\u0627\u062F \u062F\u0631\u0627\u0633\u064A\u0629' : 'No subjects available'}</div>`;
+                } else {
+                    visibleTags.forEach(tag => {
+                        let tagMinutes = tagMinutesSumMap[tag] || 0;
+                        let tagPercentage = visibleAccumulatedStudyMinutes > 0 ? Math.round((tagMinutes / visibleAccumulatedStudyMinutes) * 100) : 0;
+                        const item = document.createElement('div');
+                        item.className = 'chart-progress-item';
+                        item.innerHTML = `
+                            <div class="chart-progress-labels" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; font-size:12px;">
+                                <span style="display:flex; align-items:center; gap:8px;">
+                                    <span style="width:10px; height:10px; border-radius:3px; background:${getTagColor(tag)}; display:inline-block; box-shadow:0 0 6px ${getTagColor(tag)}40;"></span>
+                                    <strong style="color:var(--text-light); font-weight:600;">${escapeGoalHtml(tag)}</strong>
+                                </span>
+                                <span style="color:var(--accent-orange); font-weight:700; font-size:11px;">${tagPercentage}% <span style="color:var(--text-gray); font-weight:500;">(${formatMinutesToHM(tagMinutes)})</span></span>
+                            </div>
+                            <div class="chart-progress-rail" style="height:6px; background:rgba(255,255,255,0.06); border-radius:3px; overflow:hidden;">
+                                <div class="chart-progress-fill" style="height:100%; width:${tagPercentage}%; background:${getTagColor(tag)}; border-radius:3px; transition:width 0.4s cubic-bezier(0.4,0,0.2,1);"></div>
+                            </div>`;
+                        barsContainer.appendChild(item);
+                    });
+                }
             }
+
+            // Render monthly activity heatmap with independent persistent data
+            renderStudyTrendChart();
+
             if (typeof renderWeeklySegmentedChart === "function") renderWeeklySegmentedChart();
         }
 
@@ -4907,7 +6109,7 @@ body.gcal-immersive-mode .gcal-nav-handle.hidden {
                 let matchTag = !tagFilter || s.tag === tagFilter;
                 let matchDate = true;
                 if (dateFilter === 'today') matchDate = s.date === getLocalISODate(new Date());
-                else if (dateFilter === 'week') { let ws = new Date(); ws.setHours(0,0,0,0); ws.setDate(ws.getDate() - ws.getDay()); matchDate = new Date(s.date + 'T00:00:00') >= ws; }
+                else if (dateFilter === 'week') { let ws = getWeekStartSaturday(); matchDate = new Date(s.date + 'T00:00:00') >= ws; }
                 else if (dateFilter === 'month') { matchDate = s.date.startsWith(getLocalISODate(new Date()).slice(0, 7)); }
                 return matchSearch && matchTag && matchDate;
             });
@@ -5098,6 +6300,29 @@ body.gcal-immersive-mode .gcal-nav-handle.hidden {
                 currentOpenSubjectGroupTag = null;
             }
 
+            const goalsHiddenBtn = document.getElementById('goals-hidden-btn');
+            const goalsHiddenCount = document.getElementById('goals-hidden-count-badge');
+            const goalsHiddenTxt = document.getElementById('goals-hidden-btn-txt');
+            if (goalsHiddenBtn && goalsHiddenCount) {
+                const isAr = currentSystemLanguage === 'ar';
+                if (goalsHiddenTxt) goalsHiddenTxt.innerText = isAr ? '\u0627\u0644\u0645\u0648\u0627\u062F \u0627\u0644\u0645\u062E\u0641\u064A\u0629' : 'Hidden';
+                goalsHiddenCount.innerText = hiddenTags.length;
+                if (currentOpenSubjectGroupTag) {
+                    goalsHiddenBtn.style.display = 'none';
+                } else {
+                    goalsHiddenBtn.style.display = 'inline-flex';
+                    if (hiddenTags.length > 0) {
+                        goalsHiddenBtn.style.borderColor = 'var(--accent-orange)';
+                        goalsHiddenBtn.style.color = 'var(--accent-orange)';
+                        goalsHiddenBtn.style.background = 'rgba(217, 165, 74, 0.14)';
+                    } else {
+                        goalsHiddenBtn.style.borderColor = 'var(--border-soft)';
+                        goalsHiddenBtn.style.color = 'var(--text-gray)';
+                        goalsHiddenBtn.style.background = 'rgba(255, 255, 255, 0.04)';
+                    }
+                }
+            }
+
             if (!currentOpenSubjectGroupTag) {
                 // ---------- OVERVIEW MODE: one card per Subject (tag) ----------
                 if (backBtn) backBtn.style.display = 'none';
@@ -5105,18 +6330,23 @@ body.gcal-immersive-mode .gcal-nav-handle.hidden {
                 if (addBtnTxtEl) addBtnTxtEl.innerText = d.goalsAddBtnTxt || 'New Subject';
                 if (addBtn) addBtn.onclick = () => openTagModal();
 
+                const visibleTags = currentTagsList.filter(t => !hiddenTags.includes(t));
                 const groups = {};
-                currentTagsList.forEach(tag => { groups[tag] = []; });
+                visibleTags.forEach(tag => { groups[tag] = []; });
                 goalsArray.forEach(g => {
-                    const key = (g.linkedTag && currentTagsList.includes(g.linkedTag)) ? g.linkedTag : UNASSIGNED_SUBJECT_KEY;
+                    const key = (g.linkedTag && visibleTags.includes(g.linkedTag)) ? g.linkedTag : UNASSIGNED_SUBJECT_KEY;
                     if (!groups[key]) groups[key] = [];
                     groups[key].push(g);
                 });
 
-                const tagKeysToRender = [...currentTagsList];
+                const tagKeysToRender = [...visibleTags];
                 if (groups[UNASSIGNED_SUBJECT_KEY] && groups[UNASSIGNED_SUBJECT_KEY].length) tagKeysToRender.push(UNASSIGNED_SUBJECT_KEY);
 
-                if (tagKeysToRender.length === 0) { emptyState.innerText = d.goalsEmptyState; emptyState.style.display = 'block'; return; }
+                if (tagKeysToRender.length === 0 && hiddenTags.length === 0) {
+                    emptyState.innerText = d.goalsEmptyState;
+                    emptyState.style.display = 'block';
+                    return;
+                }
                 emptyState.style.display = 'none';
 
                 tagKeysToRender.forEach(tagKey => {
@@ -5130,22 +6360,36 @@ body.gcal-immersive-mode .gcal-nav-handle.hidden {
 
                     const card = document.createElement('div');
                     card.className = 'goal-card subject-group-card';
+                    card.dataset.tagKey = tagKey;
                     card.style.cursor = 'pointer';
                     card.innerHTML = `
                         <div class="goal-card-top">
-                            <div>
-                                <div class="goal-card-title" style="display:flex;align-items:center;gap:8px;">
-                                    <span style="width:10px;height:10px;border-radius:50%;background:${dotColor};display:inline-block;flex-shrink:0;"></span>
-                                    ${escapeGoalHtml(displayName)}
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                ${!isUnassigned ? `<span class="subject-drag-handle" title="${currentSystemLanguage === 'ar' ? '\u0627\u0633\u062D\u0628 \u0644\u0625\u0639\u0627\u062F\u0629 \u0627\u0644\u062A\u0631\u062A\u064A\u0628' : 'Drag to reorder'}" style="cursor:grab; font-size:16px; opacity:0.6; padding:0 4px;">&#10033;</span>` : ''}
+                                <div>
+                                    <div class="goal-card-title" style="display:flex;align-items:center;gap:8px;">
+                                        <span style="width:10px;height:10px;border-radius:50%;background:${dotColor};display:inline-block;flex-shrink:0;"></span>
+                                        ${escapeGoalHtml(displayName)}
+                                    </div>
+                                    <span class="goal-linked-tag-pill">&#128194; ${branchesForTag.length} ${branchWord}</span>
                                 </div>
-                                <span class="goal-linked-tag-pill">📂 ${branchesForTag.length} ${branchWord}</span>
                             </div>
-                            ${!isUnassigned ? `<button class="item-delete-btn" data-role="delete-subject-tag">✕</button>` : ''}
+                            ${!isUnassigned ? `<button class="item-delete-btn" data-role="delete-subject-tag">&#10005;</button>` : ''}
                         </div>
                         <div class="goal-tasks-toggle is-open">
-                            <span>📚 ${d.goalTasksHeader || 'Lectures'} ${totalLectures ? `(<span class="gt-count">${doneLectures}/${totalLectures}</span>)` : ''}</span>
+                            <span>&#128218; ${d.goalTasksHeader || 'Lectures'} ${totalLectures ? `(<span class="gt-count">${doneLectures}/${totalLectures}</span>)` : ''}</span>
                         </div>`;
-                    card.addEventListener('click', () => openSubjectGroup(tagKey));
+                    card.addEventListener('click', (e) => {
+                        if (e.target.closest('.subject-drag-handle') || e.target.closest('[data-role="delete-subject-tag"]')) return;
+                        openSubjectGroup(tagKey);
+                    });
+                    if (!isUnassigned) {
+                        card.oncontextmenu = (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            openTagSubjectModal(tagKey, e);
+                        };
+                    }
                     const delBtn = card.querySelector('[data-role="delete-subject-tag"]');
                     if (delBtn) {
                         delBtn.addEventListener('click', (e) => {
@@ -5155,6 +6399,45 @@ body.gcal-immersive-mode .gcal-nav-handle.hidden {
                     }
                     grid.appendChild(card);
                 });
+
+                // Dedicated Visible Section for Hidden Subjects
+                if (hiddenTags.length > 0) {
+                    const hiddenSection = document.createElement('div');
+                    hiddenSection.className = 'goals-hidden-section-container';
+                    hiddenSection.style.cssText = 'grid-column: 1 / -1; margin-top:24px; padding-top:16px; border-top:1px dashed var(--border-soft);';
+                    const isAr = currentSystemLanguage === 'ar';
+                    hiddenSection.innerHTML = `
+                        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+                            <div style="display:flex; align-items:center; gap:8px; font-weight:700; font-size:14px; color:var(--text-gray);">
+                                <span>&#128065;&#65039;</span>
+                                <span>${isAr ? '\u0627\u0644\u0645\u0648\u0627\u062F \u0627\u0644\u0645\u062E\u0641\u064A\u0629 \u062D\u0627\u0644\u064A\u0627\u064B' : 'Currently Hidden Subjects'} (${hiddenTags.length})</span>
+                            </div>
+                            <button class="add-item-pill-btn" onclick="openManageHiddenTagsModal()" style="font-size:12px; padding:4px 12px;">
+                                ${isAr ? '\u0625\u062F\u0627\u0631\u0629 \u0627\u0644\u0643\u0644' : 'Manage All'}
+                            </button>
+                        </div>
+                        <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); gap:12px;">
+                            ${hiddenTags.map(tag => {
+                                const color = getTagColor(tag);
+                                const safe = (tag || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                                return `
+                                    <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-radius:12px; background:rgba(255,255,255,0.03); border:1px solid var(--border-soft);">
+                                        <div style="display:flex; align-items:center; gap:8px;">
+                                            <span style="width:10px; height:10px; border-radius:50%; background:${color}; display:inline-block; flex-shrink:0;"></span>
+                                            <span style="font-size:13px; font-weight:600; color:var(--text-light);">${escapeGoalHtml(tag)}</span>
+                                        </div>
+                                        <button type="button" class="modal-btn confirm" style="padding:4px 12px; font-size:12px; border-radius:6px; font-weight:700;" onclick="unhideTag('${safe}')">
+                                            &#128065;&#65039; ${isAr ? '\u0627\u0633\u062A\u0639\u0627\u062F\u0629' : 'Unhide'}
+                                        </button>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    `;
+                    grid.appendChild(hiddenSection);
+                }
+
+                enableSubjectDragAndDrop(grid);
                 refreshTimerSidebar();
                 return;
             }
@@ -5239,13 +6522,16 @@ body.gcal-immersive-mode .gcal-nav-handle.hidden {
                     : `<div class="goal-tasks-empty-hint">${d.goalTasksEmptyHint || 'No lectures yet — add one below.'}</div>`;
 
                 const card = document.createElement('div');
-                card.className = `goal-card`;
+                card.className = `goal-card branch-draggable-card`;
                 card.dataset.goalCardId = goal.id;
                 card.innerHTML = `
                     <div class="goal-card-top">
-                        <div>
-                            <div class="goal-card-title">${escapeGoalHtml(goal.title)}</div>
-                            ${goal.linkedTag ? `<span class="goal-linked-tag-pill">🔗 ${escapeGoalHtml(goal.linkedTag)}</span>` : ''}
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <span class="branch-drag-handle" title="${currentSystemLanguage === 'ar' ? 'اسحب لإعادة الترتيب' : 'Drag to reorder'}" style="cursor:grab; font-size:16px; opacity:0.6; padding:0 4px;">⠿</span>
+                            <div>
+                                <div class="goal-card-title">${escapeGoalHtml(goal.title)}</div>
+                                ${goal.linkedTag ? `<span class="goal-linked-tag-pill">🔗 ${escapeGoalHtml(goal.linkedTag)}</span>` : ''}
+                            </div>
                         </div>
                         <button class="item-delete-btn" onclick="deleteGoal('${goal.id}')">✕</button>
                     </div>
@@ -5264,6 +6550,7 @@ body.gcal-immersive-mode .gcal-nav-handle.hidden {
                 const tasksListContainer = card.querySelector('.goal-tasks-list');
                 if (tasksListContainer) enableTaskDragAndDrop(tasksListContainer, goal.id);
             });
+            enableBranchDragAndDrop(grid, currentOpenSubjectGroupTag);
             refreshTimerSidebar();
         }
         function commitTaskOrder(container, goalId) {
@@ -5311,6 +6598,145 @@ body.gcal-immersive-mode .gcal-nav-handle.hidden {
                     document.addEventListener('pointercancel', onUp, { once: true });
                 });
             });
+        }
+
+        function enableSubjectDragAndDrop(container) {
+            container.querySelectorAll('.subject-drag-handle').forEach(handle => {
+                handle.addEventListener('pointerdown', (e) => {
+                    if (e.button !== undefined && e.button !== 0) return;
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const card = handle.closest('.subject-group-card');
+                    if (!card) return;
+                    card.classList.add('is-dragging');
+
+                    function onMove(ev) {
+                        const y = ev.clientY;
+                        const siblings = Array.from(container.querySelectorAll('.subject-group-card:not(.is-dragging)'));
+                        let target = null;
+                        for (const sib of siblings) {
+                            const rect = sib.getBoundingClientRect();
+                            if (y < rect.top + rect.height / 2) { target = sib; break; }
+                        }
+                        if (target) container.insertBefore(card, target);
+                        else container.appendChild(card);
+                    }
+
+                    function onUp() {
+                        document.removeEventListener('pointermove', onMove);
+                        document.removeEventListener('pointerup', onUp);
+                        document.removeEventListener('pointercancel', onUp);
+                        if (card) {
+                            card.classList.remove('is-dragging');
+                            commitSubjectOrder(container);
+                        }
+                    }
+
+                    document.addEventListener('pointermove', onMove);
+                    document.addEventListener('pointerup', onUp, { once: true });
+                    document.addEventListener('pointercancel', onUp, { once: true });
+                });
+            });
+        }
+
+        function commitSubjectOrder(container) {
+            const orderedTags = Array.from(container.querySelectorAll('.subject-group-card'))
+                .map(c => c.dataset.tagKey)
+                .filter(t => t && t !== UNASSIGNED_SUBJECT_KEY);
+            if (orderedTags.length) {
+                currentTagsList = orderedTags;
+                dbSet('tags', currentTagsList);
+                renderTagsChips();
+                recalculateAndRenderDashboard();
+            }
+        }
+
+        function enableBranchDragAndDrop(container, currentTag) {
+            container.querySelectorAll('.branch-drag-handle').forEach(handle => {
+                handle.addEventListener('pointerdown', (e) => {
+                    if (e.button !== undefined && e.button !== 0) return;
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const card = handle.closest('.branch-draggable-card');
+                    if (!card) return;
+                    card.classList.add('is-dragging');
+
+                    function onMove(ev) {
+                        const y = ev.clientY;
+                        const siblings = Array.from(container.querySelectorAll('.branch-draggable-card:not(.is-dragging)'));
+                        let target = null;
+                        for (const sib of siblings) {
+                            const rect = sib.getBoundingClientRect();
+                            if (y < rect.top + rect.height / 2) { target = sib; break; }
+                        }
+                        if (target) container.insertBefore(card, target);
+                        else container.appendChild(card);
+                    }
+
+                    function onUp() {
+                        document.removeEventListener('pointermove', onMove);
+                        document.removeEventListener('pointerup', onUp);
+                        document.removeEventListener('pointercancel', onUp);
+                        if (card) {
+                            card.classList.remove('is-dragging');
+                            commitBranchOrder(container, currentTag);
+                        }
+                    }
+
+                    document.addEventListener('pointermove', onMove);
+                    document.addEventListener('pointerup', onUp, { once: true });
+                    document.addEventListener('pointercancel', onUp, { once: true });
+                });
+            });
+        }
+
+        function commitBranchOrder(container, currentTag) {
+            const orderedIds = Array.from(container.querySelectorAll('.branch-draggable-card')).map(c => c.dataset.goalCardId);
+            if (!orderedIds.length) return;
+
+            const tagGoals = goalsArray.filter(g => {
+                const key = (g.linkedTag && currentTagsList.includes(g.linkedTag)) ? g.linkedTag : UNASSIGNED_SUBJECT_KEY;
+                return key === currentTag;
+            });
+            tagGoals.sort((a, b) => orderedIds.indexOf(a.id) - orderedIds.indexOf(b.id));
+
+            let tIdx = 0;
+            goalsArray = goalsArray.map(g => {
+                const key = (g.linkedTag && currentTagsList.includes(g.linkedTag)) ? g.linkedTag : UNASSIGNED_SUBJECT_KEY;
+                if (key === currentTag) return tagGoals[tIdx++];
+                return g;
+            });
+
+            dbSet('goals', goalsArray);
+            if (typeof refreshTimerSidebar === 'function') refreshTimerSidebar();
+        }
+
+        function updateGcalHeaderToggleBtn(isCollapsed) {
+            if (isCollapsed === undefined) {
+                isCollapsed = document.body.classList.contains('index-header-collapsed');
+            }
+            const btn = document.getElementById('gcal-header-toggle-btn');
+            if (!btn) return;
+            const isAr = currentSystemLanguage === 'ar';
+            const textEl = document.getElementById('gcal-toggle-text');
+            const iconEl = document.getElementById('gcal-toggle-icon');
+            if (isCollapsed) {
+                if (textEl) textEl.innerText = isAr ? '\u0625\u0638\u0647\u0627\u0631 \u0627\u0644\u0634\u0631\u064A\u0637 \u0627\u0644\u0639\u0644\u0648\u064A' : 'Show Header';
+                if (iconEl) iconEl.innerHTML = '<path d="M4 14h6v6M20 10h-6V4M14 10l7-7M10 14l-7 7"/>';
+                btn.title = isAr ? '\u0625\u0638\u0647\u0627\u0631 \u0627\u0644\u0634\u0631\u064A\u0637 \u0627\u0644\u0639\u0644\u0648\u064A' : 'Show Header';
+            } else {
+                if (textEl) textEl.innerText = isAr ? '\u0645\u0644\u0621 \u0627\u0644\u0634\u0627\u0634\u0629' : 'Full Canvas';
+                if (iconEl) iconEl.innerHTML = '<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>';
+                btn.title = isAr ? '\u0645\u0644\u0621 \u0627\u0644\u0634\u0627\u0634\u0629' : 'Full Canvas';
+            }
+        }
+
+        function toggleIndexHeaderCollapse() {
+            const isCollapsed = document.body.classList.toggle('index-header-collapsed');
+            updateGcalHeaderToggleBtn(isCollapsed);
+            if (typeof gcalRenderCurrentView === 'function') {
+                setTimeout(gcalRenderCurrentView, 100);
+            }
         }
         function toggleGoalTasksPanel(goalId) {
             if (expandedGoalTasksSet.has(goalId)) expandedGoalTasksSet.delete(goalId);
@@ -5915,12 +7341,16 @@ body.gcal-immersive-mode .gcal-nav-handle.hidden {
             document.getElementById('add-manual-btn-txt').innerText = d.addManualBtn;
 
             // New analytics labels
-            const trendTitle = document.getElementById('chart-trend-title');
-            if (trendTitle) trendTitle.innerText = d.trendTitle || '📈 Study Trend';
+            const isAr = currentSystemLanguage === 'ar';
+            const trendTitle = document.getElementById('trend-title-txt') || document.getElementById('chart-trend-title');
+            if (trendTitle) {
+                const titleText = d.trendTitle ? d.trendTitle.replace(/^[^\w\u0600-\u06FF]+/g, '').trim() : (isAr ? '\u0627\u062A\u062C\u0627\u0647 \u0627\u0644\u062F\u0631\u0627\u0633\u0629' : 'Study Trend');
+                trendTitle.innerText = titleText;
+            }
             const trendLegendDaily = document.getElementById('trend-legend-daily');
-            if (trendLegendDaily) trendLegendDaily.innerText = d.trendDaily || 'Daily';
+            if (trendLegendDaily) trendLegendDaily.innerText = d.trendDaily || (isAr ? '\u0627\u0644\u062F\u0631\u0627\u0633\u0629 \u0627\u0644\u064A\u0648\u0645\u064A\u0629' : 'Daily');
             const trendLegendAvg = document.getElementById('trend-legend-avg');
-            if (trendLegendAvg) trendLegendAvg.innerText = d.trendAvg || '7-Day Avg';
+            if (trendLegendAvg) trendLegendAvg.innerText = d.trendAvg || (isAr ? '\u0627\u0644\u0645\u062A\u0648\u0633\u0637 7 \u0623\u064A\u0627\u0645' : '7-Day Avg');
             const prodTitle = document.getElementById('chart-productivity-title');
             if (prodTitle) prodTitle.innerText = d.productivityTitle || '🕒 Productivity Hours';
             const prodSubtitle = document.getElementById('productivity-subtitle');
@@ -5928,36 +7358,9 @@ body.gcal-immersive-mode .gcal-nav-handle.hidden {
         }
 
 
-        function openTagColorModal(tagName) {
-            const modal = document.createElement('div');
-            modal.className = 'modal-overlay modal-open';
-            modal.id = 'tag-color-modal-dynamic';
-            modal.innerHTML = `
-                <div class="modal-box">
-                    <h3>${currentSystemLanguage === 'ar' ? 'لون التاج' : 'Tag Color'}: ${tagName}</h3>
-                    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:16px 0;">
-                        ${['#3498db','#e67e22','#1abc9c','#e84393','#2ecc71','#9b59b6','#e74c3c','#f1c40f','#16a085','#d35400','#8e44ad','#2c3e50','#d9a54a','#3e5c8a','#00d26a','#3498db','#e74c3c','#f39c12'].map(c => `
-                            <div onclick="setTagColor('${tagName}', '${c}'); document.getElementById('tag-color-modal-dynamic').remove();" 
-                                 style="width:40px;height:40px;border-radius:10px;background:${c};cursor:pointer;border:2px solid transparent;transition:all 0.2s;"
-                                 onmouseover="this.style.borderColor='#fff';this.style.transform='scale(1.15)';"
-                                 onmouseout="this.style.borderColor='transparent';this.style.transform='scale(1)';"
-                            ></div>
-                        `).join('')}
-                    </div>
-                    <div style="margin-bottom:16px;">
-                        <label style="font-size:11px;color:var(--text-gray);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:6px;">${currentSystemLanguage === 'ar' ? 'لون مخصص' : 'Custom Color'}</label>
-                        <input type="color" id="custom-tag-color-picker" value="${getTagColor(tagName)}" style="width:100%;height:40px;border-radius:10px;border:none;cursor:pointer;background:transparent;">
-                    </div>
-                    <div class="modal-buttons">
-                        <button class="modal-btn cancel" onclick="document.getElementById('tag-color-modal-dynamic').remove();">${currentSystemLanguage === 'ar' ? 'إلغاء' : 'Cancel'}</button>
-                        <button class="modal-btn confirm" onclick="setTagColor('${tagName}', document.getElementById('custom-tag-color-picker').value); document.getElementById('tag-color-modal-dynamic').remove();">${currentSystemLanguage === 'ar' ? 'حفظ' : 'Save'}</button>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(modal);
-        }
+        function openTagColorModal(tagName) { openTagSubjectModal(tagName); }
 
-        let customTagColors = {};
+        // customTagColors initialized globally
 
         function setTagColor(tag, color) {
             customTagColors[tag] = color;
@@ -6042,26 +7445,38 @@ document.addEventListener('keydown', function(e) {
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
 
-            // Get last 30 days of data
-            const days = 30;
+            const isAr = currentSystemLanguage === 'ar';
+            const monthNames = isAr ? MONTH_NAMES_AR : MONTH_NAMES_EN;
+            const monthName = monthNames[trendSelectedMonth];
+            const monthDisplayEl = document.getElementById('study-trend-month-display');
+            if (monthDisplayEl) monthDisplayEl.innerText = `${monthName} ${trendSelectedYear}`;
+
+            // Number of days in selected month (1 to 28/29/30/31)
+            const daysInMonth = new Date(trendSelectedYear, trendSelectedMonth + 1, 0).getDate();
+            const monthPrefix = `${trendSelectedYear}-${String(trendSelectedMonth + 1).padStart(2, '0')}`;
+
             const labels = [];
             const dailyData = [];
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
+            let totalMonthMinutes = 0;
 
-            for (let i = days - 1; i >= 0; i--) {
-                const d = new Date(today);
-                d.setDate(d.getDate() - i);
-                const iso = getLocalISODate(d);
-                labels.push(d.toLocaleDateString(currentSystemLanguage === 'ar' ? 'ar-EG' : 'en-US', { month: 'short', day: 'numeric' }));
-
+            for (let d = 1; d <= daysInMonth; d++) {
+                labels.push(String(d));
+                const dayISO = `${monthPrefix}-${String(d).padStart(2, '0')}`;
                 const dayMinutes = archivedSessionsArray
-                    .filter(s => s.date === iso)
+                    .filter(s => s.date === dayISO)
                     .reduce((sum, s) => sum + (parseInt(s.duration) || 0), 0);
+                totalMonthMinutes += dayMinutes;
                 dailyData.push(dayMinutes / 60); // convert to hours
             }
 
-            // Calculate 7-day moving average
+            // Explicit Daily Average
+            const dailyAvgMinutes = Math.round(totalMonthMinutes / daysInMonth);
+            const avgBadgeEl = document.getElementById('study-trend-avg-display');
+            if (avgBadgeEl) {
+                avgBadgeEl.innerText = (isAr ? '\u0627\u0644\u0645\u0639\u062F\u0644 \u0627\u0644\u064A\u0648\u0645\u064A: ' : 'Daily Avg: ') + formatMinutesToHM(dailyAvgMinutes);
+            }
+
+            // 7-Day moving average
             const avgData = [];
             for (let i = 0; i < dailyData.length; i++) {
                 let sum = 0;
@@ -6083,12 +7498,12 @@ document.addEventListener('keydown', function(e) {
                     labels: labels,
                     datasets: [
                         {
-                            label: currentSystemLanguage === 'ar' ? 'الدراسة اليومية' : 'Daily Study',
+                            label: isAr ? '\u0627\u0644\u062F\u0631\u0627\u0633\u0629 \u0627\u0644\u064A\u0648\u0645\u064A\u0629' : 'Daily Study',
                             data: dailyData,
                             borderColor: 'rgba(217, 165, 74, 0.9)',
                             backgroundColor: 'rgba(217, 165, 74, 0.08)',
                             borderWidth: 2,
-                            tension: 0.4,
+                            tension: 0.35,
                             fill: true,
                             pointRadius: 3,
                             pointBackgroundColor: 'rgba(217, 165, 74, 1)',
@@ -6100,13 +7515,13 @@ document.addEventListener('keydown', function(e) {
                             pointHoverBorderWidth: 3
                         },
                         {
-                            label: currentSystemLanguage === 'ar' ? 'المتوسط 7 أيام' : '7-Day Average',
+                            label: isAr ? '\u0627\u0644\u0645\u062A\u0648\u0633\u0637 7 \u0623\u064A\u0627\u0645' : '7-Day Average',
                             data: avgData,
                             borderColor: 'rgba(62, 92, 138, 0.9)',
                             backgroundColor: 'transparent',
                             borderWidth: 2,
                             borderDash: [6, 4],
-                            tension: 0.4,
+                            tension: 0.35,
                             fill: false,
                             pointRadius: 0,
                             pointHoverRadius: 4,
@@ -6134,8 +7549,13 @@ document.addEventListener('keydown', function(e) {
                             padding: 12,
                             displayColors: true,
                             callbacks: {
+                                title: function(items) {
+                                    if (!items || !items.length) return '';
+                                    const day = items[0].label;
+                                    return `${day} ${monthName} ${trendSelectedYear}`;
+                                },
                                 label: function(context) {
-                                    return context.dataset.label + ': ' + context.parsed.y.toFixed(1) + ' ' + (currentSystemLanguage === 'ar' ? 'ساعة' : 'hrs');
+                                    return context.dataset.label + ': ' + context.parsed.y.toFixed(1) + ' ' + (isAr ? '\u0633\u0627\u0639\u0629' : 'hrs');
                                 }
                             }
                         }
@@ -6149,7 +7569,7 @@ document.addEventListener('keydown', function(e) {
                             ticks: {
                                 color: 'rgba(122, 127, 145, 0.7)',
                                 font: { size: 10, weight: '600' },
-                                maxTicksLimit: 10
+                                maxTicksLimit: 16
                             }
                         },
                         y: {
@@ -7743,50 +9163,16 @@ document.addEventListener('keydown', function(e) {
         let gcalHeaderHideTimeout = null;
 
         function gcalRevealHeader() {
-            clearTimeout(gcalHeaderHideTimeout);
-            const header = document.querySelector('.header-navigation');
-            const handle = document.getElementById('gcal-nav-handle');
-            if (header) header.classList.add('revealed');
-            if (handle) handle.classList.add('hidden');
+            document.body.classList.remove('index-header-collapsed');
+            const btn = document.getElementById('gcal-header-toggle-btn');
+            if (btn) btn.innerHTML = currentSystemLanguage === 'ar' ? '⤢ تكبير الشاشة' : '⤢ Full Canvas';
         }
 
-        function gcalHideHeader(delay = 320) {
-            clearTimeout(gcalHeaderHideTimeout);
-            gcalHeaderHideTimeout = setTimeout(() => {
-                const accMenu = document.getElementById('account-dropdown-menu');
-                if (accMenu && accMenu.classList.contains('show')) return;
-                const header = document.querySelector('.header-navigation');
-                const handle = document.getElementById('gcal-nav-handle');
-                if (header) header.classList.remove('revealed');
-                if (handle) handle.classList.remove('hidden');
-            }, delay);
+        function gcalHideHeader() {
+            document.body.classList.add('index-header-collapsed');
+            const btn = document.getElementById('gcal-header-toggle-btn');
+            if (btn) btn.innerHTML = currentSystemLanguage === 'ar' ? '⤡ إظهار الشريط العلوي' : '⤡ Show Header';
         }
-
-        document.addEventListener('mousemove', (e) => {
-            if (!document.body.classList.contains('gcal-immersive-mode')) return;
-            const header = document.querySelector('.header-navigation');
-            if (e.clientY <= 24) {
-                gcalRevealHeader();
-            } else if (header && e.clientY > header.offsetHeight + 25) {
-                gcalHideHeader();
-            }
-        });
-
-        setTimeout(() => {
-            const header = document.querySelector('.header-navigation');
-            if (header) {
-                header.addEventListener('mouseenter', () => {
-                    if (document.body.classList.contains('gcal-immersive-mode')) {
-                        gcalRevealHeader();
-                    }
-                });
-                header.addEventListener('mouseleave', () => {
-                    if (document.body.classList.contains('gcal-immersive-mode')) {
-                        gcalHideHeader(280);
-                    }
-                });
-            }
-        }, 50);
 
 let appHasBooted = false;
         enhanceEmptyStates();
