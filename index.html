@@ -279,46 +279,81 @@
             right: 18px;
             z-index: 200000;
             display: none;
-            align-items: center;
-            gap: 9px;
-            min-width: 154px;
-            height: 46px;
-            padding: 0 12px;
-            background: rgba(10, 11, 15, 0.94);
-            border: 1px solid rgba(217, 165, 74, 0.48);
-            border-radius: 7px;
-            box-shadow: 0 8px 28px rgba(0,0,0,.35), 0 0 18px rgba(217,165,74,.08);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            flex-direction: column;
+            min-width: 175px;
+            height: 48px;
+            padding: 0;
+            background: rgba(12, 14, 19, 0.96);
+            border: 1px solid rgba(217, 165, 74, 0.45);
+            border-radius: 11px;
+            box-shadow: 0 8px 28px rgba(0, 0, 0, .42), 0 0 18px rgba(217, 165, 74, .08);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
             user-select: none;
             cursor: grab;
             pointer-events: auto;
+            overflow: hidden;
+            transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, background 0.2s ease, border-color 0.2s ease;
         }
         #mini-floating-timer.is-visible { display: flex; }
         #mini-floating-timer:active { cursor: grabbing; }
+
+        /* Progress Bar Track & Bar (Natural 5px thickness, golden amber) */
+        .mini-timer-progress-track {
+            width: 100%;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.12);
+            position: relative;
+            overflow: hidden;
+        }
+        .mini-timer-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #f39c12, #d9a54a);
+            box-shadow: 0 0 8px rgba(217, 165, 74, 0.6);
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 3px;
+        }
+
+        /* Body Container */
+        .mini-timer-body {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 0 8px 0 10px;
+            width: 100%;
+        }
+
         #mini-floating-timer .mini-timer-status {
-            width: 7px;
-            height: 7px;
-            min-width: 7px;
+            width: 8px;
+            height: 8px;
+            min-width: 8px;
             border-radius: 50%;
             background: var(--accent-orange);
-            box-shadow: 0 0 8px rgba(217,165,74,.7);
+            box-shadow: 0 0 8px rgba(217, 165, 74, .75);
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
         #mini-floating-timer.paused .mini-timer-status {
             background: var(--warning);
-            box-shadow: 0 0 8px rgba(243,156,18,.55);
+            box-shadow: 0 0 8px rgba(243, 156, 18, .65);
         }
+
         #mini-floating-timer .mini-timer-time {
             font-family: 'Digital-7 Mono', 'Courier New', monospace;
-            font-size: 21px;
+            font-size: 20px;
             line-height: 1;
             font-weight: 700;
-            letter-spacing: 1.5px;
+            letter-spacing: 1.2px;
             font-variant-numeric: tabular-nums;
             color: var(--accent-orange);
             white-space: nowrap;
+            cursor: pointer;
+            transition: color 0.2s ease;
         }
         #mini-floating-timer.paused .mini-timer-time { color: var(--warning); }
+
         #mini-floating-timer .mini-timer-label {
             font-size: 8px;
             font-weight: 700;
@@ -327,32 +362,113 @@
             text-transform: uppercase;
             margin-left: 1px;
         }
+
+        /* Action Buttons */
+        .mini-timer-actions {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            margin-left: auto;
+        }
+
+        .mini-timer-btn {
+            width: 20px;
+            height: 22px;
+            border: 0;
+            border-radius: 4px;
+            background: transparent;
+            color: var(--text-gray);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            transition: all 0.18s ease;
+        }
+        .mini-timer-btn:hover {
+            color: var(--accent-orange);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .mini-timer-btn.active {
+            color: var(--accent-orange);
+            background: rgba(217, 165, 74, 0.18);
+        }
+
         #mini-floating-timer .mini-timer-hide {
             border: 0;
             background: transparent;
             color: var(--text-gray);
             width: 20px;
-            height: 24px;
+            height: 22px;
             padding: 0;
-            margin-left: auto;
-            font-size: 14px;
-            line-height: 24px;
+            font-size: 13px;
             cursor: pointer;
-            opacity: .65;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.18s ease;
         }
         #mini-floating-timer .mini-timer-hide:hover {
-            color: var(--text-light);
-            opacity: 1;
+            color: #fff;
+            background: rgba(255, 255, 255, 0.1);
         }
+
+        /* --- Pinned to Top Center + Smart Hover-Down Physics --- */
+        #mini-floating-timer.is-pinned-top {
+            top: 0 !important;
+            left: 50% !important;
+            right: auto !important;
+            border-radius: 0 0 12px 12px;
+            border-top: none;
+            cursor: default;
+        }
+
+        /* Auto-hide mode: retracts into top edge, leaving 6px visible */
+        #mini-floating-timer.is-pinned-top:not(.is-always-expanded) {
+            transform: translateX(-50%) translateY(-39px);
+        }
+
+        /* Hover-Down Gesture: smoothly slides down on mouse hover */
+        #mini-floating-timer.is-pinned-top:not(.is-always-expanded):hover,
+        #mini-floating-timer.is-pinned-top:not(.is-always-expanded).is-peek-revealed {
+            transform: translateX(-50%) translateY(0);
+            box-shadow: 0 10px 32px rgba(0, 0, 0, 0.55), 0 0 20px rgba(217, 165, 74, 0.15);
+        }
+
+        /* Always-Expanded Mode */
+        #mini-floating-timer.is-pinned-top.is-always-expanded {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Light Mode Accommodation */
+        html[data-theme="light"] #mini-floating-timer {
+            background: #ffffff !important;
+            border-color: #d6c6b2 !important;
+            box-shadow: 0 8px 24px rgba(61, 49, 39, 0.16) !important;
+        }
+        html[data-theme="light"] .mini-timer-progress-track {
+            background: rgba(0, 0, 0, 0.08);
+        }
+        html[data-theme="light"] #mini-floating-timer .mini-timer-time {
+            color: #8c5b0d !important;
+        }
+        html[data-theme="light"] #mini-floating-timer .mini-timer-label,
+        html[data-theme="light"] .mini-timer-btn,
+        html[data-theme="light"] #mini-floating-timer .mini-timer-hide {
+            color: #6e5e4f;
+        }
+        html[data-theme="light"] .mini-timer-btn:hover,
+        html[data-theme="light"] #mini-floating-timer .mini-timer-hide:hover {
+            color: #8c5b0d;
+            background: rgba(0, 0, 0, 0.06);
+        }
+
         @media (max-width: 600px) {
             #mini-floating-timer {
-                top: 10px;
-                right: 10px;
-                min-width: 145px;
-                height: 42px;
-                padding: 0 10px;
+                min-width: 155px;
+                height: 44px;
             }
-            #mini-floating-timer .mini-timer-time { font-size: 18px; }
+            #mini-floating-timer .mini-timer-time { font-size: 17px; }
         }
 
         .fullscreen-overlay-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg-deep); z-index: 99999; display: none; flex-direction: column; justify-content: center; align-items: center; gap: 40px; animation: fadeIn 0.4s ease-out; }
@@ -3599,10 +3715,23 @@ html[data-theme="light"] .month-selector-dropdown {
 
 <!-- Floating mini timer -->
     <div id="mini-floating-timer" aria-live="polite" title="Drag to move">
-        <span class="mini-timer-status"></span>
-        <span class="mini-timer-time" id="mini-timer-numbers">00:25:00</span>
-        <span class="mini-timer-label">FOCUS</span>
-        <button class="mini-timer-hide" id="mini-timer-hide" type="button" aria-label="Hide timer">×</button>
+        <div class="mini-timer-progress-track" title="Session Progress">
+            <div class="mini-timer-progress-bar" id="mini-timer-progress-bar"></div>
+        </div>
+        <div class="mini-timer-body">
+            <span class="mini-timer-status" id="mini-timer-status" title="Play / Pause"></span>
+            <span class="mini-timer-time" id="mini-timer-numbers" title="Play / Pause">00:25:00</span>
+            <span class="mini-timer-label" id="mini-timer-label">FOCUS</span>
+            <div class="mini-timer-actions">
+                <button class="mini-timer-btn" id="mini-timer-pin-top" type="button" title="Pin to top center / Free float">
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14l-2-7V4h1V2H6v2h1v6l-2 7z"></path></svg>
+                </button>
+                <button class="mini-timer-btn" id="mini-timer-expand-toggle" type="button" title="Toggle Always Show / Auto-hide hover">
+                    <svg id="mini-timer-expand-icon" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="7 13 12 18 17 13"></polyline><polyline points="7 6 12 11 17 6"></polyline></svg>
+                </button>
+                <button class="mini-timer-hide" id="mini-timer-hide" type="button" aria-label="Hide timer">×</button>
+            </div>
+        </div>
     </div>
     <div class="fullscreen-overlay-container" id="focus-overlay">
         <div class="focus-next-action" id="focus-next-action" aria-live="polite">
@@ -3680,15 +3809,43 @@ html[data-theme="light"] .month-selector-dropdown {
                 const miniHours = Math.floor(totalDisplaySeconds / 3600);
                 const miniMinutes = Math.floor((totalDisplaySeconds % 3600) / 60);
                 const miniSeconds = totalDisplaySeconds % 60;
+
+                let progressPct = 0;
+                if (currentMode === 'stopwatch') {
+                    const targetSec = (studyGoals?.daily || 4) * 3600;
+                    progressPct = targetSec > 0 ? Math.min(100, Math.max(0, Math.round((totalElapsedSecondsTracked / targetSec) * 100))) : 0;
+                } else {
+                    const plannedTotal = (customDurationMinutes || 25) * 60;
+                    const elapsed = Math.max(0, plannedTotal - totalDisplaySeconds);
+                    progressPct = plannedTotal > 0 ? Math.min(100, Math.max(0, Math.round((elapsed / plannedTotal) * 100))) : 0;
+                }
+
                 window.electronAPI.updateMiniTimer({
                     time: `${miniHours.toString().padStart(2, '0')}:${miniMinutes.toString().padStart(2, '0')}:${miniSeconds.toString().padStart(2, '0')}`,
                     running: !!isClockRunning,
                     paused: !isClockRunning && totalElapsedSecondsTracked > 0,
-                    visible: !!(isClockRunning || totalElapsedSecondsTracked > 0)
+                    visible: !!(isClockRunning || totalElapsedSecondsTracked > 0),
+                    progress: progressPct,
+                    theme: currentAppTheme || 'dark',
+                    mode: currentMode || 'pomodoro',
+                    tag: currentlySelectedTag || 'Study'
                 });
             } catch (e) {
                 // The browser version of the app does not have Electron IPC.
             }
+        }
+
+        // Listen for IPC commands from the mini timer HUD (e.g. play/pause)
+        if (typeof window !== 'undefined' && window.electronAPI && typeof window.electronAPI.onMiniTimerCommand === 'function') {
+            window.electronAPI.onMiniTimerCommand((cmd) => {
+                if (cmd?.action === 'toggle-play-pause') {
+                    if (isClockRunning) {
+                        pauseClock();
+                    } else {
+                        startClock();
+                    }
+                }
+            });
         }
 
         function stopAndSaveClock(isTimeout = false) {
@@ -4874,6 +5031,8 @@ html[data-theme="light"] .month-selector-dropdown {
             // Floating timer mirrors the same clock as HH:MM:SS.
             const miniTimerEl = document.getElementById('mini-floating-timer');
             const miniTimerNumbers = document.getElementById('mini-timer-numbers');
+            const miniProgressBar = document.getElementById('mini-timer-progress-bar');
+            const miniTimerLabel = document.getElementById('mini-timer-label');
             if (miniTimerEl && miniTimerNumbers) {
                 const totalDisplaySeconds = Math.max(0, (runningMinutes * 60) + runningSeconds);
                 const miniHours = Math.floor(totalDisplaySeconds / 3600);
@@ -4883,6 +5042,22 @@ html[data-theme="light"] .month-selector-dropdown {
                     `${miniHours.toString().padStart(2, '0')}:${miniMinutes.toString().padStart(2, '0')}:${miniSeconds.toString().padStart(2, '0')}`;
                 miniTimerEl.classList.toggle('is-visible', isClockRunning || totalElapsedSecondsTracked > 0);
                 miniTimerEl.classList.toggle('paused', !isClockRunning && totalElapsedSecondsTracked > 0);
+
+                // Progress Bar
+                let progressPct = 0;
+                if (currentMode === 'stopwatch') {
+                    const targetSec = (studyGoals?.daily || 4) * 3600;
+                    progressPct = targetSec > 0 ? Math.min(100, Math.max(0, Math.round((totalElapsedSecondsTracked / targetSec) * 100))) : 0;
+                } else {
+                    const plannedTotal = (customDurationMinutes || 25) * 60;
+                    const elapsed = Math.max(0, plannedTotal - totalDisplaySeconds);
+                    progressPct = plannedTotal > 0 ? Math.min(100, Math.max(0, Math.round((elapsed / plannedTotal) * 100))) : 0;
+                }
+                if (miniProgressBar) miniProgressBar.style.width = progressPct + '%';
+
+                if (miniTimerLabel) {
+                    miniTimerLabel.innerText = (currentlySelectedTag || currentMode || 'FOCUS').toUpperCase();
+                }
             }
             syncDesktopMiniTimer();
 
@@ -5000,21 +5175,105 @@ html[data-theme="light"] .month-selector-dropdown {
             const mini = document.getElementById('mini-floating-timer');
             if (!mini) return;
 
-            const savedLeft = parseInt(localStorage.getItem('indexMiniTimerLeft'), 10);
-            const savedTop = parseInt(localStorage.getItem('indexMiniTimerTop'), 10);
-            if (Number.isFinite(savedLeft) && Number.isFinite(savedTop)) {
-                mini.style.left = `${Math.max(0, savedLeft)}px`;
-                mini.style.top = `${Math.max(0, savedTop)}px`;
-                mini.style.right = 'auto';
+            const pinBtn = document.getElementById('mini-timer-pin-top');
+            const expandBtn = document.getElementById('mini-timer-expand-toggle');
+            const expandIcon = document.getElementById('mini-timer-expand-icon');
+            const statusDot = document.getElementById('mini-timer-status');
+            const numbers = document.getElementById('mini-timer-numbers');
+
+            let isPinnedTop = localStorage.getItem('indexMiniTimerPinnedTop') === 'true';
+            let isAlwaysExpanded = localStorage.getItem('indexMiniTimerAlwaysExpanded') === 'true';
+
+            function applyMiniPreferences() {
+                mini.classList.toggle('is-pinned-top', isPinnedTop);
+                mini.classList.toggle('is-always-expanded', isAlwaysExpanded);
+
+                if (pinBtn) {
+                    pinBtn.classList.toggle('active', isPinnedTop);
+                    pinBtn.title = isPinnedTop ? 'Pinned to top center (click to unpin)' : 'Free floating (click to pin to top center)';
+                }
+
+                if (expandBtn) {
+                    expandBtn.style.display = isPinnedTop ? 'inline-flex' : 'none';
+                    expandBtn.classList.toggle('active', isAlwaysExpanded);
+                    expandBtn.title = isAlwaysExpanded ? 'Always Visible (click for auto-hide hover drop-down)' : 'Auto-Hide (drops down on hover, click to keep always visible)';
+                }
+
+                if (expandIcon) {
+                    expandIcon.innerHTML = isAlwaysExpanded
+                        ? '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path>'
+                        : '<polyline points="7 13 12 18 17 13"></polyline><polyline points="7 6 12 11 17 6"></polyline>';
+                }
+
+                if (isPinnedTop) {
+                    mini.style.left = '';
+                    mini.style.top = '';
+                    mini.style.right = '';
+                } else {
+                    const savedLeft = parseInt(localStorage.getItem('indexMiniTimerLeft'), 10);
+                    const savedTop = parseInt(localStorage.getItem('indexMiniTimerTop'), 10);
+                    if (Number.isFinite(savedLeft) && Number.isFinite(savedTop)) {
+                        mini.style.left = `${Math.max(0, savedLeft)}px`;
+                        mini.style.top = `${Math.max(0, savedTop)}px`;
+                        mini.style.right = 'auto';
+                    }
+                }
             }
 
+            applyMiniPreferences();
+
+            pinBtn?.addEventListener('click', function(e) {
+                e.stopPropagation();
+                isPinnedTop = !isPinnedTop;
+                localStorage.setItem('indexMiniTimerPinnedTop', isPinnedTop);
+                applyMiniPreferences();
+            });
+
+            expandBtn?.addEventListener('click', function(e) {
+                e.stopPropagation();
+                isAlwaysExpanded = !isAlwaysExpanded;
+                localStorage.setItem('indexMiniTimerAlwaysExpanded', isAlwaysExpanded);
+                applyMiniPreferences();
+            });
+
+            // Hover Peek logic when pinned
+            let hidePeekTimeout = null;
+            mini.addEventListener('mouseenter', function() {
+                clearTimeout(hidePeekTimeout);
+                mini.classList.add('is-peek-revealed');
+            });
+
+            mini.addEventListener('mouseleave', function() {
+                hidePeekTimeout = setTimeout(() => {
+                    mini.classList.remove('is-peek-revealed');
+                }, 700);
+            });
+
+            // Play / Pause Click
+            function onTogglePlayPause(e) {
+                e.stopPropagation();
+                if (isClockRunning) {
+                    pauseClock();
+                } else {
+                    startClock();
+                }
+            }
+            statusDot?.addEventListener('click', onTogglePlayPause);
+            numbers?.addEventListener('click', onTogglePlayPause);
+
+            // Dragging Logic
             let dragging = false;
             let moved = false;
             let offsetX = 0;
             let offsetY = 0;
 
             mini.addEventListener('pointerdown', function(e) {
-                if (e.target.closest('.mini-timer-hide')) return;
+                if (e.target.closest('.mini-timer-actions') || e.target.closest('.mini-timer-status') || e.target.closest('.mini-timer-time')) return;
+                if (isPinnedTop) {
+                    isPinnedTop = false;
+                    localStorage.setItem('indexMiniTimerPinnedTop', false);
+                    applyMiniPreferences();
+                }
                 dragging = true;
                 moved = false;
                 const rect = mini.getBoundingClientRect();
@@ -5049,7 +5308,7 @@ html[data-theme="light"] .month-selector-dropdown {
             });
 
             window.addEventListener('resize', function() {
-                if (!mini.classList.contains('is-visible')) return;
+                if (!mini.classList.contains('is-visible') || isPinnedTop) return;
                 const rect = mini.getBoundingClientRect();
                 mini.style.left = `${Math.max(0, Math.min(rect.left, window.innerWidth - mini.offsetWidth))}px`;
                 mini.style.top = `${Math.max(0, Math.min(rect.top, window.innerHeight - mini.offsetHeight))}px`;

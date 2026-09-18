@@ -1,113 +1,415 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>INDEX Timer</title>
+  <title>INDEX Timer HUD</title>
   <style>
     :root {
       --gold: #d9a54a;
-      --muted: #8b8f9d;
+      --gold-glow: rgba(217, 165, 74, 0.45);
+      --muted: #8b949e;
       --warning: #f39c12;
-      --panel: rgba(10, 11, 15, 0.96);
-      --border: rgba(217, 165, 74, 0.48);
+      --panel-bg: rgba(12, 14, 19, 0.96);
+      --border-color: rgba(217, 165, 74, 0.45);
+      --time-color: #d9a54a;
+      --label-color: #8b949e;
+      --track-bg: rgba(255, 255, 255, 0.12);
+      --btn-hover: rgba(255, 255, 255, 0.12);
     }
+
+    /* Light Theme accommodation */
+    body.theme-light {
+      --panel-bg: #ffffff;
+      --border-color: #d6c6b2;
+      --time-color: #8c5b0d;
+      --label-color: #6e5e4f;
+      --track-bg: rgba(0, 0, 0, 0.08);
+      --btn-hover: rgba(0, 0, 0, 0.06);
+    }
+
+    /* Translucent / Glass accommodation */
+    body.style-translucent {
+      --panel-bg: rgba(12, 14, 19, 0.72);
+    }
+    body.theme-light.style-translucent {
+      --panel-bg: rgba(255, 255, 255, 0.82);
+    }
+
     * { box-sizing: border-box; }
+
     html, body {
       margin: 0;
       width: 100%;
       height: 100%;
       background: transparent;
       overflow: hidden;
-      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-    }
-    body { display: flex; align-items: center; justify-content: center; }
-    #timer {
-      width: calc(100% - 8px);
-      height: calc(100% - 8px);
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      padding: 0 10px 0 12px;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 9px;
-      box-shadow: 0 8px 28px rgba(0,0,0,.40), 0 0 18px rgba(217,165,74,.08);
-      -webkit-app-region: drag;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       user-select: none;
     }
-    #status {
-      width: 7px; height: 7px; min-width: 7px;
-      border-radius: 50%;
-      background: var(--gold);
-      box-shadow: 0 0 9px rgba(217,165,74,.8);
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 0;
     }
-    #time {
-      font-family: "Courier New", monospace;
-      font-size: 22px;
-      line-height: 1;
-      font-weight: 800;
-      letter-spacing: 1.5px;
-      color: var(--gold);
-      font-variant-numeric: tabular-nums;
-      white-space: nowrap;
-      text-shadow: 0 0 12px rgba(217,165,74,.18);
+
+    #overlay-container {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    #label {
-      font-size: 8px;
-      font-weight: 800;
-      letter-spacing: .8px;
-      color: var(--muted);
+
+    /* Top Progress Bar Track & Indicator */
+    #progress-track {
+      width: 100%;
+      height: 5px;
+      background: var(--track-bg);
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      overflow: hidden;
+      border-radius: 3px 3px 0 0;
+      cursor: pointer;
     }
-    #hide {
-      width: 24px;
-      height: 30px;
-      margin-left: auto;
-      border: 0;
-      border-radius: 6px;
-      background: transparent;
-      color: var(--muted);
-      font-size: 16px;
+
+    #progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #f39c12, #d9a54a);
+      box-shadow: 0 0 10px rgba(217, 165, 74, 0.6);
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 3px;
+    }
+
+    /* Main Timer Pill Card */
+    #timer-pill {
+      width: calc(100% - 6px);
+      height: 48px;
+      margin-top: 3px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0 8px 0 10px;
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 11px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.42), 0 0 16px rgba(217, 165, 74, 0.08);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      cursor: grab;
+      -webkit-app-region: drag;
+    }
+
+    #timer-pill:active {
+      cursor: grabbing;
+    }
+
+    /* Status Pulse Dot / Play-Pause Trigger */
+    #status-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
       cursor: pointer;
       -webkit-app-region: no-drag;
     }
-    #hide:hover { color: #fff; background: rgba(255,255,255,.06); }
+
+    #status {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 10px var(--gold-glow);
+      transition: all 0.25s ease;
+    }
+
     .paused #status {
       background: var(--warning);
-      box-shadow: 0 0 9px rgba(243,156,18,.65);
+      box-shadow: 0 0 10px rgba(243, 156, 18, 0.65);
     }
-    .paused #time { color: var(--warning); }
+
+    /* Timer Digits */
+    #time {
+      font-family: "Courier New", "SF Mono", Monaco, Consolas, monospace;
+      font-size: 20px;
+      line-height: 1;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: var(--time-color);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+      cursor: pointer;
+      -webkit-app-region: no-drag;
+      transition: color 0.2s ease;
+    }
+
+    .paused #time {
+      color: var(--warning);
+    }
+
+    /* Mode / Tag Badge */
+    #label {
+      font-size: 8.5px;
+      font-weight: 800;
+      letter-spacing: 0.6px;
+      color: var(--label-color);
+      text-transform: uppercase;
+      max-width: 50px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      margin-left: 2px;
+    }
+
+    /* Action Buttons Group */
+    .hud-controls {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      margin-left: auto;
+      -webkit-app-region: no-drag;
+    }
+
+    .hud-btn {
+      width: 22px;
+      height: 24px;
+      border: 0;
+      border-radius: 5px;
+      background: transparent;
+      color: var(--label-color);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.18s ease;
+      padding: 0;
+    }
+
+    .hud-btn:hover {
+      color: var(--gold);
+      background: var(--btn-hover);
+      transform: scale(1.08);
+    }
+
+    .hud-btn.active {
+      color: var(--gold);
+      background: rgba(217, 165, 74, 0.18);
+    }
+
+    .hud-btn svg {
+      width: 13px;
+      height: 13px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* -------------------------------------------------------------
+       PINNED-TO-TOP + AUTO-HIDE DROPDOWN PHYSICS
+       ------------------------------------------------------------- */
+    #overlay-container.is-pinned-top {
+      /* When docked to top of screen, remove drag on container */
+    }
+
+    /* Auto-Hide mode when pinned to top: retracts to top edge showing progress bar */
+    #overlay-container.is-pinned-top:not(.is-always-expanded) #timer-pill {
+      transform: translateY(-44px);
+    }
+
+    /* Hover gesture: drops down smoothly when mouse approaches top edge */
+    #overlay-container.is-pinned-top:not(.is-always-expanded):hover #timer-pill,
+    #overlay-container.is-pinned-top:not(.is-always-expanded).is-peek-revealed #timer-pill {
+      transform: translateY(0);
+      box-shadow: 0 10px 32px rgba(0, 0, 0, 0.55), 0 0 20px rgba(217, 165, 74, 0.15);
+    }
+
+    /* Always-expanded mode: stays fully down at the top center */
+    #overlay-container.is-pinned-top.is-always-expanded #timer-pill {
+      transform: translateY(0);
+    }
+
+    /* When not pinned (free float): stays expanded and draggable */
+    #overlay-container:not(.is-pinned-top) #timer-pill {
+      transform: translateY(0);
+    }
   </style>
 </head>
 <body>
-  <div id="timer">
-    <span id="status"></span>
-    <span id="time">00:00:00</span>
-    <span id="label">FOCUS</span>
-    <button id="hide" title="Hide timer">x</button>
+  <div id="overlay-container" class="is-pinned-top">
+    <!-- Progress Bar (Natural 5px thickness, golden amber) -->
+    <div id="progress-track" title="Session Progress">
+      <div id="progress-bar"></div>
+    </div>
+
+    <!-- Timer Pill Card -->
+    <div id="timer-pill">
+      <!-- Status dot (clickable play/pause) -->
+      <div id="status-wrapper" title="Click to Play / Pause">
+        <span id="status"></span>
+      </div>
+
+      <!-- Digits (clickable play/pause) -->
+      <span id="time" title="Click to Play / Pause">00:00:00</span>
+
+      <!-- Mode / Subject label -->
+      <span id="label">FOCUS</span>
+
+      <!-- Action Buttons -->
+      <div class="hud-controls">
+        <!-- Pin to Top Center (بين إن توب) -->
+        <button class="hud-btn active" id="pin-top-btn" title="Pin to top center / Free float">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14l-2-7V4h1V2H6v2h1v6l-2 7z"></path></svg>
+        </button>
+
+        <!-- Always Show / Auto-Hide Hover Toggle (إظهار دائم / إيماءة النزول) -->
+        <button class="hud-btn" id="always-expand-btn" title="Toggle Always Show / Auto-hide on hover">
+          <svg id="expand-icon" viewBox="0 0 24 24"><polyline points="7 13 12 18 17 13"></polyline><polyline points="7 6 12 11 17 6"></polyline></svg>
+        </button>
+
+        <!-- Theme / Opacity Accommodation (دارك / وايت مود / شفافة) -->
+        <button class="hud-btn" id="theme-btn" title="Theme & Opacity (Dark / Light / Glass)">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 0 0 20z" fill="currentColor"></path></svg>
+        </button>
+
+        <!-- Hide / Close -->
+        <button class="hud-btn" id="hide" title="Hide mini timer">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
   </div>
 
   <script>
-    const timer = document.getElementById('timer');
-    const time = document.getElementById('time');
-    const hide = document.getElementById('hide');
+    const container = document.getElementById('overlay-container');
+    const timerPill = document.getElementById('timer-pill');
+    const timeEl = document.getElementById('time');
+    const labelEl = document.getElementById('label');
+    const progressBar = document.getElementById('progress-bar');
+    const pinTopBtn = document.getElementById('pin-top-btn');
+    const alwaysExpandBtn = document.getElementById('always-expand-btn');
+    const themeBtn = document.getElementById('theme-btn');
+    const hideBtn = document.getElementById('hide');
+    const statusWrapper = document.getElementById('status-wrapper');
 
-    hide.addEventListener('click', (event) => {
-      event.stopPropagation();
-      window.electronAPI.hideMiniTimer();
+    // State & Preferences from localStorage
+    let isPinnedTop = localStorage.getItem('index_overlay_pinned') !== 'false'; // default true (Pin on Top)
+    let isAlwaysExpanded = localStorage.getItem('index_overlay_always_expanded') === 'true'; // default false (hover drop-down)
+    let currentThemeMode = localStorage.getItem('index_overlay_style') || 'dark-solid'; // dark-solid, dark-glass, light-solid, light-glass
+
+    function applyPreferences() {
+      // 1. Pinned to Top
+      container.classList.toggle('is-pinned-top', isPinnedTop);
+      pinTopBtn.classList.toggle('active', isPinnedTop);
+      pinTopBtn.title = isPinnedTop ? 'Pinned to top center (click to unpin and drag freely)' : 'Free floating (click to pin to top center)';
+
+      // 2. Always Expanded vs Auto-Hide
+      container.classList.toggle('is-always-expanded', isAlwaysExpanded);
+      alwaysExpandBtn.classList.toggle('active', isAlwaysExpanded);
+      alwaysExpandBtn.style.display = isPinnedTop ? 'inline-flex' : 'none';
+      alwaysExpandBtn.title = isAlwaysExpanded ? 'Always Visible (click for auto-hide hover drop-down)' : 'Auto-Hide (drops down on mouse hover, click to keep always visible)';
+
+      const expandIcon = document.getElementById('expand-icon');
+      if (expandIcon) {
+        expandIcon.innerHTML = isAlwaysExpanded
+          ? '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path>'
+          : '<polyline points="7 13 12 18 17 13"></polyline><polyline points="7 6 12 11 17 6"></polyline>';
+      }
+
+      // 3. Theme & Opacity Styles
+      document.body.classList.remove('theme-light', 'style-translucent');
+      if (currentThemeMode === 'light-solid') {
+        document.body.classList.add('theme-light');
+      } else if (currentThemeMode === 'light-glass') {
+        document.body.classList.add('theme-light', 'style-translucent');
+      } else if (currentThemeMode === 'dark-glass') {
+        document.body.classList.add('style-translucent');
+      } // else dark-solid (default)
+    }
+
+    applyPreferences();
+
+    // Notify Electron main process of initial pin-to-top state
+    if (isPinnedTop && window.electronAPI && typeof window.electronAPI.pinMiniTimerTop === 'function') {
+      window.electronAPI.pinMiniTimerTop(true);
+    }
+
+    // Toggle Pin to Top Center
+    pinTopBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      isPinnedTop = !isPinnedTop;
+      localStorage.setItem('index_overlay_pinned', isPinnedTop);
+      applyPreferences();
+      if (window.electronAPI && typeof window.electronAPI.pinMiniTimerTop === 'function') {
+        window.electronAPI.pinMiniTimerTop(isPinnedTop);
+      }
     });
 
+    // Toggle Always Expanded vs Auto-Hide Hover
+    alwaysExpandBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      isAlwaysExpanded = !isAlwaysExpanded;
+      localStorage.setItem('index_overlay_always_expanded', isAlwaysExpanded);
+      applyPreferences();
+    });
+
+    // Cycle Themes (Dark Solid -> Dark Glass -> Light Solid -> Light Glass)
+    themeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const order = ['dark-solid', 'dark-glass', 'light-solid', 'light-glass'];
+      const nextIdx = (order.indexOf(currentThemeMode) + 1) % order.length;
+      currentThemeMode = order[nextIdx];
+      localStorage.setItem('index_overlay_style', currentThemeMode);
+      applyPreferences();
+    });
+
+    // Play / Pause Toggle
+    function triggerPlayPause(e) {
+      if (e) e.stopPropagation();
+      if (window.electronAPI && typeof window.electronAPI.togglePlayPause === 'function') {
+        window.electronAPI.togglePlayPause();
+      }
+    }
+    statusWrapper.addEventListener('click', triggerPlayPause);
+    timeEl.addEventListener('click', triggerPlayPause);
+
+    // Hide / Close Window
+    hideBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (window.electronAPI && typeof window.electronAPI.hideMiniTimer === 'function') {
+        window.electronAPI.hideMiniTimer();
+      }
+    });
+
+    // Free Dragging (only when NOT pinned to top)
     let dragging = false;
     let startMouseX = 0;
     let startMouseY = 0;
     let startWindowX = 0;
     let startWindowY = 0;
 
-    timer.addEventListener('mousedown', async (event) => {
-      if (event.target === hide) return;
+    timerPill.addEventListener('mousedown', async (e) => {
+      if (e.target.closest('.hud-controls') || e.target.closest('#status-wrapper')) return;
+      if (isPinnedTop) {
+        // If user actively drags while pinned, unpin to allow free dragging
+        isPinnedTop = false;
+        localStorage.setItem('index_overlay_pinned', false);
+        applyPreferences();
+      }
       dragging = true;
-      startMouseX = event.screenX;
-      startMouseY = event.screenY;
+      startMouseX = e.screenX;
+      startMouseY = e.screenY;
       const pos = await window.electronAPI.getMiniTimerPosition();
       if (pos) {
         startWindowX = pos[0];
@@ -115,18 +417,50 @@
       }
     });
 
-    window.addEventListener('mousemove', (event) => {
+    window.addEventListener('mousemove', (e) => {
       if (!dragging) return;
-      const x = startWindowX + (event.screenX - startMouseX);
-      const y = startWindowY + (event.screenY - startMouseY);
+      const x = startWindowX + (e.screenX - startMouseX);
+      const y = startWindowY + (e.screenY - startMouseY);
       window.electronAPI.moveMiniTimer(x, y);
     });
 
     window.addEventListener('mouseup', () => { dragging = false; });
 
+    // Hover Peek Debounce for Top Pinned Mode
+    let hidePeekTimeout = null;
+    container.addEventListener('mouseenter', () => {
+      clearTimeout(hidePeekTimeout);
+      container.classList.add('is-peek-revealed');
+    });
+
+    container.addEventListener('mouseleave', () => {
+      hidePeekTimeout = setTimeout(() => {
+        container.classList.remove('is-peek-revealed');
+      }, 700);
+    });
+
+    // State Synchronization from Main Window
     window.electronAPI.onMiniTimerState((state) => {
-      time.textContent = state.time || '00:00:00';
-      timer.classList.toggle('paused', !!state.paused);
+      if (!state) return;
+      timeEl.textContent = state.time || '00:00:00';
+      timerPill.classList.toggle('paused', !!state.paused);
+      
+      // Update Progress Bar
+      const pct = Number.isFinite(state.progress) ? Math.max(0, Math.min(100, state.progress)) : 0;
+      progressBar.style.width = pct + '%';
+      
+      // Update Label
+      if (state.tag) {
+        labelEl.textContent = state.tag.toUpperCase();
+      } else if (state.mode) {
+        labelEl.textContent = state.mode.toUpperCase();
+      }
+
+      // Sync theme if user hasn't explicitly set a custom override
+      if (!localStorage.getItem('index_overlay_style') && state.theme) {
+        currentThemeMode = state.theme === 'light' ? 'light-solid' : 'dark-solid';
+        applyPreferences();
+      }
     });
   </script>
 </body>

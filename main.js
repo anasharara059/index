@@ -1,4 +1,4 @@
-﻿const { app, BrowserWindow, ipcMain, screen } = require('electron');
+const { app, BrowserWindow, ipcMain, screen } = require('electron');
 const path = require('path');
 const http = require('http');
 const fs = require('fs');
@@ -58,7 +58,11 @@ let lastOverlayState = {
   time: '00:00:00',
   running: false,
   paused: false,
-  visible: false
+  visible: false,
+  progress: 0,
+  theme: 'dark',
+  mode: 'pomodoro',
+  tag: 'Study'
 };
 
 // Keeps the overlay window floating over ANY fullscreen app, game, or video player
@@ -77,11 +81,11 @@ function ensureOverlayOnTop() {
 
 function createOverlayWindow() {
   overlayWindow = new BrowserWindow({
-    width: 205,
-    height: 64,
-    minWidth: 160,
-    minHeight: 50,
-    maxWidth: 320,
+    width: 270,
+    height: 60,
+    minWidth: 200,
+    minHeight: 48,
+    maxWidth: 360,
     maxHeight: 100,
     transparent: true,
     frame: false,
@@ -108,8 +112,8 @@ function createOverlayWindow() {
     if (!saved || saved.length !== 2) {
       const workArea = screen.getPrimaryDisplay().workArea;
       overlayWindow.setPosition(
-        Math.round(workArea.x + workArea.width - 225),
-        Math.round(workArea.y + 22)
+        Math.round(workArea.x + (workArea.width - 270) / 2),
+        Math.round(workArea.y)
       );
     }
     overlayWindow.webContents.send('mini-timer:state', lastOverlayState);
@@ -179,7 +183,11 @@ ipcMain.on('mini-timer:update', (_event, state) => {
     time: String(state?.time || '00:00:00'),
     running: !!state?.running,
     paused: !!state?.paused,
-    visible: !!state?.visible
+    visible: !!state?.visible,
+    progress: Number.isFinite(state?.progress) ? Math.max(0, Math.min(100, state.progress)) : 0,
+    theme: state?.theme === 'light' ? 'light' : 'dark',
+    mode: String(state?.mode || 'pomodoro'),
+    tag: String(state?.tag || 'Study')
   };
 
   if (!overlayWindow || overlayWindow.isDestroyed()) return;
@@ -193,6 +201,26 @@ ipcMain.on('mini-timer:update', (_event, state) => {
     ensureOverlayOnTop();
   } else if (overlayWindow.isVisible()) {
     overlayWindow.hide();
+  }
+});
+
+ipcMain.on('mini-timer:pin-top', (_event, pinned) => {
+  if (!overlayWindow || overlayWindow.isDestroyed()) return;
+  if (pinned) {
+    const pos = overlayWindow.getPosition();
+    const display = screen.getDisplayNearestPoint({ x: pos[0], y: pos[1] });
+    const area = display.workArea;
+    const [w] = overlayWindow.getSize();
+    const centerX = Math.round(area.x + (area.width - w) / 2);
+    const topY = area.y;
+    overlayWindow.setPosition(centerX, topY);
+    ensureOverlayOnTop();
+  }
+});
+
+ipcMain.on('mini-timer:toggle-play-pause', () => {
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.webContents.send('mini-timer:command', { action: 'toggle-play-pause' });
   }
 });
 
