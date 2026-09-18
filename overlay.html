@@ -244,6 +244,95 @@
     #overlay-container:not(.is-pinned-top) #timer-pill {
       transform: translateY(0);
     }
+
+    /* -------------------------------------------------------------
+       SCROLL OPACITY BADGE
+       ------------------------------------------------------------- */
+    #opacity-badge {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.8);
+      background: rgba(12, 14, 19, 0.94);
+      color: var(--gold);
+      border: 1px solid var(--border-color);
+      padding: 3px 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.18s ease, transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 300;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+    }
+
+    #opacity-badge.show {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    /* -------------------------------------------------------------
+       GHOST / CLICK-THROUGH MODE
+       ------------------------------------------------------------- */
+    #timer-pill.is-ghost-mode {
+      border-color: rgba(100, 200, 255, 0.65);
+      box-shadow: 0 0 20px rgba(100, 200, 255, 0.28);
+    }
+
+    .hud-btn#ghost-btn.active {
+      color: #64c8ff;
+      background: rgba(100, 200, 255, 0.2);
+    }
+
+    #ghost-toast {
+      position: absolute;
+      bottom: -22px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(10, 15, 25, 0.95);
+      color: #64c8ff;
+      border: 1px solid rgba(100, 200, 255, 0.35);
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      z-index: 300;
+    }
+
+    #ghost-toast.show {
+      opacity: 1;
+    }
+
+    /* -------------------------------------------------------------
+       VISUAL COMPLETION GLOW
+       ------------------------------------------------------------- */
+    @keyframes completionAuraGlow {
+      0%, 100% {
+        box-shadow: 0 0 16px rgba(217, 165, 74, 0.5), 0 0 32px rgba(243, 156, 18, 0.35);
+        border-color: rgba(217, 165, 74, 0.7);
+      }
+      50% {
+        box-shadow: 0 0 36px rgba(217, 165, 74, 0.95), 0 0 65px rgba(243, 156, 18, 0.75);
+        border-color: #f39c12;
+      }
+    }
+
+    #timer-pill.is-session-completed {
+      animation: completionAuraGlow 1.9s ease-in-out infinite;
+      border-color: #f39c12 !important;
+    }
+
+    #timer-pill.is-session-completed #status {
+      background: #2ecc71;
+      box-shadow: 0 0 12px rgba(46, 204, 113, 0.9);
+    }
   </style>
 </head>
 <body>
@@ -268,6 +357,11 @@
 
       <!-- Action Buttons -->
       <div class="hud-controls">
+        <!-- Ghost / Click-Through Mode (وضع الشبح لمرور النقرات أثناء اللعب أو التصفح) -->
+        <button class="hud-btn" id="ghost-btn" title="Ghost / Click-Through Mode (Ctrl+Alt+G or Double-Click)">
+          <svg viewBox="0 0 24 24"><path d="M12 2a8 8 0 0 0-8 8v10l3-2 3 2 2-2 2 2 3-2 3 2V10a8 8 0 0 0-8-8z"></path><circle cx="9" cy="9" r="1.5" fill="currentColor"></circle><circle cx="15" cy="9" r="1.5" fill="currentColor"></circle></svg>
+        </button>
+
         <!-- Pin to Top Center (بين إن توب) -->
         <button class="hud-btn active" id="pin-top-btn" title="Pin to top center / Free float">
           <svg viewBox="0 0 24 24"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14l-2-7V4h1V2H6v2h1v6l-2 7z"></path></svg>
@@ -289,6 +383,10 @@
         </button>
       </div>
     </div>
+
+    <!-- Feedback Badges -->
+    <div id="opacity-badge">100%</div>
+    <div id="ghost-toast">Ghost Mode Active (Clicks Pass Through) &bull; Ctrl+Alt+G to Exit</div>
   </div>
 
   <script>
@@ -307,6 +405,27 @@
     let isPinnedTop = localStorage.getItem('index_overlay_pinned') !== 'false'; // default true (Pin on Top)
     let isAlwaysExpanded = localStorage.getItem('index_overlay_always_expanded') === 'true'; // default false (hover drop-down)
     let currentThemeMode = localStorage.getItem('index_overlay_style') || 'dark-solid'; // dark-solid, dark-glass, light-solid, light-glass
+    let currentOpacity = parseFloat(localStorage.getItem('index_overlay_opacity') || '1.0');
+    let isGhostMode = false;
+
+    const ghostBtn = document.getElementById('ghost-btn');
+    const opacityBadge = document.getElementById('opacity-badge');
+    const ghostToast = document.getElementById('ghost-toast');
+
+    // Initialize custom opacity
+    timerPill.style.opacity = currentOpacity;
+    if (window.electronAPI && typeof window.electronAPI.setWindowOpacity === 'function') {
+      window.electronAPI.setWindowOpacity(currentOpacity);
+    }
+
+    function syncTopCollapsedState() {
+      if (!window.electronAPI || typeof window.electronAPI.setCollapsedState !== 'function') return;
+      if (isPinnedTop && !isAlwaysExpanded && !container.classList.contains('is-peek-revealed')) {
+        window.electronAPI.setCollapsedState(true);
+      } else {
+        window.electronAPI.setCollapsedState(false);
+      }
+    }
 
     function applyPreferences() {
       // 1. Pinned to Top
@@ -336,6 +455,8 @@
       } else if (currentThemeMode === 'dark-glass') {
         document.body.classList.add('style-translucent');
       } // else dark-solid (default)
+
+      syncTopCollapsedState();
     }
 
     applyPreferences();
@@ -374,15 +495,94 @@
       applyPreferences();
     });
 
+    // Ghost / Click-Through Mode Logic
+    let ghostToastTimeout = null;
+    function showGhostToast(msg) {
+      if (!ghostToast) return;
+      if (msg) ghostToast.textContent = msg;
+      ghostToast.classList.add('show');
+      clearTimeout(ghostToastTimeout);
+      ghostToastTimeout = setTimeout(() => ghostToast.classList.remove('show'), 2600);
+    }
+
+    function setGhostMode(active) {
+      isGhostMode = !!active;
+      timerPill.classList.toggle('is-ghost-mode', isGhostMode);
+      if (ghostBtn) ghostBtn.classList.toggle('active', isGhostMode);
+      if (window.electronAPI && typeof window.electronAPI.setGhostMode === 'function') {
+        window.electronAPI.setGhostMode(isGhostMode);
+      }
+      if (isGhostMode) {
+        showGhostToast('👻 Ghost Mode Active (Clicks Pass Through) • Ctrl+Alt+G to Exit');
+      }
+    }
+
+    if (ghostBtn) {
+      ghostBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setGhostMode(!isGhostMode);
+      });
+    }
+
+    // Double-click on HUD capsule toggles ghost mode
+    timerPill.addEventListener('dblclick', (e) => {
+      if (e.target.closest('.hud-controls') || e.target.closest('#status-wrapper')) return;
+      setGhostMode(!isGhostMode);
+    });
+
+    if (window.electronAPI && typeof window.electronAPI.onGhostModeChanged === 'function') {
+      window.electronAPI.onGhostModeChanged((ghostState) => {
+        isGhostMode = !!ghostState;
+        timerPill.classList.toggle('is-ghost-mode', isGhostMode);
+        if (ghostBtn) ghostBtn.classList.toggle('active', isGhostMode);
+        if (isGhostMode) {
+          showGhostToast('👻 Ghost Mode Active • Ctrl+Alt+G to Exit');
+        }
+      });
+    }
+
+    // Scroll Wheel Opacity Adjustment (20% to 100%)
+    let opacityBadgeTimeout = null;
+    function showOpacityBadge(text) {
+      if (!opacityBadge) return;
+      opacityBadge.textContent = text;
+      opacityBadge.classList.add('show');
+      clearTimeout(opacityBadgeTimeout);
+      opacityBadgeTimeout = setTimeout(() => opacityBadge.classList.remove('show'), 850);
+    }
+
+    window.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const delta = e.deltaY < 0 ? 0.05 : -0.05;
+      currentOpacity = Math.max(0.20, Math.min(1.0, Math.round((currentOpacity + delta) * 100) / 100));
+      timerPill.style.opacity = currentOpacity;
+      if (window.electronAPI && typeof window.electronAPI.setWindowOpacity === 'function') {
+        window.electronAPI.setWindowOpacity(currentOpacity);
+      }
+      showOpacityBadge(Math.round(currentOpacity * 100) + '%');
+      localStorage.setItem('index_overlay_opacity', currentOpacity);
+    }, { passive: false });
+
     // Play / Pause Toggle
     function triggerPlayPause(e) {
       if (e) e.stopPropagation();
+      // If completed glow is active, clicking clears it
+      if (timerPill.classList.contains('is-session-completed')) {
+        timerPill.classList.remove('is-session-completed');
+      }
       if (window.electronAPI && typeof window.electronAPI.togglePlayPause === 'function') {
         window.electronAPI.togglePlayPause();
       }
     }
     statusWrapper.addEventListener('click', triggerPlayPause);
     timeEl.addEventListener('click', triggerPlayPause);
+
+    // Dismiss completion glow on click
+    timerPill.addEventListener('click', (e) => {
+      if (timerPill.classList.contains('is-session-completed')) {
+        timerPill.classList.remove('is-session-completed');
+      }
+    });
 
     // Hide / Close Window
     hideBtn.addEventListener('click', (e) => {
@@ -392,7 +592,7 @@
       }
     });
 
-    // Free Dragging (only when NOT pinned to top)
+    // Free Dragging with Magnetic Edge Snapping
     let dragging = false;
     let startMouseX = 0;
     let startMouseY = 0;
@@ -400,7 +600,7 @@
     let startWindowY = 0;
 
     timerPill.addEventListener('mousedown', async (e) => {
-      if (e.target.closest('.hud-controls') || e.target.closest('#status-wrapper')) return;
+      if (e.target.closest('.hud-controls') || e.target.closest('#status-wrapper') || e.target.closest('#time')) return;
       if (isPinnedTop) {
         // If user actively drags while pinned, unpin to allow free dragging
         isPinnedTop = false;
@@ -417,25 +617,39 @@
       }
     });
 
-    window.addEventListener('mousemove', (e) => {
+    window.addEventListener('mousemove', async (e) => {
       if (!dragging) return;
       const x = startWindowX + (e.screenX - startMouseX);
       const y = startWindowY + (e.screenY - startMouseY);
-      window.electronAPI.moveMiniTimer(x, y);
+
+      if (window.electronAPI && typeof window.electronAPI.snapMoveMiniTimer === 'function') {
+        const result = await window.electronAPI.snapMoveMiniTimer(x, y);
+        if (result && result.isPinnedTop) {
+          isPinnedTop = true;
+          localStorage.setItem('index_overlay_pinned', true);
+          applyPreferences();
+        }
+      } else if (window.electronAPI && typeof window.electronAPI.moveMiniTimer === 'function') {
+        window.electronAPI.moveMiniTimer(x, y);
+      }
     });
 
     window.addEventListener('mouseup', () => { dragging = false; });
 
-    // Hover Peek Debounce for Top Pinned Mode
+    // Hover Peek Debounce for Top Pinned Mode (TickTick Style)
     let hidePeekTimeout = null;
     container.addEventListener('mouseenter', () => {
       clearTimeout(hidePeekTimeout);
+      if (window.electronAPI && typeof window.electronAPI.setCollapsedState === 'function') {
+        window.electronAPI.setCollapsedState(false);
+      }
       container.classList.add('is-peek-revealed');
     });
 
     container.addEventListener('mouseleave', () => {
       hidePeekTimeout = setTimeout(() => {
         container.classList.remove('is-peek-revealed');
+        syncTopCollapsedState();
       }, 700);
     });
 
@@ -444,16 +658,25 @@
       if (!state) return;
       timeEl.textContent = state.time || '00:00:00';
       timerPill.classList.toggle('paused', !!state.paused);
-      
-      // Update Progress Bar
-      const pct = Number.isFinite(state.progress) ? Math.max(0, Math.min(100, state.progress)) : 0;
-      progressBar.style.width = pct + '%';
-      
-      // Update Label
-      if (state.tag) {
-        labelEl.textContent = state.tag.toUpperCase();
-      } else if (state.mode) {
-        labelEl.textContent = state.mode.toUpperCase();
+
+      // Visual Completion Glow
+      if (state.completed) {
+        timerPill.classList.add('is-session-completed');
+        labelEl.textContent = 'DONE 🎉';
+        progressBar.style.width = '100%';
+      } else {
+        timerPill.classList.remove('is-session-completed');
+        
+        // Update Progress Bar
+        const pct = Number.isFinite(state.progress) ? Math.max(0, Math.min(100, state.progress)) : 0;
+        progressBar.style.width = pct + '%';
+        
+        // Update Label
+        if (state.tag) {
+          labelEl.textContent = state.tag.toUpperCase();
+        } else if (state.mode) {
+          labelEl.textContent = state.mode.toUpperCase();
+        }
       }
 
       // Sync theme if user hasn't explicitly set a custom override

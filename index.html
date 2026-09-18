@@ -3802,7 +3802,7 @@ html[data-theme="light"] .month-selector-dropdown {
 
         // Desktop always-on-top mini timer (Electron).
         // This is a no-op when the HTML is opened directly in a normal browser.
-        function syncDesktopMiniTimer() {
+        function syncDesktopMiniTimer(isTimeout = false) {
             try {
                 if (!window.electronAPI || typeof window.electronAPI.updateMiniTimer !== 'function') return;
                 const totalDisplaySeconds = Math.max(0, (runningMinutes * 60) + runningSeconds);
@@ -3820,15 +3820,18 @@ html[data-theme="light"] .month-selector-dropdown {
                     progressPct = plannedTotal > 0 ? Math.min(100, Math.max(0, Math.round((elapsed / plannedTotal) * 100))) : 0;
                 }
 
+                const isVisible = !!(isClockRunning || totalElapsedSecondsTracked > 0 || isTimeout);
+
                 window.electronAPI.updateMiniTimer({
                     time: `${miniHours.toString().padStart(2, '0')}:${miniMinutes.toString().padStart(2, '0')}:${miniSeconds.toString().padStart(2, '0')}`,
                     running: !!isClockRunning,
-                    paused: !isClockRunning && totalElapsedSecondsTracked > 0,
-                    visible: !!(isClockRunning || totalElapsedSecondsTracked > 0),
-                    progress: progressPct,
+                    paused: !isClockRunning && totalElapsedSecondsTracked > 0 && !isTimeout,
+                    visible: isVisible,
+                    progress: isTimeout ? 100 : progressPct,
                     theme: currentAppTheme || 'dark',
                     mode: currentMode || 'pomodoro',
-                    tag: currentlySelectedTag || 'Study'
+                    tag: currentlySelectedTag || 'Study',
+                    completed: !!isTimeout
                 });
             } catch (e) {
                 // The browser version of the app does not have Electron IPC.
@@ -3851,8 +3854,15 @@ html[data-theme="light"] .month-selector-dropdown {
         function stopAndSaveClock(isTimeout = false) {
             isClockRunning = false;
             const miniTimerEl = document.getElementById('mini-floating-timer');
-            if (miniTimerEl) miniTimerEl.classList.remove('is-visible', 'paused');
-            syncDesktopMiniTimer();
+            if (miniTimerEl) {
+                if (!isTimeout) {
+                    miniTimerEl.classList.remove('is-visible', 'paused');
+                } else {
+                    miniTimerEl.classList.add('is-visible');
+                    miniTimerEl.classList.remove('paused');
+                }
+            }
+            syncDesktopMiniTimer(isTimeout);
             if (timerWorker) timerWorker.postMessage({ type: 'stop' });
             workerStartTime = null;
             workerPausedAccumulator = 0;

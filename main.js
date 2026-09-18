@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, screen } = require('electron');
+const { app, BrowserWindow, ipcMain, screen, globalShortcut } = require('electron');
 const path = require('path');
 const http = require('http');
 const fs = require('fs');
@@ -54,6 +54,10 @@ function startLocalServer() {
 
 let mainWindow;
 let overlayWindow;
+let isGhostMode = false;
+let isOverlayPinnedTop = true;
+let isOverlayCollapsed = false;
+
 let lastOverlayState = {
   time: '00:00:00',
   running: false,
@@ -62,7 +66,8 @@ let lastOverlayState = {
   progress: 0,
   theme: 'dark',
   mode: 'pomodoro',
-  tag: 'Study'
+  tag: 'Study',
+  completed: false
 };
 
 // Keeps the overlay window floating over ANY fullscreen app, game, or video player
@@ -158,13 +163,84 @@ async function createMainWindow() {
   });
 }
 
+function setGhostMode(active) {
+  isGhostMode = !!active;
+  if (overlayWindow && !overlayWindow.isDestroyed()) {
+    overlayWindow.setIgnoreMouseEvents(isGhostMode, { forward: true });
+    overlayWindow.webContents.send('mini-timer:ghost-changed', isGhostMode);
+  }
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.webContents.send('mini-timer:ghost-changed', isGhostMode);
+  }
+}
+
+function calculateSnappedPosition(x, y, w, h) {
+  const display = screen.getDisplayNearestPoint({ x: Math.round(x), y: Math.round(y) });
+  const area = display.workArea;
+  const SNAP_DIST = 26;
+
+  let snappedX = Math.round(x);
+  let snappedY = Math.round(y);
+  let snappedToTopCenter = false;
+
+  const centerX = Math.round(area.x + (area.width - w) / 2);
+
+  // Magnet snap horizontal (left, right, center)
+  if (Math.abs(snappedX - area.x) < SNAP_DIST) {
+    snappedX = area.x;
+  } else if (Math.abs(snappedX - (area.x + area.width - w)) < SNAP_DIST) {
+    snappedX = area.x + area.width - w;
+  } else if (Math.abs(snappedX - centerX) < SNAP_DIST) {
+    snappedX = centerX;
+  }
+
+  // Magnet snap vertical (top, bottom)
+  if (Math.abs(snappedY - area.y) < SNAP_DIST) {
+    snappedY = area.y;
+    if (Math.abs(snappedX - centerX) < 48) {
+      snappedX = centerX;
+      snappedToTopCenter = true;
+    }
+  } else if (Math.abs(snappedY - (area.y + area.height - h)) < SNAP_DIST) {
+    snappedY = area.y + area.height - h;
+  }
+
+  snappedX = Math.max(area.x, Math.min(snappedX, area.x + area.width - w));
+  snappedY = Math.max(area.y, Math.min(snappedY, area.y + area.height - h));
+
+  return { x: snappedX, y: snappedY, isPinnedTop: snappedToTopCenter };
+}
+
 app.whenReady().then(async () => {
   await createMainWindow();
   createOverlayWindow();
 
+  try {
+    globalShortcut.register('CommandOrControl+Alt+G', () => {
+      setGhostMode(!isGhostMode);
+    });
+    globalShortcut.register('CommandOrControl+Alt+T', () => {
+      if (!overlayWindow || overlayWindow.isDestroyed()) return;
+      if (overlayWindow.isVisible()) {
+        overlayWindow.hide();
+      } else {
+        overlayWindow.showInactive();
+        ensureOverlayOnTop();
+      }
+    });
+  } catch (err) {
+    console.error('Failed to register global shortcuts:', err);
+  }
+
   app.on('activate', () => {
     if (!mainWindow) createMainWindow();
   });
+});
+
+app.on('will-quit', () => {
+  try {
+    globalShortcut.unregisterAll();
+  } catch (_) {}
 });
 
 app.on('before-quit', () => {
@@ -187,7 +263,8 @@ ipcMain.on('mini-timer:update', (_event, state) => {
     progress: Number.isFinite(state?.progress) ? Math.max(0, Math.min(100, state.progress)) : 0,
     theme: state?.theme === 'light' ? 'light' : 'dark',
     mode: String(state?.mode || 'pomodoro'),
-    tag: String(state?.tag || 'Study')
+    tag: String(state?.tag || 'Study'),
+    completed: !!state?.completed
   };
 
   if (!overlayWindow || overlayWindow.isDestroyed()) return;
@@ -206,16 +283,39 @@ ipcMain.on('mini-timer:update', (_event, state) => {
 
 ipcMain.on('mini-timer:pin-top', (_event, pinned) => {
   if (!overlayWindow || overlayWindow.isDestroyed()) return;
+  isOverlayPinnedTop = !!pinned;
   if (pinned) {
     const pos = overlayWindow.getPosition();
     const display = screen.getDisplayNearestPoint({ x: pos[0], y: pos[1] });
     const area = display.workArea;
-    const [w] = overlayWindow.getSize();
+    const [w, h] = overlayWindow.getSize();
     const centerX = Math.round(area.x + (area.width - w) / 2);
     const topY = area.y;
     overlayWindow.setPosition(centerX, topY);
     ensureOverlayOnTop();
   }
+});
+
+ipcMain.on('mini-timer:set-collapsed', (_event, collapsed) => {
+  if (!overlayWindow || overlayWindow.isDestroyed()) return;
+  isOverlayCollapsed = !!collapsed;
+  const [curW] = overlayWindow.getSize();
+  const [curX, curY] = overlayWindow.getPosition();
+  const targetH = isOverlayCollapsed ? 7 : 60;
+  overlayWindow.setBounds({ x: curX, y: curY, width: curW, height: targetH });
+  ensureOverlayOnTop();
+});
+
+ipcMain.on('mini-timer:set-ghost-mode', (_event, isGhost) => {
+  setGhostMode(isGhost);
+});
+
+ipcMain.on('mini-timer:set-opacity', (_event, opacity) => {
+  if (!overlayWindow || overlayWindow.isDestroyed()) return;
+  const val = Math.max(0.18, Math.min(1.0, Number(opacity) || 1.0));
+  try {
+    overlayWindow.setOpacity(val);
+  } catch (_) {}
 });
 
 ipcMain.on('mini-timer:toggle-play-pause', () => {
@@ -238,6 +338,15 @@ ipcMain.on('mini-timer:move', (_event, { x, y }) => {
   const clampedY = Math.max(area.y, Math.min(Math.round(y), area.y + area.height - h));
   overlayWindow.setPosition(clampedX, clampedY);
   ensureOverlayOnTop();
+});
+
+ipcMain.handle('mini-timer:snap-move', (_event, { x, y }) => {
+  if (!overlayWindow || overlayWindow.isDestroyed()) return null;
+  const [w, h] = overlayWindow.getSize();
+  const snapped = calculateSnappedPosition(x, y, w, h);
+  overlayWindow.setPosition(snapped.x, snapped.y);
+  ensureOverlayOnTop();
+  return snapped;
 });
 
 ipcMain.handle('mini-timer:get-position', () => {
