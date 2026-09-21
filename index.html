@@ -10791,44 +10791,51 @@ ${JSON.stringify(payload, null, 2)}`;
         activeModel: null,
 
         CANDIDATE_MODELS: [
-            'gemini-3.8-flash',
-            'gemini-3.5-flash',
-            'gemini-3.1-flash-lite',
-            'gemini-2.5-flash',
             'gemini-2.0-flash',
             'gemini-2.0-flash-lite',
+            'gemini-1.5-flash',
             'gemini-1.5-flash-latest',
-            'gemini-1.5-flash'
+            'gemini-1.5-flash-8b',
+            'gemini-1.5-pro',
+            'gemini-1.5-pro-latest'
         ],
 
-        discoverSupportedModel: async function(apiKey) {
+        discoverSupportedModels: async function(apiKey) {
             try {
                 const listUrl = `https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(apiKey)}`;
                 const res = await fetch(listUrl);
-                if (!res.ok) return null;
+                if (!res.ok) return [];
                 const data = await res.json();
-                if (!data || !Array.isArray(data.models)) return null;
+                if (!data || !Array.isArray(data.models)) return [];
 
                 const available = data.models
                     .filter(m => Array.isArray(m.supportedGenerationMethods) && m.supportedGenerationMethods.includes('generateContent'))
                     .map(m => m.name.replace(/^models\//, ''));
 
-                if (available.length === 0) return null;
-
+                const sorted = [];
                 for (const candidate of this.CANDIDATE_MODELS) {
-                    if (available.includes(candidate)) return candidate;
+                    if (available.includes(candidate) && !sorted.includes(candidate)) {
+                        sorted.push(candidate);
+                    }
                 }
+                available.forEach(m => {
+                    if (m.includes('flash') && !m.includes('vision') && !sorted.includes(m)) {
+                        sorted.push(m);
+                    }
+                });
+                available.forEach(m => {
+                    if (m.startsWith('gemini') && !sorted.includes(m)) {
+                        sorted.push(m);
+                    }
+                });
+                available.forEach(m => {
+                    if (!sorted.includes(m)) sorted.push(m);
+                });
 
-                const flashModel = available.find(name => name.includes('flash') && !name.includes('vision'));
-                if (flashModel) return flashModel;
-
-                const anyGemini = available.find(name => name.startsWith('gemini'));
-                if (anyGemini) return anyGemini;
-
-                return available[0];
+                return sorted;
             } catch (err) {
                 console.warn("[IndexAiAgent] Model discovery failed:", err);
-                return null;
+                return [];
             }
         },
 
@@ -10872,53 +10879,70 @@ ${JSON.stringify(payload, null, 2)}`;
         },
 
         callGemini: async function(promptText, apiKey) {
-            let modelToTry = this.activeModel || localStorage.getItem('index_ai_verified_model');
+            const isFallbackError = (err) => {
+                if (!err) return false;
+                if (err.status === 401 || err.status === 403) return false;
+                if (err.status === 400 && String(err.message).toLowerCase().includes('api_key_invalid')) return false;
 
-            if (modelToTry) {
-                try {
-                    const resText = await this.executeGenerateContent(modelToTry, promptText, apiKey);
-                    this.activeModel = modelToTry;
-                    return resText;
-                } catch (err) {
-                    if (err.status === 404) {
-                        console.warn(`[IndexAiAgent] Model ${modelToTry} returned 404, discovering active model...`);
-                        modelToTry = null;
-                        try { localStorage.removeItem('index_ai_verified_model'); } catch (e) {}
-                    } else {
-                        throw err;
-                    }
+                if (err.status === 404 || err.status === 503 || err.status === 429 || err.status === 500) return true;
+
+                const msg = String(err.message || '').toLowerCase();
+                if (msg.includes('demand') || msg.includes('overloaded') || msg.includes('capacity') ||
+                    msg.includes('not found') || msg.includes('not supported') || msg.includes('temporar') ||
+                    msg.includes('resource_exhausted') || msg.includes('quota') || msg.includes('busy')) {
+                    return true;
                 }
+                return false;
+            };
+
+            const queue = [];
+
+            // Add candidates in priority order (2.5-flash and 2.0-flash first for high stability)
+            this.CANDIDATE_MODELS.forEach(m => {
+                if (!queue.includes(m)) queue.push(m);
+            });
+
+            // Discover all supported models from user's account
+            try {
+                const discovered = await this.discoverSupportedModels(apiKey);
+                discovered.forEach(m => {
+                    if (!queue.includes(m)) queue.push(m);
+                });
+            } catch (e) {}
+
+            // Prioritize verified model if already saved
+            const verified = this.activeModel || localStorage.getItem('index_ai_verified_model');
+            if (verified && queue.includes(verified)) {
+                queue.splice(queue.indexOf(verified), 1);
+                queue.unshift(verified);
             }
 
-            // Dynamically discover models supported for this specific user key
-            const discovered = await this.discoverSupportedModel(apiKey);
-            if (discovered) {
-                try {
-                    const resText = await this.executeGenerateContent(discovered, promptText, apiKey);
-                    this.activeModel = discovered;
-                    try { localStorage.setItem('index_ai_verified_model', discovered); } catch (e) {}
-                    return resText;
-                } catch (err) {
-                    console.warn(`[IndexAiAgent] Discovered model ${discovered} failed:`, err);
-                }
-            }
+            console.log("[IndexAiAgent] Candidate model queue:", queue);
 
-            // Fallback: try each candidate sequentially
             let lastErr = null;
-            for (const candidate of this.CANDIDATE_MODELS) {
+            for (const model of queue) {
                 try {
-                    const resText = await this.executeGenerateContent(candidate, promptText, apiKey);
-                    this.activeModel = candidate;
-                    try { localStorage.setItem('index_ai_verified_model', candidate); } catch (e) {}
+                    const resText = await this.executeGenerateContent(model, promptText, apiKey);
+                    this.activeModel = model;
+                    try { localStorage.setItem('index_ai_verified_model', model); } catch (e) {}
+                    console.log(`[IndexAiAgent] Success using model: ${model}`);
                     return resText;
                 } catch (err) {
+                    console.warn(`[IndexAiAgent] Model ${model} returned error (status ${err.status}):`, err.message);
                     lastErr = err;
-                    if (err.status === 404) continue;
+
+                    if (this.activeModel === model) this.activeModel = null;
+                    try { localStorage.removeItem('index_ai_verified_model'); } catch (e) {}
+
+                    if (isFallbackError(err)) {
+                        continue;
+                    }
+
                     throw err;
                 }
             }
 
-            throw lastErr || new Error("No compatible Gemini model found for this API key.");
+            throw lastErr || new Error("All available Gemini models are currently experiencing high demand. Please try again in a few moments.");
         }
     };
 
@@ -11073,6 +11097,7 @@ ${JSON.stringify(payload, null, 2)}`;
             const isAr = (typeof currentSystemLanguage !== 'undefined' && currentSystemLanguage === 'ar');
             const isKeyError = error.status === 400 || error.status === 401 || error.status === 403;
             const isRateLimit = error.status === 429;
+            const isHighDemand = error.status === 503 || (error.message && (error.message.toLowerCase().includes('demand') || error.message.toLowerCase().includes('overloaded') || error.message.toLowerCase().includes('capacity')));
 
             let title = isAr ? 'حدث خطأ أثناء التحليل' : 'Analysis Encountered an Error';
             let desc = error.message || (isAr ? 'تعذر إكمال طلب التحليل.' : 'Unable to complete the analysis.');
@@ -11082,6 +11107,11 @@ ${JSON.stringify(payload, null, 2)}`;
                 desc = isAr
                     ? 'تعذر التحقق من مفتاح API مع خوادم Google Gemini. يرجى تحديث المفتاح أو التحقق من تفعيله في Google AI Studio.'
                     : 'Your Gemini API key could not be authenticated or does not have access. Please update your API key to continue.';
+            } else if (isHighDemand) {
+                title = isAr ? 'ضغط لحظي على خوادم Gemini' : 'Temporary High Demand on Gemini';
+                desc = isAr
+                    ? 'تواجه خوادم Google ضغطاً لحظياً مؤقتاً. اضغط "إعادة المحاولة" للتحويل فوراً إلى نموذج بديل أكثر استقراراً.'
+                    : 'Gemini models are temporarily experiencing high demand. Click Retry to switch to an alternate model.';
             } else if (isRateLimit) {
                 title = isAr ? 'تم تجاوز حد الطلبات مؤقتاً' : 'Gemini Rate Limit Exceeded';
                 desc = isAr
