@@ -279,81 +279,46 @@
             right: 18px;
             z-index: 200000;
             display: none;
-            flex-direction: column;
-            min-width: 175px;
-            height: 48px;
-            padding: 0;
-            background: rgba(12, 14, 19, 0.96);
-            border: 1px solid rgba(217, 165, 74, 0.45);
-            border-radius: 11px;
-            box-shadow: 0 8px 28px rgba(0, 0, 0, .42), 0 0 18px rgba(217, 165, 74, .08);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
+            align-items: center;
+            gap: 9px;
+            min-width: 154px;
+            height: 46px;
+            padding: 0 12px;
+            background: rgba(10, 11, 15, 0.94);
+            border: 1px solid rgba(217, 165, 74, 0.48);
+            border-radius: 7px;
+            box-shadow: 0 8px 28px rgba(0,0,0,.35), 0 0 18px rgba(217,165,74,.08);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             user-select: none;
             cursor: grab;
             pointer-events: auto;
-            overflow: hidden;
-            transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, background 0.2s ease, border-color 0.2s ease;
         }
         #mini-floating-timer.is-visible { display: flex; }
         #mini-floating-timer:active { cursor: grabbing; }
-
-        /* Progress Bar Track & Bar (Natural 5px thickness, golden amber) */
-        .mini-timer-progress-track {
-            width: 100%;
-            height: 5px;
-            background: rgba(255, 255, 255, 0.12);
-            position: relative;
-            overflow: hidden;
-        }
-        .mini-timer-progress-bar {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, #f39c12, #d9a54a);
-            box-shadow: 0 0 8px rgba(217, 165, 74, 0.6);
-            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: 3px;
-        }
-
-        /* Body Container */
-        .mini-timer-body {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            padding: 0 8px 0 10px;
-            width: 100%;
-        }
-
         #mini-floating-timer .mini-timer-status {
-            width: 8px;
-            height: 8px;
-            min-width: 8px;
+            width: 7px;
+            height: 7px;
+            min-width: 7px;
             border-radius: 50%;
             background: var(--accent-orange);
-            box-shadow: 0 0 8px rgba(217, 165, 74, .75);
-            cursor: pointer;
-            transition: all 0.2s ease;
+            box-shadow: 0 0 8px rgba(217,165,74,.7);
         }
         #mini-floating-timer.paused .mini-timer-status {
             background: var(--warning);
-            box-shadow: 0 0 8px rgba(243, 156, 18, .65);
+            box-shadow: 0 0 8px rgba(243,156,18,.55);
         }
-
         #mini-floating-timer .mini-timer-time {
             font-family: 'Digital-7 Mono', 'Courier New', monospace;
-            font-size: 20px;
+            font-size: 21px;
             line-height: 1;
             font-weight: 700;
-            letter-spacing: 1.2px;
+            letter-spacing: 1.5px;
             font-variant-numeric: tabular-nums;
             color: var(--accent-orange);
             white-space: nowrap;
-            cursor: pointer;
-            transition: color 0.2s ease;
         }
         #mini-floating-timer.paused .mini-timer-time { color: var(--warning); }
-
         #mini-floating-timer .mini-timer-label {
             font-size: 8px;
             font-weight: 700;
@@ -362,113 +327,32 @@
             text-transform: uppercase;
             margin-left: 1px;
         }
-
-        /* Action Buttons */
-        .mini-timer-actions {
-            display: flex;
-            align-items: center;
-            gap: 3px;
-            margin-left: auto;
-        }
-
-        .mini-timer-btn {
-            width: 20px;
-            height: 22px;
-            border: 0;
-            border-radius: 4px;
-            background: transparent;
-            color: var(--text-gray);
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-            transition: all 0.18s ease;
-        }
-        .mini-timer-btn:hover {
-            color: var(--accent-orange);
-            background: rgba(255, 255, 255, 0.1);
-        }
-        .mini-timer-btn.active {
-            color: var(--accent-orange);
-            background: rgba(217, 165, 74, 0.18);
-        }
-
         #mini-floating-timer .mini-timer-hide {
             border: 0;
             background: transparent;
             color: var(--text-gray);
             width: 20px;
-            height: 22px;
+            height: 24px;
             padding: 0;
-            font-size: 13px;
+            margin-left: auto;
+            font-size: 14px;
+            line-height: 24px;
             cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.18s ease;
+            opacity: .65;
         }
         #mini-floating-timer .mini-timer-hide:hover {
-            color: #fff;
-            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            opacity: 1;
         }
-
-        /* --- Pinned to Top Center + Smart Hover-Down Physics --- */
-        #mini-floating-timer.is-pinned-top {
-            top: 0 !important;
-            left: 50% !important;
-            right: auto !important;
-            border-radius: 0 0 12px 12px;
-            border-top: none;
-            cursor: default;
-        }
-
-        /* Auto-hide mode: retracts into top edge, leaving 6px visible */
-        #mini-floating-timer.is-pinned-top:not(.is-always-expanded) {
-            transform: translateX(-50%) translateY(-39px);
-        }
-
-        /* Hover-Down Gesture: smoothly slides down on mouse hover */
-        #mini-floating-timer.is-pinned-top:not(.is-always-expanded):hover,
-        #mini-floating-timer.is-pinned-top:not(.is-always-expanded).is-peek-revealed {
-            transform: translateX(-50%) translateY(0);
-            box-shadow: 0 10px 32px rgba(0, 0, 0, 0.55), 0 0 20px rgba(217, 165, 74, 0.15);
-        }
-
-        /* Always-Expanded Mode */
-        #mini-floating-timer.is-pinned-top.is-always-expanded {
-            transform: translateX(-50%) translateY(0);
-        }
-
-        /* Light Mode Accommodation */
-        html[data-theme="light"] #mini-floating-timer {
-            background: #ffffff !important;
-            border-color: #d6c6b2 !important;
-            box-shadow: 0 8px 24px rgba(61, 49, 39, 0.16) !important;
-        }
-        html[data-theme="light"] .mini-timer-progress-track {
-            background: rgba(0, 0, 0, 0.08);
-        }
-        html[data-theme="light"] #mini-floating-timer .mini-timer-time {
-            color: #8c5b0d !important;
-        }
-        html[data-theme="light"] #mini-floating-timer .mini-timer-label,
-        html[data-theme="light"] .mini-timer-btn,
-        html[data-theme="light"] #mini-floating-timer .mini-timer-hide {
-            color: #6e5e4f;
-        }
-        html[data-theme="light"] .mini-timer-btn:hover,
-        html[data-theme="light"] #mini-floating-timer .mini-timer-hide:hover {
-            color: #8c5b0d;
-            background: rgba(0, 0, 0, 0.06);
-        }
-
         @media (max-width: 600px) {
             #mini-floating-timer {
-                min-width: 155px;
-                height: 44px;
+                top: 10px;
+                right: 10px;
+                min-width: 145px;
+                height: 42px;
+                padding: 0 10px;
             }
-            #mini-floating-timer .mini-timer-time { font-size: 17px; }
+            #mini-floating-timer .mini-timer-time { font-size: 18px; }
         }
 
         .fullscreen-overlay-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg-deep); z-index: 99999; display: none; flex-direction: column; justify-content: center; align-items: center; gap: 40px; animation: fadeIn 0.4s ease-out; }
@@ -2957,6 +2841,722 @@ html[data-theme="light"] .month-selector-dropdown {
     font-size: 11px;
 }
     </style>
+    <style id="index-ai-study-analyst">
+/* ====================================================================
+   INDEX AI STUDY ANALYSIS AGENT - LUXURY DESIGN SYSTEM
+   ==================================================================== */
+.ai-trigger-btn {
+    background: linear-gradient(135deg, rgba(217, 165, 74, 0.18), rgba(243, 156, 18, 0.28)) !important;
+    border: 1px solid var(--accent-orange) !important;
+    color: var(--accent-orange) !important;
+    font-weight: 800 !important;
+    padding: 0 14px !important;
+    gap: 7px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 9px !important;
+    font-size: 12.5px !important;
+    cursor: pointer !important;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    box-shadow: 0 0 12px rgba(217, 165, 74, 0.18) !important;
+}
+.ai-trigger-btn:hover {
+    background: linear-gradient(135deg, rgba(217, 165, 74, 0.3), rgba(243, 156, 18, 0.45)) !important;
+    box-shadow: 0 0 20px rgba(217, 165, 74, 0.38) !important;
+    transform: translateY(-1px);
+}
+.ai-trigger-btn:active {
+    transform: translateY(0);
+}
+
+/* Analysis Screen Trigger Banner */
+.ai-analysis-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 22px;
+    margin: 16px 0 24px 0;
+    background: linear-gradient(135deg, rgba(20, 22, 34, 0.95), rgba(30, 26, 20, 0.85));
+    border: 1px solid rgba(217, 165, 74, 0.4);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), 0 0 24px rgba(217, 165, 74, 0.08);
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+.ai-analysis-banner:hover {
+    border-color: var(--accent-orange);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 32px rgba(217, 165, 74, 0.18);
+    transform: translateY(-2px);
+}
+.ai-banner-left,
+.ai-banner-content {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+.ai-banner-icon {
+    font-size: 26px;
+    line-height: 1;
+    filter: drop-shadow(0 0 10px rgba(217, 165, 74, 0.6));
+}
+.ai-banner-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--accent-orange);
+    letter-spacing: 0.5px;
+}
+.ai-banner-subtitle,
+.ai-banner-desc {
+    font-size: 11.5px;
+    color: var(--text-gray);
+    margin-top: 3px;
+}
+.ai-banner-btn {
+    padding: 8px 16px;
+    background: var(--accent-orange);
+    color: #0b0c10;
+    font-weight: 800;
+    font-size: 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+.ai-banner-btn:hover {
+    background: #e6b35a;
+    box-shadow: 0 0 16px rgba(217, 165, 74, 0.5);
+}
+
+/* AI Modal Dialogs */
+#ai-analysis-modal.modal-overlay {
+    z-index: 100050;
+}
+#ai-key-modal.modal-overlay {
+    z-index: 100060 !important;
+}
+.ai-modal-box {
+    width: 92%;
+    max-width: 860px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    padding: 0 !important;
+    background: linear-gradient(160deg, #0e1118, #151824) !important;
+    border: 1px solid rgba(217, 165, 74, 0.45) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.85), 0 0 40px rgba(217, 165, 74, 0.12) !important;
+    overflow: hidden !important;
+    animation: slideInRight 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.ai-modal-header {
+    padding: 20px 24px 14px 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    background: rgba(10, 12, 18, 0.7);
+    backdrop-filter: blur(12px);
+}
+.ai-modal-top-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+.ai-modal-title-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.ai-modal-title-group h3 {
+    margin: 0 !important;
+    font-size: 18px !important;
+    font-weight: 800 !important;
+    color: var(--accent-orange) !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.ai-modal-subtitle {
+    font-size: 11.5px;
+    color: var(--text-gray);
+    font-weight: 500;
+}
+.ai-modal-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.ai-ctrl-btn {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-light);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s ease;
+}
+.ai-ctrl-btn:hover {
+    background: rgba(217, 165, 74, 0.15);
+    border-color: rgba(217, 165, 74, 0.4);
+    color: var(--accent-orange);
+}
+.ai-close-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-gray);
+    font-size: 20px;
+    cursor: pointer;
+    line-height: 1;
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+.ai-close-btn:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* 5 Modes Tab Group */
+.ai-tab-group {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+}
+.ai-tab-btn {
+    flex: 1;
+    min-width: 90px;
+    padding: 8px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-gray);
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+.ai-tab-btn:hover {
+    background: rgba(255, 255, 255, 0.07);
+    color: var(--text-light);
+    border-color: rgba(217, 165, 74, 0.25);
+}
+.ai-tab-btn.active {
+    background: linear-gradient(135deg, rgba(217, 165, 74, 0.22), rgba(243, 156, 18, 0.32));
+    border-color: var(--accent-orange);
+    color: var(--accent-orange);
+    box-shadow: 0 0 14px rgba(217, 165, 74, 0.2);
+}
+
+/* Modal Body & Views */
+.ai-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 22px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* Setup View */
+.ai-setup-card {
+    background: rgba(14, 17, 26, 0.85);
+    border: 1px solid rgba(217, 165, 74, 0.3);
+    border-radius: 14px;
+    padding: 24px;
+    text-align: center;
+    max-width: 520px;
+    margin: 20px auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+.ai-setup-icon {
+    font-size: 38px;
+    margin-bottom: 12px;
+    filter: drop-shadow(0 0 10px rgba(217, 165, 74, 0.4));
+}
+.ai-setup-card h4 {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--accent-orange);
+    margin-bottom: 8px;
+}
+.ai-setup-desc {
+    font-size: 12px;
+    color: var(--text-gray);
+    line-height: 1.5;
+    margin-bottom: 16px;
+}
+.ai-key-input-wrapper {
+    position: relative;
+    margin-bottom: 12px;
+}
+.ai-key-input {
+    width: 100%;
+    padding: 12px 42px 12px 14px !important;
+    background: rgba(0, 0, 0, 0.45) !important;
+    border: 1px solid var(--border-soft) !important;
+    color: #fff !important;
+    border-radius: 10px !important;
+    font-size: 13.5px !important;
+    text-align: left !important;
+    font-family: monospace;
+}
+.ai-key-input:focus {
+    border-color: var(--accent-orange) !important;
+    box-shadow: 0 0 15px rgba(217, 165, 74, 0.25) !important;
+}
+.ai-key-toggle-vis {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: var(--text-gray);
+    cursor: pointer;
+    font-size: 14px;
+}
+.ai-setup-help {
+    font-size: 11px;
+    color: var(--text-gray);
+    margin-bottom: 16px;
+}
+.ai-setup-help a {
+    color: var(--accent-orange);
+    text-decoration: underline;
+}
+
+/* Loading View */
+.ai-loading-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 20px;
+    text-align: center;
+    gap: 16px;
+}
+.ai-pulse-ring {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    border: 3px solid rgba(217, 165, 74, 0.2);
+    border-top-color: var(--accent-orange);
+    animation: aiSpin 0.9s linear infinite;
+    box-shadow: 0 0 20px rgba(217, 165, 74, 0.3);
+}
+@keyframes aiSpin {
+    to { transform: rotate(360deg); }
+}
+.ai-loading-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--accent-orange);
+}
+.ai-loading-sub {
+    font-size: 12px;
+    color: var(--text-gray);
+    max-width: 400px;
+}
+
+/* Error View */
+.ai-error-box {
+    background: rgba(35, 15, 18, 0.75);
+    border: 1px solid rgba(231, 76, 60, 0.45);
+    border-radius: 14px;
+    padding: 24px;
+    text-align: center;
+    margin: 20px auto;
+    max-width: 500px;
+}
+.ai-error-icon {
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+.ai-error-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: #ff6b6b;
+    margin-bottom: 6px;
+}
+.ai-error-desc {
+    font-size: 12px;
+    color: #e0d0d0;
+    margin-bottom: 16px;
+    line-height: 1.5;
+}
+.ai-error-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+/* Empty View */
+.ai-empty-box {
+    text-align: center;
+    padding: 50px 20px;
+    color: var(--text-gray);
+}
+.ai-empty-icon {
+    font-size: 40px;
+    margin-bottom: 10px;
+    opacity: 0.6;
+}
+
+/* Results Content */
+.ai-results-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Quick Metrics Pills Row */
+.ai-metrics-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 10px;
+}
+.ai-metric-pill {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 11px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    transition: all 0.2s;
+}
+.ai-metric-pill:hover {
+    border-color: rgba(217, 165, 74, 0.3);
+    background: rgba(217, 165, 74, 0.04);
+}
+.ai-pill-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.ai-pill-val {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--accent-orange);
+    font-family: "Courier New", monospace;
+}
+.ai-pill-sub {
+    font-size: 10px;
+    color: var(--text-gray);
+}
+
+/* Priority Action Banner */
+.ai-priority-card {
+    background: linear-gradient(135deg, rgba(217, 165, 74, 0.16), rgba(243, 156, 18, 0.26));
+    border: 1.5px solid var(--accent-orange);
+    border-radius: 14px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    box-shadow: 0 4px 20px rgba(217, 165, 74, 0.15);
+}
+.ai-priority-icon {
+    font-size: 24px;
+    line-height: 1;
+    margin-top: 2px;
+}
+.ai-priority-title {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--accent-orange);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 4px;
+}
+.ai-priority-text {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.45;
+}
+
+/* Section Container */
+.ai-section-box {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.ai-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+.ai-section-title {
+    font-size: 12.5px;
+    font-weight: 800;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.ai-confidence-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 6px;
+    text-transform: uppercase;
+}
+.ai-confidence-badge.high {
+    background: rgba(46, 204, 113, 0.15);
+    color: #2ecc71;
+    border: 1px solid rgba(46, 204, 113, 0.3);
+}
+.ai-confidence-badge.medium {
+    background: rgba(241, 196, 15, 0.15);
+    color: #f1c40f;
+    border: 1px solid rgba(241, 196, 15, 0.3);
+}
+.ai-confidence-badge.low {
+    background: rgba(231, 76, 60, 0.15);
+    color: #e74c3c;
+    border: 1px solid rgba(231, 76, 60, 0.3);
+}
+
+.ai-summary-text {
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: #e3e7ed;
+    font-weight: 500;
+}
+
+/* Card Grids for Findings, Strengths, Problems, Patterns */
+.ai-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 10px;
+}
+.ai-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: #d1d5db;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+.ai-card.strength {
+    background: rgba(46, 204, 113, 0.05);
+    border-color: rgba(46, 204, 113, 0.25);
+    color: #d4edda;
+}
+.ai-card.problem {
+    background: rgba(231, 76, 60, 0.05);
+    border-color: rgba(231, 76, 60, 0.25);
+    color: #f8d7da;
+}
+.ai-card.pattern {
+    background: rgba(52, 152, 219, 0.05);
+    border-color: rgba(52, 152, 219, 0.25);
+    color: #d1ecf1;
+}
+
+/* Recommendations List */
+.ai-rec-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.ai-rec-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 14px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #e2e8f0;
+}
+.ai-rec-number {
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    border-radius: 50%;
+    background: rgba(217, 165, 74, 0.2);
+    color: var(--accent-orange);
+    font-weight: 800;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Study Profile Specific Components */
+.ai-profile-dimensions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 10px;
+}
+.ai-dimension-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.ai-dim-title {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--accent-orange);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.ai-dim-text {
+    font-size: 12px;
+    color: #cbd5e1;
+    line-height: 1.45;
+}
+
+/* Hypotheses Matrix */
+.ai-hypo-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.ai-hypo-card {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.ai-hypo-content {
+    flex: 1;
+}
+.ai-hypo-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 3px;
+}
+.ai-hypo-evidence {
+    font-size: 11.5px;
+    color: var(--text-gray);
+    line-height: 1.4;
+}
+.ai-hypo-status-badge {
+    font-size: 10px;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+.ai-hypo-status-badge.supported {
+    background: rgba(46, 204, 113, 0.18);
+    color: #2ecc71;
+    border: 1px solid rgba(46, 204, 113, 0.4);
+}
+.ai-hypo-status-badge.possible {
+    background: rgba(241, 196, 15, 0.18);
+    color: #f1c40f;
+    border: 1px solid rgba(241, 196, 15, 0.4);
+}
+.ai-hypo-status-badge.unsupported {
+    background: rgba(149, 165, 166, 0.18);
+    color: #bdc3c7;
+    border: 1px solid rgba(149, 165, 166, 0.4);
+}
+
+/* Light Theme Accommodation */
+html[data-theme="light"] .ai-trigger-btn {
+    background: linear-gradient(135deg, rgba(217, 165, 74, 0.25), rgba(214, 198, 178, 0.4)) !important;
+    color: #8c5b0d !important;
+    border-color: #d6c6b2 !important;
+    box-shadow: 0 0 10px rgba(140, 91, 13, 0.12) !important;
+}
+html[data-theme="light"] .ai-analysis-banner {
+    background: linear-gradient(135deg, #faf5ee, #f0e6d8);
+    border-color: #d6c6b2;
+    box-shadow: 0 8px 30px rgba(61, 49, 39, 0.12);
+}
+html[data-theme="light"] .ai-banner-title {
+    color: #8c5b0d;
+}
+html[data-theme="light"] .ai-modal-box {
+    background: linear-gradient(160deg, #f7f1e7, #eee2d2) !important;
+    border-color: #d6c6b2 !important;
+    color: var(--day-ink);
+    box-shadow: 0 25px 70px rgba(61, 49, 39, 0.25) !important;
+}
+html[data-theme="light"] .ai-modal-header {
+    background: rgba(245, 237, 226, 0.85);
+    border-bottom-color: rgba(61, 49, 39, 0.1);
+}
+html[data-theme="light"] .ai-tab-btn {
+    background: rgba(0, 0, 0, 0.03);
+    border-color: rgba(61, 49, 39, 0.12);
+    color: #6e5e4f;
+}
+html[data-theme="light"] .ai-tab-btn.active {
+    background: #ffffff;
+    color: #8c5b0d;
+    border-color: #8c5b0d;
+    box-shadow: 0 2px 10px rgba(140, 91, 13, 0.15);
+}
+html[data-theme="light"] .ai-metric-pill,
+html[data-theme="light"] .ai-section-box,
+html[data-theme="light"] .ai-rec-item,
+html[data-theme="light"] .ai-dimension-card,
+html[data-theme="light"] .ai-hypo-card {
+    background: #ffffff;
+    border-color: #e4d8c8;
+}
+html[data-theme="light"] .ai-summary-text,
+html[data-theme="light"] .ai-priority-text,
+html[data-theme="light"] .ai-hypo-name {
+    color: #3d3127 !important;
+}
+html[data-theme="light"] .ai-priority-card {
+    background: linear-gradient(135deg, rgba(217, 165, 74, 0.22), rgba(243, 156, 18, 0.25));
+    border-color: #8c5b0d;
+}
+html[data-theme="light"] .ai-key-input {
+    background: #ffffff !important;
+    border-color: #d6c6b2 !important;
+    color: #3d3127 !important;
+}
+    </style>
 </head>
 <body>
     <div class="toast-container" id="toast-container"></div>
@@ -3037,6 +3637,7 @@ html[data-theme="light"] .month-selector-dropdown {
             <button class="tab-trigger" onclick="activateScreen('admin-tab', 'screen-admin')" id="nav-btn-admin" style="display:none;">Admin ⚙️</button>
         </div>
         <div class="header-actions">
+            <button class="export-btn ai-trigger-btn" id="btn-ai-assistant" onclick="IndexAiAgent.openModal()" title="AI Study Analysis Agent">✨ <span id="ai-btn-text">AI Analyst</span></button>
             <button class="lang-button" id="pwa-install-btn" onclick="triggerPwaInstall()" title="Install INDEX as an app" style="display:none; background: var(--accent-orange); color:#000; font-weight:800; width:auto; padding:0 14px; gap:6px; font-size:12px;">⬇ <span id="pwa-install-btn-txt">Install App</span></button>
             <button class="lang-button" onclick="toggleAppTheme()" id="theme-toggle-btn" title="Toggle light/dark theme">🌙</button>
             <button class="export-btn" onclick="openGoalsSettingsModal()" id="btn-goals-settings" title="Study Goals">🎯 Goals</button>
@@ -3175,6 +3776,16 @@ html[data-theme="light"] .month-selector-dropdown {
         <div class="screen-view glass-card analysis-screen-layout" id="screen-analysis">
             <div class="dashboard-scaled-panel">
                 <div class="dash-section-header" id="dash-header-title">Analytics & Progress Rates</div>
+                <div class="ai-analysis-banner" id="ai-quick-banner">
+                    <div class="ai-banner-content">
+                        <div class="ai-banner-icon">✨</div>
+                        <div>
+                            <div class="ai-banner-title" id="ai-banner-title">AI Study Analysis Agent</div>
+                            <div class="ai-banner-desc" id="ai-banner-desc">Instant deep-dive patterns, peak study windows, subject balance, and personalized recommendations.</div>
+                        </div>
+                    </div>
+                    <button class="export-btn ai-trigger-btn" onclick="IndexAiAgent.openModal()">✨ <span id="ai-banner-btn-txt">Launch Analysis</span></button>
+                </div>
                 <div class="metrics-cards-grid">
                     <div class="metric-card-box">
                         <div class="metric-text-group">
@@ -3712,26 +4323,106 @@ html[data-theme="light"] .month-selector-dropdown {
             </div>
         </div>
     </div>
+    <!-- ================================================================
+         INDEX AI STUDY ANALYSIS AGENT MODALS
+         ================================================================ -->
+    <div class="modal-overlay" id="ai-analysis-modal" role="dialog" aria-modal="true" aria-labelledby="ai-modal-title" style="display:none;" onclick="if(event.target===this) IndexAiAgent.closeModal()">
+        <div class="ai-modal-box">
+            <!-- Header -->
+            <div class="ai-modal-header">
+                <div class="ai-modal-top-row">
+                    <div class="ai-modal-title-group">
+                        <h3>✨ <span id="ai-modal-title">AI Study Analysis</span></h3>
+                        <span class="ai-modal-subtitle" id="ai-modal-subtitle">Cognitive Performance & Pattern Agent</span>
+                    </div>
+                    <div class="ai-modal-controls">
+                        <button class="ai-ctrl-btn" id="ai-key-config-btn" onclick="IndexAiAgent.openKeyModal()" title="Configure Gemini API Key">
+                            🔑 <span id="ai-key-btn-txt">API Key</span>
+                        </button>
+                        <button class="ai-ctrl-btn" id="ai-copy-btn" onclick="IndexAiAgent.copyAnalysis()" style="display:none;" title="Copy Analysis">
+                            📋 <span id="ai-copy-btn-txt">Copy</span>
+                        </button>
+                        <button class="ai-close-btn" onclick="IndexAiAgent.closeModal()" aria-label="Close">✕</button>
+                    </div>
+                </div>
+
+                <!-- 5 Modes Tab Group -->
+                <div class="ai-tab-group" role="tablist">
+                    <button class="ai-tab-btn active" data-mode="today" onclick="IndexAiAgent.switchMode('today')">
+                        ⚡ <span id="ai-tab-today">Today</span>
+                    </button>
+                    <button class="ai-tab-btn" data-mode="week" onclick="IndexAiAgent.switchMode('week')">
+                        📅 <span id="ai-tab-week">This Week</span>
+                    </button>
+                    <button class="ai-tab-btn" data-mode="month" onclick="IndexAiAgent.switchMode('month')">
+                        📊 <span id="ai-tab-month">This Month</span>
+                    </button>
+                    <button class="ai-tab-btn" data-mode="long_term" onclick="IndexAiAgent.switchMode('long_term')">
+                        📈 <span id="ai-tab-longterm">Long Term</span>
+                    </button>
+                    <button class="ai-tab-btn" data-mode="profile" onclick="IndexAiAgent.switchMode('profile')">
+                        🧬 <span id="ai-tab-profile">Study Profile</span>
+                    </button>
+                </div>
+
+                <!-- Subbar with Description and Action Button -->
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:2px;">
+                    <div class="ai-modal-subtitle" id="ai-mode-desc">Evaluating today's progress, distribution, and pace.</div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span id="ai-cache-status" style="display:none; font-size:11px; font-weight:700; color:var(--accent-orange); background:rgba(217,165,74,0.15); padding:2px 8px; border-radius:6px; border:1px solid rgba(217,165,74,0.3);">⚡ Cached</span>
+                        <button class="export-btn ai-trigger-btn" id="ai-run-btn" onclick="IndexAiAgent.runCurrentMode(true)" style="padding:5px 14px; font-size:12px;">
+                            ✨ <span id="ai-run-btn-txt">Analyze</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Body Content -->
+            <div class="ai-modal-body" id="ai-modal-body">
+                <!-- Injected dynamically by IndexAiAgent.renderer -->
+            </div>
+        </div>
+    </div>
+
+    <!-- AI API Key Dialog -->
+    <div class="modal-overlay" id="ai-key-modal" style="display:none;" onclick="if(event.target===this) IndexAiAgent.closeKeyModal()">
+        <div class="modal-box" style="max-width:480px; width:92%; border-radius:18px; text-align:start;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:22px;">🔑</span>
+                    <h3 id="ai-key-modal-title" style="margin:0; font-size:17px; font-weight:800; color:var(--accent-orange);">Gemini API Key</h3>
+                </div>
+                <button type="button" onclick="IndexAiAgent.closeKeyModal()" style="background:none; border:none; color:var(--text-gray); font-size:18px; cursor:pointer; padding:4px 8px;">✕</button>
+            </div>
+            <p id="ai-key-modal-desc" style="font-size:12px; color:var(--text-gray); line-height:1.5; margin-bottom:16px;">
+                Enter your Google Gemini API key to activate the intelligent study analysis engine. Your key is stored securely in your private account profile in your browser.
+            </p>
+            <div style="margin-bottom:14px;">
+                <label for="ai-gemini-key-input" id="ai-key-label" style="display:block; font-size:11px; font-weight:700; color:var(--text-light); text-transform:uppercase; margin-bottom:6px;">API Key</label>
+                <div style="position:relative;">
+                    <input type="password" id="ai-gemini-key-input" class="ai-key-input" placeholder="AIzaSy..." autocomplete="off" spellcheck="false">
+                    <button type="button" onclick="IndexAiAgent.toggleKeyVisibility()" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--text-gray); cursor:pointer; font-size:14px;" title="Toggle visibility">👁️</button>
+                </div>
+                <div style="margin-top:8px; font-size:11.5px; color:var(--text-gray);">
+                    <span id="ai-key-help-txt">Don't have a Gemini API key?</span>
+                    <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" style="color:var(--accent-orange); text-decoration:underline;">Get a free key from Google AI Studio &rarr;</a>
+                </div>
+                <div id="ai-key-error-msg" style="display:none; margin-top:8px; font-size:12px; color:#ff6b6b; font-weight:600;"></div>
+            </div>
+            <div class="modal-buttons" style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
+                <button class="modal-btn cancel" onclick="IndexAiAgent.closeKeyModal()" id="ai-key-cancel-btn">Cancel</button>
+                <button class="modal-btn delete" id="ai-key-remove-btn" onclick="IndexAiAgent.removeKey()" style="display:none;">Remove Key</button>
+                <button class="modal-btn confirm" onclick="IndexAiAgent.saveKeyFromInput()" id="ai-key-save-btn">Save Key</button>
+            </div>
+        </div>
+    </div>
 
 <!-- Floating mini timer -->
     <div id="mini-floating-timer" aria-live="polite" title="Drag to move">
-        <div class="mini-timer-progress-track" title="Session Progress">
-            <div class="mini-timer-progress-bar" id="mini-timer-progress-bar"></div>
-        </div>
-        <div class="mini-timer-body">
-            <span class="mini-timer-status" id="mini-timer-status" title="Play / Pause"></span>
-            <span class="mini-timer-time" id="mini-timer-numbers" title="Play / Pause">00:25:00</span>
-            <span class="mini-timer-label" id="mini-timer-label">FOCUS</span>
-            <div class="mini-timer-actions">
-                <button class="mini-timer-btn" id="mini-timer-pin-top" type="button" title="Pin to top center / Free float">
-                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14l-2-7V4h1V2H6v2h1v6l-2 7z"></path></svg>
-                </button>
-                <button class="mini-timer-btn" id="mini-timer-expand-toggle" type="button" title="Toggle Always Show / Auto-hide hover">
-                    <svg id="mini-timer-expand-icon" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="7 13 12 18 17 13"></polyline><polyline points="7 6 12 11 17 6"></polyline></svg>
-                </button>
-                <button class="mini-timer-hide" id="mini-timer-hide" type="button" aria-label="Hide timer">×</button>
-            </div>
-        </div>
+        <span class="mini-timer-status"></span>
+        <span class="mini-timer-time" id="mini-timer-numbers">00:25:00</span>
+        <span class="mini-timer-label">FOCUS</span>
+        <button class="mini-timer-hide" id="mini-timer-hide" type="button" aria-label="Hide timer">×</button>
     </div>
     <div class="fullscreen-overlay-container" id="focus-overlay">
         <div class="focus-next-action" id="focus-next-action" aria-live="polite">
@@ -3802,67 +4493,29 @@ html[data-theme="light"] .month-selector-dropdown {
 
         // Desktop always-on-top mini timer (Electron).
         // This is a no-op when the HTML is opened directly in a normal browser.
-        function syncDesktopMiniTimer(isTimeout = false) {
+        function syncDesktopMiniTimer() {
             try {
                 if (!window.electronAPI || typeof window.electronAPI.updateMiniTimer !== 'function') return;
                 const totalDisplaySeconds = Math.max(0, (runningMinutes * 60) + runningSeconds);
                 const miniHours = Math.floor(totalDisplaySeconds / 3600);
                 const miniMinutes = Math.floor((totalDisplaySeconds % 3600) / 60);
                 const miniSeconds = totalDisplaySeconds % 60;
-
-                let progressPct = 0;
-                if (currentMode === 'stopwatch') {
-                    const targetSec = (studyGoals?.daily || 4) * 3600;
-                    progressPct = targetSec > 0 ? Math.min(100, Math.max(0, Math.round((totalElapsedSecondsTracked / targetSec) * 100))) : 0;
-                } else {
-                    const plannedTotal = (customDurationMinutes || 25) * 60;
-                    const elapsed = Math.max(0, plannedTotal - totalDisplaySeconds);
-                    progressPct = plannedTotal > 0 ? Math.min(100, Math.max(0, Math.round((elapsed / plannedTotal) * 100))) : 0;
-                }
-
-                const isVisible = !!(isClockRunning || totalElapsedSecondsTracked > 0 || isTimeout);
-
                 window.electronAPI.updateMiniTimer({
                     time: `${miniHours.toString().padStart(2, '0')}:${miniMinutes.toString().padStart(2, '0')}:${miniSeconds.toString().padStart(2, '0')}`,
                     running: !!isClockRunning,
-                    paused: !isClockRunning && totalElapsedSecondsTracked > 0 && !isTimeout,
-                    visible: isVisible,
-                    progress: isTimeout ? 100 : progressPct,
-                    theme: currentAppTheme || 'dark',
-                    mode: currentMode || 'pomodoro',
-                    tag: currentlySelectedTag || 'Study',
-                    completed: !!isTimeout
+                    paused: !isClockRunning && totalElapsedSecondsTracked > 0,
+                    visible: !!(isClockRunning || totalElapsedSecondsTracked > 0)
                 });
             } catch (e) {
                 // The browser version of the app does not have Electron IPC.
             }
         }
 
-        // Listen for IPC commands from the mini timer HUD (e.g. play/pause)
-        if (typeof window !== 'undefined' && window.electronAPI && typeof window.electronAPI.onMiniTimerCommand === 'function') {
-            window.electronAPI.onMiniTimerCommand((cmd) => {
-                if (cmd?.action === 'toggle-play-pause') {
-                    if (isClockRunning) {
-                        pauseClock();
-                    } else {
-                        startClock();
-                    }
-                }
-            });
-        }
-
         function stopAndSaveClock(isTimeout = false) {
             isClockRunning = false;
             const miniTimerEl = document.getElementById('mini-floating-timer');
-            if (miniTimerEl) {
-                if (!isTimeout) {
-                    miniTimerEl.classList.remove('is-visible', 'paused');
-                } else {
-                    miniTimerEl.classList.add('is-visible');
-                    miniTimerEl.classList.remove('paused');
-                }
-            }
-            syncDesktopMiniTimer(isTimeout);
+            if (miniTimerEl) miniTimerEl.classList.remove('is-visible', 'paused');
+            syncDesktopMiniTimer();
             if (timerWorker) timerWorker.postMessage({ type: 'stop' });
             workerStartTime = null;
             workerPausedAccumulator = 0;
@@ -3990,7 +4643,35 @@ html[data-theme="light"] .month-selector-dropdown {
                 productivityOfTotal: "of total",
                 productivityPerActiveHr: "per active hr",
                 productivityHours: "hour",
-                productivityHrs: "hours"
+                productivityHrs: "hours",
+                aiBtnText: "AI Analyst",
+                aiBannerTitle: "AI Study Analysis Agent",
+                aiBannerDesc: "Instant deep-dive patterns, peak study windows, subject balance, and personalized recommendations.",
+                aiBannerBtnTxt: "Launch Analysis",
+                aiModalTitle: "AI Study Analysis",
+                aiModalSubtitle: "Cognitive Performance & Pattern Agent",
+                aiKeyBtnTxt: "API Key",
+                aiTabToday: "Today",
+                aiTabWeek: "This Week",
+                aiTabMonth: "This Month",
+                aiTabLongTerm: "Long Term",
+                aiTabProfile: "Study Profile",
+                aiRunBtnTxt: "Analyze",
+                aiReanalyzeBtnTxt: "Re-analyze",
+                aiCopyBtnTxt: "Copy",
+                aiCopiedBtnTxt: "Copied ✓",
+                aiCachedTxt: "⚡ Cached",
+                aiAnalyzingTxt: "Analyzing study patterns with Gemini...",
+                aiKeyModalTitle: "Gemini API Key",
+                aiKeyModalDesc: "Enter your Google Gemini API key to activate the intelligent study analysis engine. Your key is stored securely in your private account profile in your browser.",
+                aiKeyLabel: "API Key",
+                aiKeyHelpTxt: "Don't have a Gemini API key?",
+                aiKeySaveBtn: "Save Key",
+                aiKeyCancelBtn: "Cancel",
+                aiKeyRemoveBtn: "Remove Key",
+                aiKeyErrorEmpty: "Please enter a valid Gemini API key.",
+                aiKeySavedToast: "API Key saved successfully!",
+                aiKeyRemovedToast: "API Key removed."
             },
             ar: {
                 logo: "إندكس", navTimer: "المؤقت", navAnalysis: "التحليلات والإحصائيات", navGoals: "المواد", navHabits: "العادات",
@@ -4075,7 +4756,35 @@ html[data-theme="light"] .month-selector-dropdown {
                 productivityOfTotal: "من الإجمالي",
                 productivityPerActiveHr: "لكل ساعة نشطة",
                 productivityHours: "ساعة",
-                productivityHrs: "ساعات"
+                productivityHrs: "ساعات",
+                aiBtnText: "محلل الذكاء الاصطناعي",
+                aiBannerTitle: "المحلل الذكي للدراسة",
+                aiBannerDesc: "تحليل معمق للأداء الدراسي، أوقات الذروة، توازن المواد، وتوصيات مخصصة بالذكاء الاصطناعي.",
+                aiBannerBtnTxt: "بدء التحليل",
+                aiModalTitle: "تحليل الدراسة الذكي",
+                aiModalSubtitle: "وكيل الأداء الإدراكي وكشف الأنماط",
+                aiKeyBtnTxt: "مفتاح API",
+                aiTabToday: "اليوم",
+                aiTabWeek: "هذا الأسبوع",
+                aiTabMonth: "هذا الشهر",
+                aiTabLongTerm: "المدى الطويل",
+                aiTabProfile: "الملف الدراسي",
+                aiRunBtnTxt: "تحليل الأداء",
+                aiReanalyzeBtnTxt: "إعادة التحليل",
+                aiCopyBtnTxt: "نسخ",
+                aiCopiedBtnTxt: "تم النسخ ✓",
+                aiCachedTxt: "⚡ محفوظ مسبقاً",
+                aiAnalyzingTxt: "جاري تحليل أنماط الدراسة بواسطة Gemini...",
+                aiKeyModalTitle: "مفتاح Gemini API",
+                aiKeyModalDesc: "أدخل مفتاح Google Gemini API الخاص بك لتفعيل محرك التحليل الدراسي الذكي. يتم تخزين المفتاح بأمان داخل متصفحك ومرتبطاً بحسابك الخاص فقط.",
+                aiKeyLabel: "مفتاح API",
+                aiKeyHelpTxt: "ليس لديك مفتاح Gemini API؟",
+                aiKeySaveBtn: "حفظ المفتاح",
+                aiKeyCancelBtn: "إلغاء",
+                aiKeyRemoveBtn: "حذف المفتاح",
+                aiKeyErrorEmpty: "يرجى إدخال مفتاح Gemini API صحيح.",
+                aiKeySavedToast: "تم حفظ مفتاح API بنجاح!",
+                aiKeyRemovedToast: "تم حذف مفتاح API."
             }
         };
 
@@ -4874,6 +5583,9 @@ html[data-theme="light"] .month-selector-dropdown {
             updateEditAddModalLabels();
             if (typeof updateGcalHeaderToggleBtn === 'function') updateGcalHeaderToggleBtn();
             if (typeof renderStudyTrendChart === 'function') renderStudyTrendChart();
+            if (window.IndexAiAgent && typeof IndexAiAgent.syncLanguage === 'function') {
+                IndexAiAgent.syncLanguage(currentSystemLanguage);
+            }
         }
 
         function switchMode(mode) {
@@ -5041,8 +5753,6 @@ html[data-theme="light"] .month-selector-dropdown {
             // Floating timer mirrors the same clock as HH:MM:SS.
             const miniTimerEl = document.getElementById('mini-floating-timer');
             const miniTimerNumbers = document.getElementById('mini-timer-numbers');
-            const miniProgressBar = document.getElementById('mini-timer-progress-bar');
-            const miniTimerLabel = document.getElementById('mini-timer-label');
             if (miniTimerEl && miniTimerNumbers) {
                 const totalDisplaySeconds = Math.max(0, (runningMinutes * 60) + runningSeconds);
                 const miniHours = Math.floor(totalDisplaySeconds / 3600);
@@ -5052,22 +5762,6 @@ html[data-theme="light"] .month-selector-dropdown {
                     `${miniHours.toString().padStart(2, '0')}:${miniMinutes.toString().padStart(2, '0')}:${miniSeconds.toString().padStart(2, '0')}`;
                 miniTimerEl.classList.toggle('is-visible', isClockRunning || totalElapsedSecondsTracked > 0);
                 miniTimerEl.classList.toggle('paused', !isClockRunning && totalElapsedSecondsTracked > 0);
-
-                // Progress Bar
-                let progressPct = 0;
-                if (currentMode === 'stopwatch') {
-                    const targetSec = (studyGoals?.daily || 4) * 3600;
-                    progressPct = targetSec > 0 ? Math.min(100, Math.max(0, Math.round((totalElapsedSecondsTracked / targetSec) * 100))) : 0;
-                } else {
-                    const plannedTotal = (customDurationMinutes || 25) * 60;
-                    const elapsed = Math.max(0, plannedTotal - totalDisplaySeconds);
-                    progressPct = plannedTotal > 0 ? Math.min(100, Math.max(0, Math.round((elapsed / plannedTotal) * 100))) : 0;
-                }
-                if (miniProgressBar) miniProgressBar.style.width = progressPct + '%';
-
-                if (miniTimerLabel) {
-                    miniTimerLabel.innerText = (currentlySelectedTag || currentMode || 'FOCUS').toUpperCase();
-                }
             }
             syncDesktopMiniTimer();
 
@@ -5185,105 +5879,21 @@ html[data-theme="light"] .month-selector-dropdown {
             const mini = document.getElementById('mini-floating-timer');
             if (!mini) return;
 
-            const pinBtn = document.getElementById('mini-timer-pin-top');
-            const expandBtn = document.getElementById('mini-timer-expand-toggle');
-            const expandIcon = document.getElementById('mini-timer-expand-icon');
-            const statusDot = document.getElementById('mini-timer-status');
-            const numbers = document.getElementById('mini-timer-numbers');
-
-            let isPinnedTop = localStorage.getItem('indexMiniTimerPinnedTop') === 'true';
-            let isAlwaysExpanded = localStorage.getItem('indexMiniTimerAlwaysExpanded') === 'true';
-
-            function applyMiniPreferences() {
-                mini.classList.toggle('is-pinned-top', isPinnedTop);
-                mini.classList.toggle('is-always-expanded', isAlwaysExpanded);
-
-                if (pinBtn) {
-                    pinBtn.classList.toggle('active', isPinnedTop);
-                    pinBtn.title = isPinnedTop ? 'Pinned to top center (click to unpin)' : 'Free floating (click to pin to top center)';
-                }
-
-                if (expandBtn) {
-                    expandBtn.style.display = isPinnedTop ? 'inline-flex' : 'none';
-                    expandBtn.classList.toggle('active', isAlwaysExpanded);
-                    expandBtn.title = isAlwaysExpanded ? 'Always Visible (click for auto-hide hover drop-down)' : 'Auto-Hide (drops down on hover, click to keep always visible)';
-                }
-
-                if (expandIcon) {
-                    expandIcon.innerHTML = isAlwaysExpanded
-                        ? '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path>'
-                        : '<polyline points="7 13 12 18 17 13"></polyline><polyline points="7 6 12 11 17 6"></polyline>';
-                }
-
-                if (isPinnedTop) {
-                    mini.style.left = '';
-                    mini.style.top = '';
-                    mini.style.right = '';
-                } else {
-                    const savedLeft = parseInt(localStorage.getItem('indexMiniTimerLeft'), 10);
-                    const savedTop = parseInt(localStorage.getItem('indexMiniTimerTop'), 10);
-                    if (Number.isFinite(savedLeft) && Number.isFinite(savedTop)) {
-                        mini.style.left = `${Math.max(0, savedLeft)}px`;
-                        mini.style.top = `${Math.max(0, savedTop)}px`;
-                        mini.style.right = 'auto';
-                    }
-                }
+            const savedLeft = parseInt(localStorage.getItem('indexMiniTimerLeft'), 10);
+            const savedTop = parseInt(localStorage.getItem('indexMiniTimerTop'), 10);
+            if (Number.isFinite(savedLeft) && Number.isFinite(savedTop)) {
+                mini.style.left = `${Math.max(0, savedLeft)}px`;
+                mini.style.top = `${Math.max(0, savedTop)}px`;
+                mini.style.right = 'auto';
             }
 
-            applyMiniPreferences();
-
-            pinBtn?.addEventListener('click', function(e) {
-                e.stopPropagation();
-                isPinnedTop = !isPinnedTop;
-                localStorage.setItem('indexMiniTimerPinnedTop', isPinnedTop);
-                applyMiniPreferences();
-            });
-
-            expandBtn?.addEventListener('click', function(e) {
-                e.stopPropagation();
-                isAlwaysExpanded = !isAlwaysExpanded;
-                localStorage.setItem('indexMiniTimerAlwaysExpanded', isAlwaysExpanded);
-                applyMiniPreferences();
-            });
-
-            // Hover Peek logic when pinned
-            let hidePeekTimeout = null;
-            mini.addEventListener('mouseenter', function() {
-                clearTimeout(hidePeekTimeout);
-                mini.classList.add('is-peek-revealed');
-            });
-
-            mini.addEventListener('mouseleave', function() {
-                hidePeekTimeout = setTimeout(() => {
-                    mini.classList.remove('is-peek-revealed');
-                }, 700);
-            });
-
-            // Play / Pause Click
-            function onTogglePlayPause(e) {
-                e.stopPropagation();
-                if (isClockRunning) {
-                    pauseClock();
-                } else {
-                    startClock();
-                }
-            }
-            statusDot?.addEventListener('click', onTogglePlayPause);
-            numbers?.addEventListener('click', onTogglePlayPause);
-
-            // Dragging Logic
             let dragging = false;
             let moved = false;
             let offsetX = 0;
             let offsetY = 0;
 
             mini.addEventListener('pointerdown', function(e) {
-                if (e.target.closest('.mini-timer-actions') || e.target.closest('.mini-timer-status') || e.target.closest('.mini-timer-time')) return;
-                if (isPinnedTop) {
-                    isPinnedTop = false;
-                    localStorage.setItem('indexMiniTimerPinnedTop', false);
-                    applyMiniPreferences();
-                }
+                if (e.target.closest('.mini-timer-hide')) return;
                 dragging = true;
                 moved = false;
                 const rect = mini.getBoundingClientRect();
@@ -5318,7 +5928,7 @@ html[data-theme="light"] .month-selector-dropdown {
             });
 
             window.addEventListener('resize', function() {
-                if (!mini.classList.contains('is-visible') || isPinnedTop) return;
+                if (!mini.classList.contains('is-visible')) return;
                 const rect = mini.getBoundingClientRect();
                 mini.style.left = `${Math.max(0, Math.min(rect.left, window.innerWidth - mini.offsetWidth))}px`;
                 mini.style.top = `${Math.max(0, Math.min(rect.top, window.innerHeight - mini.offsetHeight))}px`;
@@ -9478,6 +10088,1537 @@ let appHasBooted = false;
                 }
             } catch (e) {}
         }
+
+/* ====================================================================
+   INDEX AI STUDY ANALYSIS AGENT (IndexAiAgent)
+   Full In-App Cognitive Performance & Study Analysis Agent
+   Powered by Google Gemini API
+   ==================================================================== */
+window.IndexAiAgent = (function() {
+    let activeMode = 'today';
+    let lastAnalysisResult = null;
+    let isAnalyzing = false;
+
+    // -------------------------------------------------------------
+    // 1. API KEY MANAGER (Account-Scoped with Legacy Fallback)
+    // -------------------------------------------------------------
+    const apiKeyManager = {
+        STORAGE_PREFIX: 'index_ai_gemini_key_',
+        LEGACY_KEY: 'index_ai_gemini_key',
+
+        getCurrentUid: function() {
+            try {
+                if (typeof currentUser !== 'undefined' && currentUser && currentUser.uid) {
+                    return currentUser.uid;
+                }
+                if (typeof currentUserNamespace !== 'undefined' && currentUserNamespace) {
+                    return currentUserNamespace;
+                }
+            } catch (e) {}
+            return 'guest';
+        },
+
+        getKey: function() {
+            const uid = this.getCurrentUid();
+            const key = localStorage.getItem(this.STORAGE_PREFIX + uid);
+            if (key && key.trim()) return key.trim();
+            const legacy = localStorage.getItem(this.LEGACY_KEY);
+            if (legacy && legacy.trim()) {
+                try { localStorage.setItem(this.STORAGE_PREFIX + uid, legacy.trim()); } catch (e) {}
+                return legacy.trim();
+            }
+            return '';
+        },
+
+        setKey: function(rawKey) {
+            const uid = this.getCurrentUid();
+            if (!rawKey || !rawKey.trim()) {
+                this.removeKey();
+                return;
+            }
+            localStorage.setItem(this.STORAGE_PREFIX + uid, rawKey.trim());
+        },
+
+        removeKey: function() {
+            const uid = this.getCurrentUid();
+            localStorage.removeItem(this.STORAGE_PREFIX + uid);
+            localStorage.removeItem(this.LEGACY_KEY);
+        },
+
+        hasKey: function() {
+            return Boolean(this.getKey());
+        }
+    };
+
+    // -------------------------------------------------------------
+    // 2. NORMALIZER (Duration, Noise Filtering, Dynamic Category Discovery)
+    // -------------------------------------------------------------
+    const normalizer = {
+        parseDurationToSeconds: function(session) {
+            if (!session) return 0;
+            if (typeof session.durationSeconds === 'number' && !isNaN(session.durationSeconds) && session.durationSeconds >= 0) {
+                return session.durationSeconds;
+            }
+            if (typeof session.duration === 'number' && !isNaN(session.duration)) {
+                return session.duration > 500 ? Math.round(session.duration) : Math.round(session.duration * 60);
+            }
+            if (typeof session.duration === 'string') {
+                const raw = session.duration.trim();
+                const hrMatch = raw.match(/([\d.]+)\s*(?:hr|hour|hrs|ساعة)/i);
+                if (hrMatch) return Math.round(parseFloat(hrMatch[1]) * 3600);
+                const minMatch = raw.match(/([\d.]+)\s*(?:min|m|دقيقة)/i);
+                if (minMatch) return Math.round(parseFloat(minMatch[1]) * 60);
+                const num = parseFloat(raw);
+                if (!isNaN(num)) return num > 500 ? Math.round(num) : Math.round(num * 60);
+            }
+            return 0;
+        },
+
+        parseStartHourFromRange: function(rangeStr) {
+            if (!rangeStr || typeof rangeStr !== 'string') return null;
+            const m = rangeStr.match(/(\d{1,2}):(\d{2})(?:\s*(AM|PM))?/i);
+            if (!m) return null;
+            let hr = parseInt(m[1], 10);
+            const ampm = m[3] ? m[3].toUpperCase() : null;
+            if (ampm === 'PM' && hr < 12) hr += 12;
+            if (ampm === 'AM' && hr === 12) hr = 0;
+            return (hr >= 0 && hr <= 23) ? hr : null;
+        },
+
+        normalizeSession: function(s) {
+            const durSec = this.parseDurationToSeconds(s);
+            const durMin = Math.round(durSec / 60);
+            const durHrs = parseFloat((durSec / 3600).toFixed(2));
+            const isMicro = durSec <= 5; // <= 5s is micro-noise
+            const startHour = this.parseStartHourFromRange(s.range);
+            return {
+                date: s.date || '',
+                title: s.title || (typeof currentSystemLanguage !== 'undefined' && currentSystemLanguage === 'ar' ? 'جلسة دراسة غير معنونة' : 'Untitled Session'),
+                tag: s.tag || 'General',
+                durationSeconds: durSec,
+                durationMinutes: durMin,
+                durationHours: durHrs,
+                isMicroSession: isMicro,
+                range: s.range || '',
+                startHour: startHour
+            };
+        },
+
+        getDataset: function() {
+            const rawSessions = Array.isArray(archivedSessionsArray) ? archivedSessionsArray : [];
+            const normalized = rawSessions.map(s => this.normalizeSession(s));
+            const validSessions = normalized.filter(s => !s.isMicroSession && s.durationSeconds > 5);
+            const microSessions = normalized.filter(s => s.isMicroSession);
+
+            const tagSet = new Set();
+            if (Array.isArray(currentTagsList)) currentTagsList.forEach(t => t && tagSet.add(t));
+            rawSessions.forEach(s => s.tag && tagSet.add(s.tag));
+
+            const goals = Array.isArray(goalsArray) ? goalsArray : [];
+            const habits = Array.isArray(habitsArray) ? habitsArray : [];
+
+            return {
+                allSessions: normalized,
+                validSessions: validSessions,
+                microSessions: microSessions,
+                tags: Array.from(tagSet),
+                goals: goals,
+                habits: habits
+            };
+        }
+    };
+
+    // -------------------------------------------------------------
+    // 3. ANALYTICS ENGINE (Deterministic Statistical Computations)
+    // -------------------------------------------------------------
+    const analyticsEngine = {
+        computeDataHash: function() {
+            const rawSessions = Array.isArray(archivedSessionsArray) ? archivedSessionsArray : [];
+            const count = rawSessions.length;
+            const firstStr = rawSessions[0] ? `${rawSessions[0].date}_${rawSessions[0].durationSeconds || rawSessions[0].duration || ''}` : '0';
+            const goalsCount = (goalsArray || []).length;
+            const habitsCount = (habitsArray || []).length;
+            return `${count}_${firstStr}_${goalsCount}_${habitsCount}`;
+        },
+
+        computeTagBreakdown: function(sessions, totalSec) {
+            const map = {};
+            sessions.forEach(s => {
+                const t = s.tag || 'General';
+                if (!map[t]) map[t] = { seconds: 0, count: 0 };
+                map[t].seconds += s.durationSeconds;
+                map[t].count += 1;
+            });
+            const breakdown = [];
+            for (const [tag, stat] of Object.entries(map)) {
+                const hours = parseFloat((stat.seconds / 3600).toFixed(2));
+                const pct = totalSec > 0 ? Math.round((stat.seconds / totalSec) * 100) : 0;
+                breakdown.push({ tag: tag, hours: hours, sessions: stat.count, percentage: pct });
+            }
+            breakdown.sort((a, b) => b.hours - a.hours);
+            return breakdown;
+        },
+
+        computeTimeOfDayDistribution: function(sessions) {
+            const buckets = { night: 0, morning: 0, afternoon: 0, evening: 0 };
+            const hourCounts = new Array(24).fill(0);
+            let sessionsWithTime = 0;
+
+            sessions.forEach(s => {
+                if (s.startHour !== null && s.startHour >= 0 && s.startHour <= 23) {
+                    sessionsWithTime++;
+                    hourCounts[s.startHour]++;
+                    if (s.startHour >= 0 && s.startHour < 6) buckets.night++;
+                    else if (s.startHour >= 6 && s.startHour < 12) buckets.morning++;
+                    else if (s.startHour >= 12 && s.startHour < 18) buckets.afternoon++;
+                    else buckets.evening++;
+                }
+            });
+
+            let peakHour = 0;
+            let peakCount = 0;
+            for (let h = 0; h < 24; h++) {
+                if (hourCounts[h] > peakCount) {
+                    peakCount = hourCounts[h];
+                    peakHour = h;
+                }
+            }
+
+            return {
+                buckets: buckets,
+                sessionsWithTime: sessionsWithTime,
+                peakHour: peakHour,
+                peakHourLabel: `${String(peakHour).padStart(2, '0')}:00 - ${String((peakHour + 1) % 24).padStart(2, '0')}:00`,
+                peakSessionCount: peakCount
+            };
+        },
+
+        computeFragmentation: function(sessions, microCount) {
+            const under15 = sessions.filter(s => s.durationMinutes < 15).length;
+            const avgDur = sessions.length > 0 ? Math.round(sessions.reduce((acc, s) => acc + s.durationMinutes, 0) / sessions.length) : 0;
+            const ratioUnder15 = sessions.length > 0 ? Math.round((under15 / sessions.length) * 100) : 0;
+            return {
+                under15Count: under15,
+                under15RatioPct: ratioUnder15,
+                microSessionsCount: microCount,
+                averageSessionDurationMinutes: avgDur
+            };
+        },
+
+        computeStdDev: function(values) {
+            if (!values || values.length <= 1) return 0;
+            const mean = values.reduce((a, b) => a + b, 0) / values.length;
+            const variance = values.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / values.length;
+            return parseFloat(Math.sqrt(variance).toFixed(2));
+        },
+
+        compileTodayPayload: function() {
+            const ds = normalizer.getDataset();
+            const todayIso = typeof getLocalISODate === 'function' ? getLocalISODate(new Date()) : new Date().toISOString().split('T')[0];
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayIso = typeof getLocalISODate === 'function' ? getLocalISODate(yesterday) : yesterday.toISOString().split('T')[0];
+
+            const todayValid = ds.validSessions.filter(s => s.date === todayIso);
+            const todayMicros = ds.microSessions.filter(s => s.date === todayIso);
+            const yesterdayValid = ds.validSessions.filter(s => s.date === yesterdayIso);
+
+            const totalSec = todayValid.reduce((acc, s) => acc + s.durationSeconds, 0);
+            const totalHours = parseFloat((totalSec / 3600).toFixed(2));
+            const yestSec = yesterdayValid.reduce((acc, s) => acc + s.durationSeconds, 0);
+            const yestHours = parseFloat((yestSec / 3600).toFixed(2));
+
+            const tagBreakdown = this.computeTagBreakdown(todayValid, totalSec);
+            const tod = this.computeTimeOfDayDistribution(todayValid);
+            const frag = this.computeFragmentation(todayValid, todayMicros.length);
+
+            const habitsDoneToday = ds.habits.filter(h => Array.isArray(h.completedDates) && h.completedDates.includes(todayIso)).length;
+
+            return {
+                mode: 'today',
+                date: todayIso,
+                dayOfWeek: new Date().toLocaleDateString('en-US', { weekday: 'long' }),
+                metrics: {
+                    totalHours: totalHours,
+                    totalMinutes: Math.round(totalSec / 60),
+                    validSessionCount: todayValid.length,
+                    microSessionNoiseCount: todayMicros.length,
+                    averageSessionMinutes: frag.averageSessionDurationMinutes,
+                    sessionsUnder15Min: frag.under15Count,
+                    yesterdayHours: yestHours,
+                    hoursDiffVsYesterday: parseFloat((totalHours - yestHours).toFixed(2)),
+                    hoursChangePercent: yestHours > 0 ? Math.round(((totalHours - yestHours) / yestHours) * 100) : null
+                },
+                subjectBreakdown: tagBreakdown,
+                timeOfDay: tod,
+                sessionsLog: todayValid.map(s => ({
+                    title: s.title,
+                    tag: s.tag,
+                    durationMinutes: s.durationMinutes,
+                    timeRange: s.range
+                })),
+                habits: {
+                    completedToday: habitsDoneToday,
+                    totalTracked: ds.habits.length
+                },
+                activeGoalsCount: ds.goals.length
+            };
+        },
+
+        compileWeekPayload: function() {
+            const ds = normalizer.getDataset();
+            const now = new Date();
+            const weekStart = typeof getWeekStartSaturday === 'function' ? getWeekStartSaturday(now) : new Date();
+            const weekEnd = new Date(weekStart);
+            weekEnd.setDate(weekEnd.getDate() + 6);
+            weekEnd.setHours(23, 59, 59, 999);
+
+            const prevWeekStart = new Date(weekStart);
+            prevWeekStart.setDate(prevWeekStart.getDate() - 7);
+            const prevWeekEnd = new Date(weekStart);
+            prevWeekEnd.setMilliseconds(-1);
+
+            const toIso = d => typeof getLocalISODate === 'function' ? getLocalISODate(d) : d.toISOString().split('T')[0];
+            const startIso = toIso(weekStart);
+            const endIso = toIso(weekEnd);
+            const prevStartIso = toIso(prevWeekStart);
+            const prevEndIso = toIso(prevWeekEnd);
+
+            const thisWeekValid = ds.validSessions.filter(s => s.date >= startIso && s.date <= endIso);
+            const thisWeekMicros = ds.microSessions.filter(s => s.date >= startIso && s.date <= endIso);
+            const prevWeekValid = ds.validSessions.filter(s => s.date >= prevStartIso && s.date <= prevEndIso);
+
+            const totalSec = thisWeekValid.reduce((acc, s) => acc + s.durationSeconds, 0);
+            const totalHours = parseFloat((totalSec / 3600).toFixed(2));
+            const prevTotalSec = prevWeekValid.reduce((acc, s) => acc + s.durationSeconds, 0);
+            const prevTotalHours = parseFloat((prevTotalSec / 3600).toFixed(2));
+
+            const daysMap = {};
+            for (let i = 0; i < 7; i++) {
+                const dayDate = new Date(weekStart);
+                dayDate.setDate(dayDate.getDate() + i);
+                const iso = toIso(dayDate);
+                const dayName = dayDate.toLocaleDateString('en-US', { weekday: 'short' });
+                daysMap[iso] = { day: dayName, date: iso, seconds: 0, sessions: 0 };
+            }
+
+            thisWeekValid.forEach(s => {
+                if (daysMap[s.date]) {
+                    daysMap[s.date].seconds += s.durationSeconds;
+                    daysMap[s.date].sessions += 1;
+                }
+            });
+
+            const dailyBreakdown = Object.values(daysMap).map(d => ({
+                day: d.day,
+                date: d.date,
+                hours: parseFloat((d.seconds / 3600).toFixed(2)),
+                sessions: d.sessions,
+                isActive: d.seconds > 0
+            }));
+
+            const dailyHoursList = dailyBreakdown.map(d => d.hours);
+            const activeDaysCount = dailyBreakdown.filter(d => d.isActive).length;
+            const stdDev = this.computeStdDev(dailyHoursList);
+            const tagBreakdown = this.computeTagBreakdown(thisWeekValid, totalSec);
+            const tod = this.computeTimeOfDayDistribution(thisWeekValid);
+            const frag = this.computeFragmentation(thisWeekValid, thisWeekMicros.length);
+
+            return {
+                mode: 'week',
+                range: `${startIso} to ${endIso}`,
+                metrics: {
+                    totalHours: totalHours,
+                    previousWeekHours: prevTotalHours,
+                    hoursDiffVsPrevWeek: parseFloat((totalHours - prevTotalHours).toFixed(2)),
+                    hoursChangePercent: prevTotalHours > 0 ? Math.round(((totalHours - prevTotalHours) / prevTotalHours) * 100) : null,
+                    activeDaysCount: activeDaysCount,
+                    totalDaysInCycle: 7,
+                    averageDailyHours: parseFloat((totalHours / 7).toFixed(2)),
+                    averageActiveDayHours: activeDaysCount > 0 ? parseFloat((totalHours / activeDaysCount).toFixed(2)) : 0,
+                    dailyConsistencyStdDev: stdDev,
+                    validSessionsCount: thisWeekValid.length,
+                    microSessionsCount: thisWeekMicros.length,
+                    averageSessionMinutes: frag.averageSessionDurationMinutes
+                },
+                dailyBreakdown: dailyBreakdown,
+                subjectBreakdown: tagBreakdown,
+                timeOfDay: tod,
+                fragmentation: frag,
+                goalsSummary: ds.goals.map(g => ({
+                    title: g.title,
+                    current: g.current,
+                    target: g.target,
+                    unit: g.unit,
+                    type: g.goalType
+                }))
+            };
+        },
+
+        compileMonthPayload: function() {
+            const ds = normalizer.getDataset();
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+            const curMonthPrefix = `${year}-${String(month + 1).padStart(2, '0')}`;
+
+            const prevMonthDate = new Date(year, month - 1, 1);
+            const prevMonthPrefix = `${prevMonthDate.getFullYear()}-${String(prevMonthDate.getMonth() + 1).padStart(2, '0')}`;
+
+            const curMonthValid = ds.validSessions.filter(s => s.date && s.date.startsWith(curMonthPrefix));
+            const curMonthMicros = ds.microSessions.filter(s => s.date && s.date.startsWith(curMonthPrefix));
+            const prevMonthValid = ds.validSessions.filter(s => s.date && s.date.startsWith(prevMonthPrefix));
+
+            const totalSec = curMonthValid.reduce((acc, s) => acc + s.durationSeconds, 0);
+            const totalHours = parseFloat((totalSec / 3600).toFixed(2));
+            const prevSec = prevMonthValid.reduce((acc, s) => acc + s.durationSeconds, 0);
+            const prevHours = parseFloat((prevSec / 3600).toFixed(2));
+
+            const activeDates = new Set(curMonthValid.map(s => s.date));
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            const weeksMap = { "Week 1 (1-7)": 0, "Week 2 (8-14)": 0, "Week 3 (15-21)": 0, "Week 4+ (22+)": 0 };
+            curMonthValid.forEach(s => {
+                const dayNum = parseInt((s.date.split('-')[2] || '1'), 10);
+                if (dayNum <= 7) weeksMap["Week 1 (1-7)"] += s.durationSeconds;
+                else if (dayNum <= 14) weeksMap["Week 2 (8-14)"] += s.durationSeconds;
+                else if (dayNum <= 21) weeksMap["Week 3 (15-21)"] += s.durationSeconds;
+                else weeksMap["Week 4+ (22+)"] += s.durationSeconds;
+            });
+
+            const weeklyProgress = Object.entries(weeksMap).map(([k, sec]) => ({
+                week: k,
+                hours: parseFloat((sec / 3600).toFixed(2))
+            }));
+
+            const tagBreakdown = this.computeTagBreakdown(curMonthValid, totalSec);
+            const tod = this.computeTimeOfDayDistribution(curMonthValid);
+            const frag = this.computeFragmentation(curMonthValid, curMonthMicros.length);
+
+            let habitCompletionsThisMonth = 0;
+            ds.habits.forEach(h => {
+                if (Array.isArray(h.completedDates)) {
+                    habitCompletionsThisMonth += h.completedDates.filter(d => d.startsWith(curMonthPrefix)).length;
+                }
+            });
+
+            return {
+                mode: 'month',
+                month: curMonthPrefix,
+                monthName: now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+                metrics: {
+                    totalHours: totalHours,
+                    previousMonthHours: prevHours,
+                    hoursDiffVsPrevMonth: parseFloat((totalHours - prevHours).toFixed(2)),
+                    hoursChangePercent: prevHours > 0 ? Math.round(((totalHours - prevHours) / prevHours) * 100) : null,
+                    activeDaysCount: activeDates.size,
+                    daysInMonth: daysInMonth,
+                    activeDayRatioPercent: Math.round((activeDates.size / daysInMonth) * 100),
+                    validSessionsCount: curMonthValid.length,
+                    microSessionsCount: curMonthMicros.length,
+                    averageSessionMinutes: frag.averageSessionDurationMinutes
+                },
+                weeklyDistribution: weeklyProgress,
+                subjectBreakdown: tagBreakdown,
+                timeOfDay: tod,
+                habits: {
+                    totalCompletionsInMonth: habitCompletionsThisMonth,
+                    trackedHabitsCount: ds.habits.length
+                }
+            };
+        },
+
+        compileLongTermPayload: function() {
+            const ds = normalizer.getDataset();
+            const valid = ds.validSessions;
+            const totalSec = valid.reduce((acc, s) => acc + s.durationSeconds, 0);
+            const totalHours = parseFloat((totalSec / 3600).toFixed(2));
+
+            const monthlyMap = {};
+            valid.forEach(s => {
+                const ym = s.date ? s.date.substring(0, 7) : 'Unknown';
+                if (!monthlyMap[ym]) monthlyMap[ym] = { seconds: 0, sessions: 0, activeDays: new Set() };
+                monthlyMap[ym].seconds += s.durationSeconds;
+                monthlyMap[ym].sessions += 1;
+                monthlyMap[ym].activeDays.add(s.date);
+            });
+
+            const monthlyTrends = Object.entries(monthlyMap).map(([month, data]) => ({
+                month: month,
+                hours: parseFloat((data.seconds / 3600).toFixed(2)),
+                sessions: data.sessions,
+                activeDaysCount: data.activeDays.size
+            })).sort((a, b) => a.month.localeCompare(b.month));
+
+            const allActiveDates = Array.from(new Set(valid.map(s => s.date))).sort();
+            const dailySecMap = {};
+            valid.forEach(s => {
+                dailySecMap[s.date] = (dailySecMap[s.date] || 0) + s.durationSeconds;
+            });
+            let bestDay = { date: '', hours: 0 };
+            for (const [date, sec] of Object.entries(dailySecMap)) {
+                const hrs = parseFloat((sec / 3600).toFixed(2));
+                if (hrs > bestDay.hours) bestDay = { date: date, hours: hrs };
+            }
+
+            const tagBreakdown = this.computeTagBreakdown(valid, totalSec);
+            const tod = this.computeTimeOfDayDistribution(valid);
+            const frag = this.computeFragmentation(valid, ds.microSessions.length);
+
+            return {
+                mode: 'long_term',
+                metrics: {
+                    allTimeTotalHours: totalHours,
+                    allTimeValidSessionsCount: valid.length,
+                    allTimeMicroSessionsCount: ds.microSessions.length,
+                    allTimeActiveDaysCount: allActiveDates.length,
+                    firstRecordedDate: allActiveDates[0] || 'N/A',
+                    latestRecordedDate: allActiveDates[allActiveDates.length - 1] || 'N/A',
+                    averageSessionMinutes: frag.averageSessionDurationMinutes,
+                    bestSingleDay: bestDay
+                },
+                monthlyTrends: monthlyTrends,
+                subjectBreakdown: tagBreakdown,
+                timeOfDay: tod,
+                fragmentation: frag
+            };
+        },
+
+        compileProfilePayload: function() {
+            const ds = normalizer.getDataset();
+            const valid = ds.validSessions;
+            const totalSec = valid.reduce((acc, s) => acc + s.durationSeconds, 0);
+            const totalHours = parseFloat((totalSec / 3600).toFixed(2));
+
+            const tod = this.computeTimeOfDayDistribution(valid);
+
+            const durationBuckets = {
+                under15m: 0,
+                from15to30m: 0,
+                from30to60m: 0,
+                from60to90m: 0,
+                above90m: 0
+            };
+            valid.forEach(s => {
+                const m = s.durationMinutes;
+                if (m < 15) durationBuckets.under15m++;
+                else if (m <= 30) durationBuckets.from15to30m++;
+                else if (m <= 60) durationBuckets.from30to60m++;
+                else if (m <= 90) durationBuckets.from60to90m++;
+                else durationBuckets.above90m++;
+            });
+
+            const tagBreakdown = this.computeTagBreakdown(valid, totalSec);
+
+            const dowMap = { "Mon": 0, "Tue": 0, "Wed": 0, "Thu": 0, "Fri": 0, "Sat": 0, "Sun": 0 };
+            valid.forEach(s => {
+                if (s.date) {
+                    const d = new Date(s.date + 'T12:00:00');
+                    const dow = d.toLocaleDateString('en-US', { weekday: 'short' });
+                    if (dowMap[dow] !== undefined) dowMap[dow] += s.durationSeconds;
+                }
+            });
+            const dowBreakdown = Object.entries(dowMap).map(([day, sec]) => ({
+                day: day,
+                hours: parseFloat((sec / 3600).toFixed(2))
+            }));
+
+            let totalTasks = 0;
+            let completedTasks = 0;
+            ds.goals.forEach(g => {
+                if (Array.isArray(g.tasks)) {
+                    totalTasks += g.tasks.length;
+                    completedTasks += g.tasks.filter(t => t.done).length;
+                }
+            });
+
+            return {
+                mode: 'profile',
+                datasetOverview: {
+                    totalHours: totalHours,
+                    totalValidSessions: valid.length,
+                    totalMicroSessions: ds.microSessions.length,
+                    totalTrackedSubjects: ds.tags.length,
+                    totalActiveGoals: ds.goals.length,
+                    totalTrackedHabits: ds.habits.length
+                },
+                timeOfDayProfile: tod,
+                sessionDepthDistribution: durationBuckets,
+                dayOfWeekProfile: dowBreakdown,
+                subjectAllocation: tagBreakdown,
+                goalsExecution: {
+                    totalTasksTracked: totalTasks,
+                    completedTasks: completedTasks,
+                    taskCompletionRatePct: totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0
+                }
+            };
+        },
+
+        getPayloadForMode: function(mode) {
+            switch (mode) {
+                case 'today': return this.compileTodayPayload();
+                case 'week': return this.compileWeekPayload();
+                case 'month': return this.compileMonthPayload();
+                case 'long_term': return this.compileLongTermPayload();
+                case 'profile': return this.compileProfilePayload();
+                default: return this.compileTodayPayload();
+            }
+        },
+
+        isDatasetEmpty: function(payload) {
+            if (!payload) return true;
+            if (payload.mode === 'today') return payload.metrics.validSessionCount === 0;
+            if (payload.mode === 'week') return payload.metrics.validSessionsCount === 0;
+            if (payload.mode === 'month') return payload.metrics.validSessionsCount === 0;
+            if (payload.mode === 'long_term') return payload.metrics.allTimeValidSessionsCount === 0;
+            if (payload.mode === 'profile') return payload.datasetOverview.totalValidSessions === 0;
+            return false;
+        }
+    };
+
+    // -------------------------------------------------------------
+    // 4. PROMPT MANAGER (System + Mode-Specific Strict Prompts)
+    // -------------------------------------------------------------
+    const promptManager = {
+        buildPrompt: function(mode, payload, lang) {
+            const isAr = (lang === 'ar');
+
+            const systemRole = `You are the INDEX AI Study Analysis Agent embedded directly inside INDEX, an elite personal medical and clinical productivity application.
+Your mission is to provide rigorous, evidence-grounded cognitive performance analysis and actionable strategies based STRICTLY on the empirical study metrics provided in the JSON payload.
+RULES:
+1. Ground every single observation, strength, problem, pattern, and hypothesis in the empirical JSON payload. Never hallucinate numbers, sessions, or subjects not present.
+2. If language is Arabic, respond ENTIRELY in professional, sophisticated, and encouraging Arabic for all text fields. Keep the JSON object keys exactly in English.
+3. Be direct, analytical, and highly actionable. Avoid vague clichés like "make a schedule". Specify exact hours, time-windows, and subject adjustments.
+4. Output STRICTLY a single valid JSON object. Do not include markdown code fences, comments, or any prose outside the JSON.`;
+
+            let schemaInstructions = '';
+            let modeInstructions = '';
+
+            if (mode === 'profile') {
+                schemaInstructions = `Return a valid JSON object matching this schema:
+{
+  "summary": "High-level cognitive and behavioral study profile synthesis",
+  "behavior_dimensions": [
+    { "dimension": "Chronotype & Energy Windows", "trait": "Trait headline", "insight": "Evidence-based insight" },
+    { "dimension": "Focus Endurance & Session Depth", "trait": "Trait headline", "insight": "Evidence-based insight" },
+    { "dimension": "Rhythm & Consistency", "trait": "Trait headline", "insight": "Evidence-based insight" },
+    { "dimension": "Subject Allocation & Balance", "trait": "Trait headline", "insight": "Evidence-based insight" },
+    { "dimension": "Task & Lecture Execution Velocity", "trait": "Trait headline", "insight": "Evidence-based insight" },
+    { "dimension": "Discipline & Habit Adherence", "trait": "Trait headline", "insight": "Evidence-based insight" }
+  ],
+  "hypotheses_matrix": [
+    {
+      "hypothesis": "Hypothesis statement about user's study behavior",
+      "status": "SUPPORTED", // Must be one of: "SUPPORTED", "POSSIBLE", "UNSUPPORTED"
+      "evidence": "Specific evidence from the empirical data supporting or rejecting this"
+    }
+  ],
+  "what_works": [
+    "High-yield study condition or pattern that produces peak focus"
+  ],
+  "what_does_not_work": [
+    "Low-yield pattern, friction point, or distraction pattern"
+  ],
+  "priority_action": "The single highest-leverage systemic behavioral change",
+  "strategic_recommendations": [
+    "Long-term personalized operating rule 1",
+    "Long-term personalized operating rule 2"
+  ]
+}`;
+                modeInstructions = `Analyze the student's complete historical study dataset. Identify their cognitive chronotype, session endurance, subject diversification, and task velocity. Produce 4-5 testable hypotheses evaluated as SUPPORTED, POSSIBLE, or UNSUPPORTED with empirical proof. Detail what conditions work vs what does not work.`;
+            } else {
+                schemaInstructions = `Return a valid JSON object matching this schema:
+{
+  "summary": "Executive analytical summary of performance for this period",
+  "key_findings": [
+    "Finding 1 with data citation",
+    "Finding 2 with data citation"
+  ],
+  "strengths": [
+    "High-performance strength or positive momentum observed",
+    "Another strength"
+  ],
+  "problems": [
+    "Identified risk, fatigue, imbalance, or friction point",
+    "Another area for adjustment"
+  ],
+  "patterns": [
+    "Temporal, behavioral, or subject allocation pattern detected",
+    "Another pattern"
+  ],
+  "priority_action": "The single most impactful immediate action to take next",
+  "recommendations": [
+    "Actionable step 1",
+    "Actionable step 2",
+    "Actionable step 3"
+  ]
+}`;
+                if (mode === 'today') {
+                    modeInstructions = `Analyze today's study performance. Evaluate momentum, subject concentration, peak hours vs fatigue, comparison with yesterday, and provide immediate priority guidance for tonight or tomorrow morning.`;
+                } else if (mode === 'week') {
+                    modeInstructions = `Analyze this week's study performance (Saturday to Friday cycle). Evaluate daily consistency, standard deviation, subject balance vs neglect, goal progression, and weekend drift.`;
+                } else if (mode === 'month') {
+                    modeInstructions = `Analyze this month's study stamina and trends. Evaluate weekly pacing shifts (Week 1 through 4), habit consistency rates, active day ratio, and subject dedication.`;
+                } else if (mode === 'long_term') {
+                    modeInstructions = `Analyze all-time historical study trajectories. Evaluate macro endurance, monthly growth or plateau patterns, subject mastery lifecycles, and burnout resilience.`;
+                }
+            }
+
+            const langDirective = isAr
+                ? "IMPORTANT: All text in 'summary', 'key_findings', 'strengths', 'problems', 'patterns', 'priority_action', 'recommendations', 'trait', 'insight', 'hypothesis', 'evidence', 'what_works', 'what_does_not_work', 'strategic_recommendations' MUST BE IN ARABIC. Use clear, motivating, professional medical/academic Arabic."
+                : "All text values must be in clear, professional English.";
+
+            return `${systemRole}
+
+MODE: ${mode.toUpperCase()}
+${modeInstructions}
+
+LANGUAGE DIRECTIVE:
+${langDirective}
+
+JSON SCHEMA REQUIREMENT:
+${schemaInstructions}
+
+EMPIRICAL STUDY DATA (JSON):
+${JSON.stringify(payload, null, 2)}`;
+        }
+    };
+
+    // -------------------------------------------------------------
+    // 5. GEMINI CLIENT (Direct API Call with Robust Error Catching)
+    // -------------------------------------------------------------
+    const geminiClient = {
+        callGemini: async function(promptText, apiKey) {
+            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`;
+            const body = {
+                contents: [
+                    {
+                        role: "user",
+                        parts: [{ text: promptText }]
+                    }
+                ],
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    temperature: 0.2
+                }
+            };
+
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+
+            if (!response.ok) {
+                const errData = await response.json().catch(() => ({}));
+                const errMsg = (errData && errData.error && errData.error.message) || response.statusText;
+                const error = new Error(errMsg);
+                error.status = response.status;
+                error.details = errData;
+                throw error;
+            }
+
+            const data = await response.json();
+            const candidate = data.candidates && data.candidates[0];
+            const contentPart = candidate && candidate.content && candidate.content.parts && candidate.content.parts[0];
+            if (!contentPart || !contentPart.text) {
+                throw new Error("No text content returned from Gemini API.");
+            }
+            return contentPart.text;
+        }
+    };
+
+    // -------------------------------------------------------------
+    // 6. RESPONSE PARSER (Safe Parsing, Fence Stripping, Fallback)
+    // -------------------------------------------------------------
+    const responseParser = {
+        cleanJsonString: function(str) {
+            if (!str) return '';
+            let cleaned = str.trim();
+            cleaned = cleaned.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
+            return cleaned;
+        },
+
+        parse: function(rawText, mode) {
+            const cleaned = this.cleanJsonString(rawText);
+            let parsed = null;
+            try {
+                parsed = JSON.parse(cleaned);
+            } catch (e) {
+                console.warn("[IndexAiAgent] Primary JSON parse failed, attempting regex extraction:", e);
+                const match = cleaned.match(/\{[\s\S]*\}/);
+                if (match) {
+                    try {
+                        parsed = JSON.parse(match[0]);
+                    } catch (e2) {
+                        console.error("[IndexAiAgent] Fallback regex parse failed:", e2);
+                    }
+                }
+            }
+
+            if (!parsed || typeof parsed !== 'object') {
+                throw new Error("Invalid response format received from AI model.");
+            }
+            return parsed;
+        }
+    };
+
+    // -------------------------------------------------------------
+    // 7. CACHE (Scoped by User, Mode, Date Range & Data Hash)
+    // -------------------------------------------------------------
+    const cache = {
+        PREFIX: 'index_ai_cache_',
+
+        getRangeKey: function(mode) {
+            const now = new Date();
+            const toIso = d => typeof getLocalISODate === 'function' ? getLocalISODate(d) : d.toISOString().split('T')[0];
+            if (mode === 'today') return toIso(now);
+            if (mode === 'week') {
+                const ws = typeof getWeekStartSaturday === 'function' ? getWeekStartSaturday(now) : now;
+                return `w_${toIso(ws)}`;
+            }
+            if (mode === 'month') return `m_${now.getFullYear()}_${now.getMonth() + 1}`;
+            if (mode === 'long_term') return 'all_time';
+            if (mode === 'profile') return 'profile';
+            return 'default';
+        },
+
+        getCacheKey: function(mode, hash) {
+            const uid = apiKeyManager.getCurrentUid();
+            const rangeKey = this.getRangeKey(mode);
+            const lang = typeof currentSystemLanguage !== 'undefined' ? currentSystemLanguage : 'en';
+            return `${this.PREFIX}${uid}_${mode}_${rangeKey}_${lang}_${hash}`;
+        },
+
+        get: function(mode, hash) {
+            try {
+                const key = this.getCacheKey(mode, hash);
+                const val = localStorage.getItem(key);
+                if (!val) return null;
+                return JSON.parse(val);
+            } catch (e) {
+                return null;
+            }
+        },
+
+        set: function(mode, hash, data) {
+            try {
+                const key = this.getCacheKey(mode, hash);
+                localStorage.setItem(key, JSON.stringify({
+                    timestamp: Date.now(),
+                    data: data
+                }));
+            } catch (e) {
+                console.warn("[IndexAiAgent] Cache storage warning:", e);
+            }
+        }
+    };
+
+    // -------------------------------------------------------------
+    // 8. RENDERER (Obsidian-and-Gold Luxury Interface Cards)
+    // -------------------------------------------------------------
+    const renderer = {
+        escapeHtml: function(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        },
+
+        renderSetupCard: function(container) {
+            const isAr = (typeof currentSystemLanguage !== 'undefined' && currentSystemLanguage === 'ar');
+            container.innerHTML = `
+                <div class="ai-setup-card">
+                    <div class="ai-setup-icon">✨</div>
+                    <h4>${isAr ? 'تفعيل وكيل التحليل بالذكاء الاصطناعي' : 'Activate AI Study Analyst'}</h4>
+                    <p class="ai-setup-desc">
+                        ${isAr
+                            ? 'أدخل مفتاح Google Gemini API الخاص بك لبدء تحليل عاداتك الدراسية وكشف الأنماط الخفية وتقديم استراتيجيات فورية مخصصة. يتم حفظ المفتاح محلياً على جهازك وبأمان تام.'
+                            : 'Enter your Google Gemini API key to activate real-time cognitive performance analysis, pattern discovery, and personalized study strategies. Your key is stored securely in your private profile in your browser.'}
+                    </p>
+                    <div class="ai-key-input-wrapper">
+                        <input type="password" id="ai-setup-key-input" class="ai-key-input" placeholder="AIzaSy..." autocomplete="off" spellcheck="false">
+                        <button type="button" class="ai-key-toggle-vis" onclick="IndexAiAgent.toggleKeyVisibility('ai-setup-key-input')">👁️</button>
+                    </div>
+                    <div class="ai-setup-help">
+                        ${isAr ? 'ليس لديك مفتاح؟' : 'Don\'t have an API key?'}
+                        <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer">
+                            ${isAr ? 'احصل على مفتاح مجاني من Google AI Studio &larr;' : 'Get a free key from Google AI Studio &rarr;'}
+                        </a>
+                    </div>
+                    <div id="ai-setup-error" style="display:none; margin-bottom:12px; font-size:12px; color:#ff6b6b; font-weight:700;"></div>
+                    <button class="export-btn ai-trigger-btn" onclick="IndexAiAgent.saveKeyFromSetup()" style="width:100%; padding:10px; font-size:13px;">
+                        ✨ ${isAr ? 'حفظ المفتاح وبدء التحليل' : 'Save Key & Launch Analysis'}
+                    </button>
+                </div>
+            `;
+        },
+
+        renderLoading: function(container, mode) {
+            const isAr = (typeof currentSystemLanguage !== 'undefined' && currentSystemLanguage === 'ar');
+            const modeTitles = {
+                today: isAr ? 'تحليل جلسات وتيرة اليوم...' : 'Analyzing today\'s study sessions...',
+                week: isAr ? 'تحليل الأداء الأسبوعي وتوازن المواد...' : 'Analyzing weekly pacing and subject balance...',
+                month: isAr ? 'فحص قدرة التحمل الشهرية والسلاسل...' : 'Evaluating monthly stamina and streaks...',
+                long_term: isAr ? 'استقراء المنحنى الشامل وتطور الأداء...' : 'Synthesizing all-time growth curve...',
+                profile: isAr ? 'بناء الملف الإدراكي واختبار الفرضيات...' : 'Synthesizing cognitive profile and hypotheses...'
+            };
+
+            container.innerHTML = `
+                <div class="ai-loading-box">
+                    <div class="ai-pulse-ring"></div>
+                    <div class="ai-loading-title">${modeTitles[mode] || (isAr ? 'جاري التحليل...' : 'Analyzing...')}</div>
+                    <div class="ai-loading-sub">
+                        ${isAr ? 'يتم معالجة البيانات الإحصائية وتوليد الرؤى عبر Google Gemini AI...' : 'Crunching statistical distributions and querying Google Gemini AI...'}
+                    </div>
+                </div>
+            `;
+        },
+
+        renderError: function(container, error, mode) {
+            const isAr = (typeof currentSystemLanguage !== 'undefined' && currentSystemLanguage === 'ar');
+            const isKeyError = error.status === 400 || error.status === 401 || error.status === 403;
+            const isRateLimit = error.status === 429;
+
+            let title = isAr ? 'حدث خطأ أثناء التحليل' : 'Analysis Encountered an Error';
+            let desc = error.message || (isAr ? 'تعذر إكمال طلب التحليل.' : 'Unable to complete the analysis.');
+
+            if (isKeyError) {
+                title = isAr ? 'مفتاح Gemini API غير صالح أو انتهت صلاحيته' : 'Your Gemini API Key Is No Longer Working';
+                desc = isAr
+                    ? 'تعذر التحقق من مفتاح API مع خوادم Google Gemini. يرجى تحديث المفتاح أو التحقق من تفعيله في Google AI Studio.'
+                    : 'Your Gemini API key could not be authenticated or does not have access. Please update your API key to continue.';
+            } else if (isRateLimit) {
+                title = isAr ? 'تم تجاوز حد الطلبات مؤقتاً' : 'Gemini Rate Limit Exceeded';
+                desc = isAr
+                    ? 'لقد وصلت إلى حد الطلبات المؤقت لـ Gemini API. يرجى الانتظار دقيقة واحدة ثم إعادة المحاولة.'
+                    : 'You have reached the temporary rate limit for your Gemini API key. Please wait a minute and retry.';
+            }
+
+            container.innerHTML = `
+                <div class="ai-error-box">
+                    <div class="ai-error-icon">⚠️</div>
+                    <div class="ai-error-title">${title}</div>
+                    <div class="ai-error-desc">${desc}</div>
+                    <div class="ai-error-actions">
+                        ${isKeyError ? `
+                            <button class="export-btn ai-trigger-btn" onclick="IndexAiAgent.openKeyModal()">
+                                🔑 ${isAr ? 'تحديث المفتاح' : 'Update API Key'}
+                            </button>
+                        ` : `
+                            <button class="export-btn ai-trigger-btn" onclick="IndexAiAgent.runCurrentMode(true)">
+                                🔄 ${isAr ? 'إعادة المحاولة' : 'Retry'}
+                            </button>
+                        `}
+                    </div>
+                </div>
+            `;
+        },
+
+        renderEmpty: function(container, mode) {
+            const isAr = (typeof currentSystemLanguage !== 'undefined' && currentSystemLanguage === 'ar');
+            const modeEmptyText = {
+                today: isAr ? 'لم تقم بتسجيل أي جلسات دراسية اليوم حتى الآن.' : 'No study sessions have been recorded for today yet.',
+                week: isAr ? 'لا توجد جلسات دراسية مسجلة في هذا الأسبوع.' : 'No study sessions recorded in the current week.',
+                month: isAr ? 'لا توجد جلسات دراسية مسجلة في هذا الشهر.' : 'No study sessions recorded in the current month.',
+                long_term: isAr ? 'لا توجد أي بيانات دراسية سابقة في سجلك حتى الآن.' : 'No archived study data found in your history yet.',
+                profile: isAr ? 'سجل الدراسة فارغ، قم بإنجاز جلسات دراسية لإنشاء ملفك الإدراكي.' : 'Your study history is empty. Complete some sessions to build your profile.'
+            };
+
+            container.innerHTML = `
+                <div class="ai-empty-box">
+                    <div class="ai-empty-icon">⏱️</div>
+                    <h4 style="color:var(--accent-orange); margin-bottom:8px; font-weight:800;">
+                        ${isAr ? 'لا توجد بيانات دراسية كافية' : 'No Study Data for This Period'}
+                    </h4>
+                    <p style="font-size:12.5px; line-height:1.5; max-width:440px; margin:0 auto 16px auto;">
+                        ${modeEmptyText[mode] || (isAr ? 'ابدأ جلسة جديدة عبر المؤقت لتفعيل التحليل الذكي.' : 'Start a study session with the timer to unlock AI analytics.')}
+                    </p>
+                    <button class="export-btn ai-trigger-btn" onclick="IndexAiAgent.closeModal(); activateScreen('timer-tab', 'screen-timer');">
+                        ▶ ${isAr ? 'ابدأ جلسة الآن' : 'Start a Session Now'}
+                    </button>
+                </div>
+            `;
+        },
+
+        renderMetricsRow: function(mode, payload) {
+            const isAr = (typeof currentSystemLanguage !== 'undefined' && currentSystemLanguage === 'ar');
+            let pills = [];
+
+            if (mode === 'today') {
+                const m = payload.metrics;
+                pills.push({ label: isAr ? 'إجمالي اليوم' : 'Total Study', val: `${m.totalHours} ${isAr ? 'ساعة' : 'Hrs'}`, sub: `${m.totalMinutes} ${isAr ? 'دقيقة' : 'min'}` });
+                pills.push({ label: isAr ? 'الجلسات' : 'Sessions', val: m.validSessionCount, sub: m.microSessionNoiseCount > 0 ? `+${m.microSessionNoiseCount} ${isAr ? 'تشويش' : 'micro'}` : (isAr ? 'جلسات فعلية' : 'completed') });
+                pills.push({ label: isAr ? 'معدل الجلسة' : 'Avg Session', val: `${m.averageSessionMinutes} ${isAr ? 'د' : 'min'}`, sub: isAr ? 'العمق الإدراكي' : 'depth' });
+                const diffTxt = m.hoursDiffVsYesterday >= 0 ? `+${m.hoursDiffVsYesterday}h` : `${m.hoursDiffVsYesterday}h`;
+                pills.push({ label: isAr ? 'مقارنة بأمس' : 'Vs Yesterday', val: diffTxt, sub: m.yesterdayHours > 0 ? `${m.hoursChangePercent > 0 ? '+' : ''}${m.hoursChangePercent}%` : (isAr ? 'أمس: 0' : 'yesterday: 0') });
+            } else if (mode === 'week') {
+                const m = payload.metrics;
+                pills.push({ label: isAr ? 'إجمالي الأسبوع' : 'Week Total', val: `${m.totalHours} ${isAr ? 'ساعة' : 'Hrs'}`, sub: `${m.validSessionsCount} ${isAr ? 'جلسة' : 'sessions'}` });
+                pills.push({ label: isAr ? 'أيام النشاط' : 'Active Days', val: `${m.activeDaysCount}/7`, sub: isAr ? 'أيام دراسية' : 'days active' });
+                pills.push({ label: isAr ? 'معدل اليوم النشط' : 'Active Day Avg', val: `${m.averageActiveDayHours}h`, sub: isAr ? 'لكل يوم دراسة' : 'per active day' });
+                pills.push({ label: isAr ? 'الاستمرارية (تشتت)' : 'Consistency (σ)', val: m.dailyConsistencyStdDev, sub: m.dailyConsistencyStdDev <= 1 ? (isAr ? 'ممتازة' : 'high stability') : (isAr ? 'متفاوتة' : 'variable') });
+            } else if (mode === 'month') {
+                const m = payload.metrics;
+                pills.push({ label: isAr ? 'إجمالي الشهر' : 'Month Total', val: `${m.totalHours} ${isAr ? 'ساعة' : 'Hrs'}`, sub: `${m.validSessionsCount} ${isAr ? 'جلسة' : 'sessions'}` });
+                pills.push({ label: isAr ? 'نسبة الالتزام' : 'Active Ratio', val: `${m.activeDayRatioPercent}%`, sub: `${m.activeDaysCount}/${m.daysInMonth} ${isAr ? 'يوم' : 'days'}` });
+                pills.push({ label: isAr ? 'مقارنة بالشهر السابق' : 'Vs Prev Month', val: `${m.hoursDiffVsPrevMonth >= 0 ? '+' : ''}${m.hoursDiffVsPrevMonth}h`, sub: m.hoursChangePercent !== null ? `${m.hoursChangePercent}%` : '--' });
+                pills.push({ label: isAr ? 'المواد النشطة' : 'Active Subjects', val: (payload.subjectBreakdown || []).length, sub: isAr ? 'تنوع المحتوى' : 'diversification' });
+            } else if (mode === 'long_term') {
+                const m = payload.metrics;
+                pills.push({ label: isAr ? 'الرصيد التاريخي' : 'All-Time Total', val: `${m.allTimeTotalHours}h`, sub: `${m.allTimeValidSessionsCount} ${isAr ? 'جلسة' : 'sessions'}` });
+                pills.push({ label: isAr ? 'الأيام النشطة' : 'Total Active Days', val: m.allTimeActiveDaysCount, sub: isAr ? 'يوماً مسجلاً' : 'days logged' });
+                pills.push({ label: isAr ? 'أعلى يوم دراسي' : 'Best Single Day', val: `${m.bestSingleDay.hours}h`, sub: m.bestSingleDay.date || '--' });
+                pills.push({ label: isAr ? 'معدل الجلسة' : 'Avg Duration', val: `${m.averageSessionMinutes}m`, sub: isAr ? 'المتوسط التراكمي' : 'all-time avg' });
+            } else if (mode === 'profile') {
+                const o = payload.datasetOverview;
+                pills.push({ label: isAr ? 'إجمالي الساعات' : 'Total Hours', val: `${o.totalHours}h`, sub: `${o.totalValidSessions} ${isAr ? 'جلسة' : 'sessions'}` });
+                pills.push({ label: isAr ? 'المواد المعتمدة' : 'Tracked Subjects', val: o.totalTrackedSubjects, sub: isAr ? 'مادة دراسية' : 'subjects' });
+                pills.push({ label: isAr ? 'إنجاز المهام' : 'Tasks Velocity', val: `${payload.goalsExecution.taskCompletionRatePct}%`, sub: `${payload.goalsExecution.completedTasks}/${payload.goalsExecution.totalTasksTracked}` });
+                pills.push({ label: isAr ? 'ساعة الذروة' : 'Peak Chronotype', val: payload.timeOfDayProfile.peakHourLabel.split(' ')[0], sub: isAr ? 'أعلى تركيز' : 'optimal window' });
+            }
+
+            return `
+                <div class="ai-metrics-row">
+                    ${pills.map(p => `
+                        <div class="ai-metric-pill">
+                            <div class="ai-pill-label">${p.label}</div>
+                            <div class="ai-pill-val">${p.val}</div>
+                            <div class="ai-pill-sub">${p.sub}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        },
+
+        renderStandardResults: function(container, mode, payload, data) {
+            const isAr = (typeof currentSystemLanguage !== 'undefined' && currentSystemLanguage === 'ar');
+            const metricsHtml = this.renderMetricsRow(mode, payload);
+
+            container.innerHTML = `
+                <div class="ai-results-container">
+                    ${metricsHtml}
+
+                    <!-- Priority Action Card -->
+                    ${data.priority_action ? `
+                        <div class="ai-priority-card">
+                            <div class="ai-priority-icon">⚡</div>
+                            <div>
+                                <div class="ai-priority-title">${isAr ? 'الإجراء ذو الأولوية القصوى' : 'PRIORITY ACTION'}</div>
+                                <div class="ai-priority-text">${this.escapeHtml(data.priority_action)}</div>
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    <!-- Executive Summary -->
+                    ${data.summary ? `
+                        <div class="ai-section-box">
+                            <div class="ai-section-header">
+                                <div class="ai-section-title">✨ ${isAr ? 'الملخص التحليلي التنفيذي' : 'EXECUTIVE SUMMARY'}</div>
+                            </div>
+                            <div class="ai-summary-text">${this.escapeHtml(data.summary)}</div>
+                        </div>
+                    ` : ''}
+
+                    <!-- Two-Column Grid: Strengths & Improvements -->
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px;">
+                        <!-- Strengths -->
+                        <div class="ai-section-box">
+                            <div class="ai-section-header">
+                                <div class="ai-section-title" style="color:#2ecc71;">
+                                    ✓ ${isAr ? 'نقاط القوة والإنجاز' : 'STRENGTHS & MOMENTUM'}
+                                </div>
+                            </div>
+                            <div style="display:flex; flex-direction:column; gap:8px;">
+                                ${(data.strengths || []).map(s => `
+                                    <div class="ai-card strength">
+                                        <span style="color:#2ecc71; font-weight:800;">✓</span>
+                                        <span>${this.escapeHtml(s)}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Areas for Adjustment -->
+                        <div class="ai-section-box">
+                            <div class="ai-section-header">
+                                <div class="ai-section-title" style="color:#ff6b6b;">
+                                    ⚠️ ${isAr ? 'نقاط تتطلب التدخل والتعديل' : 'AREAS FOR ADJUSTMENT'}
+                                </div>
+                            </div>
+                            <div style="display:flex; flex-direction:column; gap:8px;">
+                                ${(data.problems || []).map(p => `
+                                    <div class="ai-card problem">
+                                        <span style="color:#ff6b6b; font-weight:800;">!</span>
+                                        <span>${this.escapeHtml(p)}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Detected Patterns -->
+                    ${(data.patterns && data.patterns.length > 0) ? `
+                        <div class="ai-section-box">
+                            <div class="ai-section-header">
+                                <div class="ai-section-title">🔍 ${isAr ? 'الأنماط والسلوكيات المكتشفة' : 'DETECTED PATTERNS'}</div>
+                            </div>
+                            <div class="ai-card-grid">
+                                ${data.patterns.map(pat => `
+                                    <div class="ai-card pattern">
+                                        <span style="color:#3498db; font-weight:800;">•</span>
+                                        <span>${this.escapeHtml(pat)}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    <!-- Actionable Recommendations -->
+                    ${(data.recommendations && data.recommendations.length > 0) ? `
+                        <div class="ai-section-box">
+                            <div class="ai-section-header">
+                                <div class="ai-section-title">🎯 ${isAr ? 'توصيات عملية مباشرة' : 'ACTIONABLE RECOMMENDATIONS'}</div>
+                            </div>
+                            <div class="ai-rec-list">
+                                ${data.recommendations.map((rec, i) => `
+                                    <div class="ai-rec-item">
+                                        <div class="ai-rec-number">${i + 1}</div>
+                                        <div>${this.escapeHtml(rec)}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        },
+
+        renderProfileResults: function(container, payload, data) {
+            const isAr = (typeof currentSystemLanguage !== 'undefined' && currentSystemLanguage === 'ar');
+            const metricsHtml = this.renderMetricsRow('profile', payload);
+
+            container.innerHTML = `
+                <div class="ai-results-container">
+                    ${metricsHtml}
+
+                    <!-- Priority Action Card -->
+                    ${data.priority_action ? `
+                        <div class="ai-priority-card">
+                            <div class="ai-priority-icon">🧬</div>
+                            <div>
+                                <div class="ai-priority-title">${isAr ? 'التعديل الاستراتيجي الأساسي' : 'PRIMARY STRATEGIC DIRECTIVE'}</div>
+                                <div class="ai-priority-text">${this.escapeHtml(data.priority_action)}</div>
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    <!-- Executive Summary -->
+                    ${data.summary ? `
+                        <div class="ai-section-box">
+                            <div class="ai-section-header">
+                                <div class="ai-section-title">✨ ${isAr ? 'الملف الإدراكي والسلوكي الشامل' : 'COGNITIVE & BEHAVIORAL PROFILE'}</div>
+                            </div>
+                            <div class="ai-summary-text">${this.escapeHtml(data.summary)}</div>
+                        </div>
+                    ` : ''}
+
+                    <!-- 6 Behavioral Dimensions Grid -->
+                    ${(data.behavior_dimensions && data.behavior_dimensions.length > 0) ? `
+                        <div class="ai-section-box">
+                            <div class="ai-section-header">
+                                <div class="ai-section-title">📊 ${isAr ? 'أبعاد السلوك والإنتاجية' : 'BEHAVIORAL DIMENSIONS'}</div>
+                            </div>
+                            <div class="ai-profile-dimensions-grid">
+                                ${data.behavior_dimensions.map(dim => `
+                                    <div class="ai-dimension-card">
+                                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                                            <span class="ai-dim-title">${this.escapeHtml(dim.dimension)}</span>
+                                            ${dim.trait ? `<span style="font-size:10px; font-weight:800; background:rgba(217,165,74,0.18); color:var(--accent-orange); padding:2px 7px; border-radius:5px;">${this.escapeHtml(dim.trait)}</span>` : ''}
+                                        </div>
+                                        <div class="ai-dim-text">${this.escapeHtml(dim.insight)}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    <!-- Hypotheses Matrix -->
+                    ${(data.hypotheses_matrix && data.hypotheses_matrix.length > 0) ? `
+                        <div class="ai-section-box">
+                            <div class="ai-section-header">
+                                <div class="ai-section-title">🔬 ${isAr ? 'مصفوفة الفرضيات الميدانية' : 'EMPIRICAL HYPOTHESES MATRIX'}</div>
+                            </div>
+                            <div class="ai-hypo-grid">
+                                ${data.hypotheses_matrix.map(h => {
+                                    const st = (h.status || 'POSSIBLE').toUpperCase();
+                                    const badgeClass = st === 'SUPPORTED' ? 'supported' : st === 'UNSUPPORTED' ? 'unsupported' : 'possible';
+                                    const badgeText = st === 'SUPPORTED' ? (isAr ? 'مثبت بالبيانات ✓' : 'SUPPORTED') : st === 'UNSUPPORTED' ? (isAr ? 'غير مثبت ✕' : 'UNSUPPORTED') : (isAr ? 'محتمل ?' : 'POSSIBLE');
+                                    return `
+                                        <div class="ai-hypo-card">
+                                            <div class="ai-hypo-content">
+                                                <div class="ai-hypo-name">${this.escapeHtml(h.hypothesis)}</div>
+                                                <div class="ai-hypo-evidence"><strong>${isAr ? 'الدليل الإحصائي:' : 'Evidence:'}</strong> ${this.escapeHtml(h.evidence)}</div>
+                                            </div>
+                                            <div class="ai-hypo-status-badge ${badgeClass}">${badgeText}</div>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    <!-- What Works vs What Doesn't Work -->
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px;">
+                        <div class="ai-section-box">
+                            <div class="ai-section-header">
+                                <div class="ai-section-title" style="color:#2ecc71;">
+                                    ⚡ ${isAr ? 'ما ينجح معك (عالي المردود)' : 'WHAT WORKS (HIGH YIELD)'}
+                                </div>
+                            </div>
+                            <div style="display:flex; flex-direction:column; gap:8px;">
+                                ${(data.what_works || []).map(w => `
+                                    <div class="ai-card strength">
+                                        <span style="color:#2ecc71; font-weight:800;">✓</span>
+                                        <span>${this.escapeHtml(w)}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div class="ai-section-box">
+                            <div class="ai-section-header">
+                                <div class="ai-section-title" style="color:#ff6b6b;">
+                                    ⚠️ ${isAr ? 'ما لا ينجح معك (نقاط احتكاك)' : 'WHAT DOES NOT WORK (FRICTION)'}
+                                </div>
+                            </div>
+                            <div style="display:flex; flex-direction:column; gap:8px;">
+                                ${(data.what_does_not_work || []).map(nw => `
+                                    <div class="ai-card problem">
+                                        <span style="color:#ff6b6b; font-weight:800;">✕</span>
+                                        <span>${this.escapeHtml(nw)}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Strategic Recommendations -->
+                    ${(data.strategic_recommendations && data.strategic_recommendations.length > 0) ? `
+                        <div class="ai-section-box">
+                            <div class="ai-section-header">
+                                <div class="ai-section-title">🏛️ ${isAr ? 'القواعد التشغيلية الاستراتيجية' : 'STRATEGIC OPERATING RULES'}</div>
+                            </div>
+                            <div class="ai-rec-list">
+                                ${data.strategic_recommendations.map((rule, idx) => `
+                                    <div class="ai-rec-item">
+                                        <div class="ai-rec-number">${idx + 1}</div>
+                                        <div>${this.escapeHtml(rule)}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+    };
+
+    // -------------------------------------------------------------
+    // 9. UI ORCHESTRATION & PUBLIC API
+    // -------------------------------------------------------------
+    return {
+        apiKeyManager: apiKeyManager,
+        normalizer: normalizer,
+        analyticsEngine: analyticsEngine,
+        promptManager: promptManager,
+        geminiClient: geminiClient,
+        responseParser: responseParser,
+        cache: cache,
+        renderer: renderer,
+
+        getActiveMode: function() {
+            return activeMode;
+        },
+
+        openModal: function() {
+            const modal = document.getElementById('ai-analysis-modal');
+            if (!modal) return;
+            modal.style.display = 'flex';
+            this.switchMode(activeMode);
+        },
+
+        closeModal: function() {
+            const modal = document.getElementById('ai-analysis-modal');
+            if (modal) modal.style.display = 'none';
+        },
+
+        openKeyModal: function() {
+            const modal = document.getElementById('ai-key-modal');
+            const input = document.getElementById('ai-gemini-key-input');
+            const removeBtn = document.getElementById('ai-key-remove-btn');
+            const errEl = document.getElementById('ai-key-error-msg');
+            if (errEl) errEl.style.display = 'none';
+
+            const currentKey = apiKeyManager.getKey();
+            if (input) input.value = currentKey || '';
+            if (removeBtn) removeBtn.style.display = currentKey ? 'inline-block' : 'none';
+            if (modal) modal.style.display = 'flex';
+        },
+
+        closeKeyModal: function() {
+            const modal = document.getElementById('ai-key-modal');
+            if (modal) modal.style.display = 'none';
+        },
+
+        toggleKeyVisibility: function(inputId = 'ai-gemini-key-input') {
+            const input = document.getElementById(inputId);
+            if (input) {
+                input.type = input.type === 'password' ? 'text' : 'password';
+            }
+        },
+
+        saveKeyFromInput: function() {
+            const input = document.getElementById('ai-gemini-key-input');
+            const errEl = document.getElementById('ai-key-error-msg');
+            const isAr = (typeof currentSystemLanguage !== 'undefined' && currentSystemLanguage === 'ar');
+
+            if (!input || !input.value.trim()) {
+                if (errEl) {
+                    errEl.innerText = isAr ? 'يرجى إدخال مفتاح Gemini API صالح.' : 'Please enter a valid Gemini API key.';
+                    errEl.style.display = 'block';
+                }
+                return;
+            }
+
+            apiKeyManager.setKey(input.value.trim());
+            this.closeKeyModal();
+            if (typeof showToast === 'function') {
+                showToast(isAr ? 'تم حفظ مفتاح API بنجاح!' : 'API Key saved successfully!', '', 'success');
+            }
+
+            const modal = document.getElementById('ai-analysis-modal');
+            if (modal && modal.style.display === 'flex') {
+                this.runCurrentMode(true);
+            }
+        },
+
+        saveKeyFromSetup: function() {
+            const input = document.getElementById('ai-setup-key-input');
+            const errEl = document.getElementById('ai-setup-error');
+            const isAr = (typeof currentSystemLanguage !== 'undefined' && currentSystemLanguage === 'ar');
+
+            if (!input || !input.value.trim()) {
+                if (errEl) {
+                    errEl.innerText = isAr ? 'يرجى إدخال مفتاح Gemini API.' : 'Please enter a valid Gemini API key.';
+                    errEl.style.display = 'block';
+                }
+                return;
+            }
+
+            apiKeyManager.setKey(input.value.trim());
+            if (typeof showToast === 'function') {
+                showToast(isAr ? 'تم تفعيل محلل الذكاء الاصطناعي بنجاح!' : 'AI Analyst activated successfully!', '', 'success');
+            }
+            this.runCurrentMode(true);
+        },
+
+        removeKey: function() {
+            const isAr = (typeof currentSystemLanguage !== 'undefined' && currentSystemLanguage === 'ar');
+            apiKeyManager.removeKey();
+            this.closeKeyModal();
+            if (typeof showToast === 'function') {
+                showToast(isAr ? 'تم حذف مفتاح API.' : 'API Key removed.', '', 'warning');
+            }
+            const body = document.getElementById('ai-modal-body');
+            if (body) renderer.renderSetupCard(body);
+        },
+
+        switchMode: function(mode) {
+            activeMode = mode;
+
+            // Update Tab UI
+            const tabs = document.querySelectorAll('.ai-tab-btn');
+            tabs.forEach(t => {
+                if (t.getAttribute('data-mode') === mode) t.classList.add('active');
+                else t.classList.remove('active');
+            });
+
+            // Update Description Bar
+            const descEl = document.getElementById('ai-mode-desc');
+            const isAr = (typeof currentSystemLanguage !== 'undefined' && currentSystemLanguage === 'ar');
+            const modeDescriptions = {
+                today: isAr ? 'تقييم تقدم اليوم، عمق التركيز، وتوزيع الوقت.' : 'Evaluating today\'s progress, focus depth, and pace.',
+                week: isAr ? 'تحليل وتيرة الأسبوع، الاستمرارية، وتوازن المواد.' : 'Analyzing weekly pacing, consistency, and subject balance.',
+                month: isAr ? 'مراجعة قدرة التحمل الشهرية، السلاسل، وتوزيع الجهد.' : 'Reviewing monthly endurance, streaks, and subject dedication.',
+                long_term: isAr ? 'استقراء المنحنى الشامل، التحمل، وتطور الأداء التاريخي.' : 'Synthesizing macro growth curve and long-term velocity.',
+                profile: isAr ? 'الملف الإدراكي المعمق: أبعاد السلوك، الفرضيات، وما ينجح معك.' : 'Deep cognitive profiling: behavioral dimensions and empirical hypotheses.'
+            };
+            if (descEl) descEl.innerText = modeDescriptions[mode] || '';
+
+            // Run analysis (auto-check cache)
+            this.runCurrentMode(false);
+        },
+
+        runCurrentMode: async function(forceRefresh = false) {
+            if (isAnalyzing) return;
+            const body = document.getElementById('ai-modal-body');
+            const cacheStatus = document.getElementById('ai-cache-status');
+            const copyBtn = document.getElementById('ai-copy-btn');
+            if (!body) return;
+
+            // 1. Check API Key
+            if (!apiKeyManager.hasKey()) {
+                renderer.renderSetupCard(body);
+                if (cacheStatus) cacheStatus.style.display = 'none';
+                if (copyBtn) copyBtn.style.display = 'none';
+                return;
+            }
+
+            const apiKey = apiKeyManager.getKey();
+            const payload = analyticsEngine.getPayloadForMode(activeMode);
+
+            // 2. Check Empty Dataset
+            if (analyticsEngine.isDatasetEmpty(payload)) {
+                renderer.renderEmpty(body, activeMode);
+                if (cacheStatus) cacheStatus.style.display = 'none';
+                if (copyBtn) copyBtn.style.display = 'none';
+                return;
+            }
+
+            // 3. Check Cache
+            const dataHash = analyticsEngine.computeDataHash();
+            if (!forceRefresh) {
+                const cachedEntry = cache.get(activeMode, dataHash);
+                if (cachedEntry && cachedEntry.data) {
+                    lastAnalysisResult = cachedEntry.data;
+                    if (cacheStatus) cacheStatus.style.display = 'inline-block';
+                    if (copyBtn) copyBtn.style.display = 'inline-flex';
+
+                    if (activeMode === 'profile') {
+                        renderer.renderProfileResults(body, payload, cachedEntry.data);
+                    } else {
+                        renderer.renderStandardResults(body, activeMode, payload, cachedEntry.data);
+                    }
+                    return;
+                }
+            }
+
+            // 4. Fetch Fresh Analysis via Gemini
+            isAnalyzing = true;
+            if (cacheStatus) cacheStatus.style.display = 'none';
+            if (copyBtn) copyBtn.style.display = 'none';
+            renderer.renderLoading(body, activeMode);
+
+            try {
+                const currentLang = typeof currentSystemLanguage !== 'undefined' ? currentSystemLanguage : 'en';
+                const prompt = promptManager.buildPrompt(activeMode, payload, currentLang);
+                const rawResponse = await geminiClient.callGemini(prompt, apiKey);
+                const parsedResult = responseParser.parse(rawResponse, activeMode);
+
+                // Cache the successful result
+                cache.set(activeMode, dataHash, parsedResult);
+                lastAnalysisResult = parsedResult;
+
+                if (copyBtn) copyBtn.style.display = 'inline-flex';
+                if (cacheStatus) cacheStatus.style.display = 'none';
+
+                if (activeMode === 'profile') {
+                    renderer.renderProfileResults(body, payload, parsedResult);
+                } else {
+                    renderer.renderStandardResults(body, activeMode, payload, parsedResult);
+                }
+            } catch (err) {
+                console.error("[IndexAiAgent] Analysis error:", err);
+                renderer.renderError(body, err, activeMode);
+            } finally {
+                isAnalyzing = false;
+            }
+        },
+
+        copyAnalysis: function() {
+            if (!lastAnalysisResult) return;
+            const isAr = (typeof currentSystemLanguage !== 'undefined' && currentSystemLanguage === 'ar');
+            const data = lastAnalysisResult;
+            let text = `INDEX AI STUDY ANALYSIS - ${activeMode.toUpperCase()}\n`;
+            text += `Generated: ${new Date().toLocaleString()}\n\n`;
+
+            if (data.summary) text += `SUMMARY:\n${data.summary}\n\n`;
+            if (data.priority_action) text += `PRIORITY ACTION:\n${data.priority_action}\n\n`;
+
+            if (data.strengths && data.strengths.length > 0) {
+                text += `STRENGTHS:\n${data.strengths.map(s => `• ${s}`).join('\n')}\n\n`;
+            }
+            if (data.problems && data.problems.length > 0) {
+                text += `AREAS FOR ADJUSTMENT:\n${data.problems.map(p => `• ${p}`).join('\n')}\n\n`;
+            }
+            if (data.patterns && data.patterns.length > 0) {
+                text += `PATTERNS:\n${data.patterns.map(p => `• ${p}`).join('\n')}\n\n`;
+            }
+            if (data.recommendations && data.recommendations.length > 0) {
+                text += `RECOMMENDATIONS:\n${data.recommendations.map((r, i) => `${i + 1}. ${r}`).join('\n')}\n\n`;
+            }
+            if (data.what_works && data.what_works.length > 0) {
+                text += `WHAT WORKS:\n${data.what_works.map(w => `✓ ${w}`).join('\n')}\n\n`;
+            }
+            if (data.what_does_not_work && data.what_does_not_work.length > 0) {
+                text += `WHAT DOES NOT WORK:\n${data.what_does_not_work.map(nw => `✕ ${nw}`).join('\n')}\n\n`;
+            }
+
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.getElementById('ai-copy-btn-txt');
+                if (btn) {
+                    const orig = btn.innerText;
+                    btn.innerText = isAr ? 'تم النسخ ✓' : 'Copied ✓';
+                    setTimeout(() => { btn.innerText = orig; }, 2000);
+                }
+                if (typeof showToast === 'function') {
+                    showToast(isAr ? 'تم نسخ التحليل إلى الحافظة' : 'Analysis copied to clipboard', '', 'info');
+                }
+            }).catch(e => {
+                console.warn("[IndexAiAgent] Clipboard write error:", e);
+            });
+        },
+
+        syncLanguage: function(lang) {
+            const d = (typeof languageDictionary !== 'undefined' && languageDictionary[lang]) ? languageDictionary[lang] : null;
+            if (!d) return;
+
+            const setTxt = (id, val) => {
+                const el = document.getElementById(id);
+                if (el && val) el.innerText = val;
+            };
+
+            setTxt('ai-btn-text', d.aiBtnText);
+            setTxt('ai-banner-title', d.aiBannerTitle);
+            setTxt('ai-banner-desc', d.aiBannerDesc);
+            setTxt('ai-banner-btn-txt', d.aiBannerBtnTxt);
+            setTxt('ai-modal-title', d.aiModalTitle);
+            setTxt('ai-modal-subtitle', d.aiModalSubtitle);
+            setTxt('ai-key-btn-txt', d.aiKeyBtnTxt);
+            setTxt('ai-tab-today', d.aiTabToday);
+            setTxt('ai-tab-week', d.aiTabWeek);
+            setTxt('ai-tab-month', d.aiTabMonth);
+            setTxt('ai-tab-longterm', d.aiTabLongTerm);
+            setTxt('ai-tab-profile', d.aiTabProfile);
+            setTxt('ai-run-btn-txt', d.aiRunBtnTxt);
+            setTxt('ai-copy-btn-txt', d.aiCopyBtnTxt);
+            setTxt('ai-key-modal-title', d.aiKeyModalTitle);
+            setTxt('ai-key-modal-desc', d.aiKeyModalDesc);
+            setTxt('ai-key-label', d.aiKeyLabel);
+            setTxt('ai-key-help-txt', d.aiKeyHelpTxt);
+            setTxt('ai-key-save-btn', d.aiKeySaveBtn);
+            setTxt('ai-key-cancel-btn', d.aiKeyCancelBtn);
+            setTxt('ai-key-remove-btn', d.aiKeyRemoveBtn);
+        }
+    };
+})();
+
+// Auto-sync initial language strings when agent is loaded
+if (typeof currentSystemLanguage !== 'undefined' && window.IndexAiAgent) {
+    try { window.IndexAiAgent.syncLanguage(currentSystemLanguage); } catch (e) {}
+}
+
     </script>
 <script>
         if ("serviceWorker" in navigator) {
