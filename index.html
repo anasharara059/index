@@ -10785,11 +10785,55 @@ ${JSON.stringify(payload, null, 2)}`;
     };
 
     // -------------------------------------------------------------
-    // 5. GEMINI CLIENT (Direct API Call with Robust Error Catching)
+    // 5. GEMINI CLIENT (Dynamic Model Discovery & Robust Fallback)
     // -------------------------------------------------------------
     const geminiClient = {
-        callGemini: async function(promptText, apiKey) {
-            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`;
+        activeModel: null,
+
+        CANDIDATE_MODELS: [
+            'gemini-3.8-flash',
+            'gemini-3.5-flash',
+            'gemini-3.1-flash-lite',
+            'gemini-2.5-flash',
+            'gemini-2.0-flash',
+            'gemini-2.0-flash-lite',
+            'gemini-1.5-flash-latest',
+            'gemini-1.5-flash'
+        ],
+
+        discoverSupportedModel: async function(apiKey) {
+            try {
+                const listUrl = `https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(apiKey)}`;
+                const res = await fetch(listUrl);
+                if (!res.ok) return null;
+                const data = await res.json();
+                if (!data || !Array.isArray(data.models)) return null;
+
+                const available = data.models
+                    .filter(m => Array.isArray(m.supportedGenerationMethods) && m.supportedGenerationMethods.includes('generateContent'))
+                    .map(m => m.name.replace(/^models\//, ''));
+
+                if (available.length === 0) return null;
+
+                for (const candidate of this.CANDIDATE_MODELS) {
+                    if (available.includes(candidate)) return candidate;
+                }
+
+                const flashModel = available.find(name => name.includes('flash') && !name.includes('vision'));
+                if (flashModel) return flashModel;
+
+                const anyGemini = available.find(name => name.startsWith('gemini'));
+                if (anyGemini) return anyGemini;
+
+                return available[0];
+            } catch (err) {
+                console.warn("[IndexAiAgent] Model discovery failed:", err);
+                return null;
+            }
+        },
+
+        executeGenerateContent: async function(modelName, promptText, apiKey) {
+            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${encodeURIComponent(apiKey)}`;
             const body = {
                 contents: [
                     {
@@ -10825,6 +10869,56 @@ ${JSON.stringify(payload, null, 2)}`;
                 throw new Error("No text content returned from Gemini API.");
             }
             return contentPart.text;
+        },
+
+        callGemini: async function(promptText, apiKey) {
+            let modelToTry = this.activeModel || localStorage.getItem('index_ai_verified_model');
+
+            if (modelToTry) {
+                try {
+                    const resText = await this.executeGenerateContent(modelToTry, promptText, apiKey);
+                    this.activeModel = modelToTry;
+                    return resText;
+                } catch (err) {
+                    if (err.status === 404) {
+                        console.warn(`[IndexAiAgent] Model ${modelToTry} returned 404, discovering active model...`);
+                        modelToTry = null;
+                        try { localStorage.removeItem('index_ai_verified_model'); } catch (e) {}
+                    } else {
+                        throw err;
+                    }
+                }
+            }
+
+            // Dynamically discover models supported for this specific user key
+            const discovered = await this.discoverSupportedModel(apiKey);
+            if (discovered) {
+                try {
+                    const resText = await this.executeGenerateContent(discovered, promptText, apiKey);
+                    this.activeModel = discovered;
+                    try { localStorage.setItem('index_ai_verified_model', discovered); } catch (e) {}
+                    return resText;
+                } catch (err) {
+                    console.warn(`[IndexAiAgent] Discovered model ${discovered} failed:`, err);
+                }
+            }
+
+            // Fallback: try each candidate sequentially
+            let lastErr = null;
+            for (const candidate of this.CANDIDATE_MODELS) {
+                try {
+                    const resText = await this.executeGenerateContent(candidate, promptText, apiKey);
+                    this.activeModel = candidate;
+                    try { localStorage.setItem('index_ai_verified_model', candidate); } catch (e) {}
+                    return resText;
+                } catch (err) {
+                    lastErr = err;
+                    if (err.status === 404) continue;
+                    throw err;
+                }
+            }
+
+            throw lastErr || new Error("No compatible Gemini model found for this API key.");
         }
     };
 
