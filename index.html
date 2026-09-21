@@ -2426,6 +2426,17 @@ html[data-theme="light"] .auth-real-footer {
     border-left: 1px solid color-mix(in srgb, var(--event-color, #1a73e8) 45%, #dadce0) !important;
     border-right: 4px solid var(--event-color, #1a73e8) !important;
 }
+.gcal-event-card.is-study-session {
+    opacity: 0.95 !important;
+    text-decoration: none !important;
+}
+.gcal-event-card.is-study-session .gcal-event-title {
+    text-decoration: none !important;
+}
+[data-theme="light"] .gcal-event-card.is-study-session {
+    opacity: 1 !important;
+    text-decoration: none !important;
+}
 [data-theme="light"] .gcal-event-title {
     color: #1f2328 !important;
     font-weight: 700 !important;
@@ -6051,6 +6062,7 @@ html[data-theme="light"] .ai-error-desc {
                     ? sessionTimeSegments.join(', ')
                     : (currentSessionStartTimeStamp || '--:--');
                 archivedSessionsArray.unshift({
+                    id: 'sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
                     date: fullISODate, title: rawSessionTitle, tag: currentlySelectedTag,
                     duration: minutesFormattedString,
                     durationSeconds: totalElapsedSecondsTracked,
@@ -6091,6 +6103,7 @@ html[data-theme="light"] .ai-error-desc {
             recalculateAndRenderDashboard();
             renderHistoryGridWithPagination();
             updateQuickStats();
+            if (typeof gcalRender === 'function') gcalRender();
         }
 
         function stopAndSaveClock(isTimeout = false) {
@@ -7403,6 +7416,7 @@ html[data-theme="light"] .ai-error-desc {
                 recalculateAndRenderDashboard();
                 renderHistoryGridWithPagination();
                 updateQuickStats();
+                if (typeof gcalRender === 'function') gcalRender();
             }
         }
 
@@ -7414,6 +7428,7 @@ html[data-theme="light"] .ai-error-desc {
                 recalculateAndRenderDashboard();
                 renderHistoryGridWithPagination();
                 updateQuickStats();
+                if (typeof gcalRender === 'function') gcalRender();
                 showToast(d.toastDataCleared, '', 'warning');
             }
         }
@@ -8485,11 +8500,15 @@ html[data-theme="light"] .ai-error-desc {
                 return;
             }
 
+            const existingId = archivedSessionsArray[currentlyEditingIndex]?.id || ('sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6));
+
             archivedSessionsArray[currentlyEditingIndex] = {
+                id: existingId,
                 date: date,
                 title: title,
                 tag: tag,
                 duration: duration + ' Min',
+                durationSeconds: duration * 60,
                 range: range || '--:--'
             };
 
@@ -8499,6 +8518,7 @@ html[data-theme="light"] .ai-error-desc {
             renderStudyTrendChart();
             renderProductivityHeatTimeline();
             updateQuickStats();
+            if (typeof gcalRender === 'function') gcalRender();
             closeEditSessionModal();
 
             const d = languageDictionary[currentSystemLanguage];
@@ -8543,10 +8563,12 @@ html[data-theme="light"] .ai-error-desc {
             }
 
             const newSession = {
+                id: 'sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
                 date: date,
                 title: title,
                 tag: tag,
                 duration: duration + ' Min',
+                durationSeconds: duration * 60,
                 range: range || '--:--'
             };
 
@@ -8558,6 +8580,7 @@ html[data-theme="light"] .ai-error-desc {
             renderStudyTrendChart();
             renderProductivityHeatTimeline();
             updateQuickStats();
+            if (typeof gcalRender === 'function') gcalRender();
             closeManualSessionModal();
 
             const d = languageDictionary[currentSystemLanguage];
@@ -9227,40 +9250,154 @@ document.addEventListener('keydown', function(e) {
             return list;
         }
 
-        // Get all scheduled lectures matching current filters from goalsArray
+        // Helper to parse and calculate realistic schedule for archived study sessions
+        function gcalParseSessionSchedule(sess, fallbackIdx = 0) {
+            let durMin = 0;
+            if (sess.durationSeconds && sess.durationSeconds > 0) {
+                durMin = Math.round(sess.durationSeconds / 60);
+            } else if (sess.duration) {
+                durMin = parseInt(sess.duration, 10);
+            }
+            if (isNaN(durMin) || durMin <= 0) durMin = 25;
+
+            let startMin = null;
+            if (sess.range && typeof sess.range === 'string') {
+                const cleanRange = String(sess.range)
+                    .replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d))
+                    .replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
+                const segments = splitRangeSegments(cleanRange);
+                if (segments.length > 0) {
+                    const { start } = splitSegmentStartEnd(segments[0]);
+                    startMin = parseTimeToMinutesOfDay(start);
+                }
+            }
+
+            if (startMin === null) {
+                startMin = (9 * 60) + ((fallbackIdx % 8) * 60);
+            }
+
+            // Realistic End Time: strictly start + duration (guaranteeing exact duration match!)
+            let endMin = startMin + durMin;
+            if (endMin > 1439) {
+                startMin = Math.max(0, 1439 - durMin);
+                endMin = 1439;
+            }
+
+            const startH = Math.floor(startMin / 60);
+            const startM = startMin % 60;
+            const endH = Math.floor(endMin / 60);
+            const endM = endMin % 60;
+
+            let dateStr = sess.date;
+            if (!dateStr || !/^\d{4}-\d{2}-\d{2}$/.test(String(dateStr).trim())) {
+                try {
+                    const d = new Date(dateStr);
+                    dateStr = !isNaN(d.getTime()) ? getLocalISODate(d) : getLocalISODate(new Date());
+                } catch(e) {
+                    dateStr = getLocalISODate(new Date());
+                }
+            } else {
+                dateStr = String(dateStr).trim();
+            }
+
+            return {
+                date: dateStr,
+                start: `${gcalPad(startH)}:${gcalPad(startM)}`,
+                end: `${gcalPad(endH)}:${gcalPad(endM)}`,
+                durationMinutes: durMin
+            };
+        }
+
+        // Get all scheduled lectures matching current filters from goalsArray & archivedSessionsArray
         function gcalGetFilteredLectures() {
             const results = [];
-            if (!Array.isArray(goalsArray)) return results;
 
-            goalsArray.forEach(goal => {
-                const subject = goal.linkedTag || "General";
-                if (gcalVisibleSubjects.size > 0 && !gcalVisibleSubjects.has(subject)) return;
+            // 1. Scheduled Tasks from goalsArray
+            if (Array.isArray(goalsArray)) {
+                goalsArray.forEach(goal => {
+                    const subject = goal.linkedTag || "General";
+                    if (gcalVisibleSubjects.size > 0 && !gcalVisibleSubjects.has(subject)) return;
 
-                (goal.tasks || []).forEach(task => {
-                    if (!task.schedule || !task.schedule.date) return;
-                    if (gcalStatusFilter === 'pending' && task.done) return;
-                    if (gcalStatusFilter === 'done' && !task.done) return;
+                    (goal.tasks || []).forEach(task => {
+                        if (!task.schedule || !task.schedule.date) return;
+                        if (gcalStatusFilter === 'pending' && task.done) return;
+                        if (gcalStatusFilter === 'done' && !task.done) return;
+
+                        if (gcalSearchQuery) {
+                            const q = gcalSearchQuery.toLowerCase();
+                            const match = (task.text || '').toLowerCase().includes(q) ||
+                                          (goal.title || '').toLowerCase().includes(q) ||
+                                          subject.toLowerCase().includes(q);
+                            if (!match) return;
+                        }
+
+                        results.push({
+                            goalId: goal.id,
+                            branchTitle: goal.title,
+                            subject: subject,
+                            subjectColor: getTagColor(subject),
+                            taskId: task.id,
+                            title: task.text,
+                            done: task.done,
+                            schedule: task.schedule
+                        });
+                    });
+                });
+            }
+
+            // 2. Completed Study Sessions from archivedSessionsArray
+            if (Array.isArray(archivedSessionsArray)) {
+                const isArabic = currentSystemLanguage === 'ar';
+                archivedSessionsArray.forEach((sess, idx) => {
+                    if (!sess || !sess.date) return;
+                    if (!sess.id) {
+                        sess.id = 'sess_' + (Date.now() - idx * 1000) + '_' + Math.random().toString(36).substr(2, 6);
+                    }
+
+                    const subject = sess.tag || "General";
+                    if (gcalVisibleSubjects.size > 0 && !gcalVisibleSubjects.has(subject)) return;
+                    // Completed sessions are completed; skip if filter is 'pending'
+                    if (gcalStatusFilter === 'pending') return;
+
+                    const sTitle = sess.title || (isArabic ? "جلسة دراسة غير معنونة" : "Untitled Session");
 
                     if (gcalSearchQuery) {
                         const q = gcalSearchQuery.toLowerCase();
-                        const match = (task.text || '').toLowerCase().includes(q) ||
-                                      (goal.title || '').toLowerCase().includes(q) ||
-                                      subject.toLowerCase().includes(q);
+                        const match = sTitle.toLowerCase().includes(q) ||
+                                      subject.toLowerCase().includes(q) ||
+                                      (sess.range || '').toLowerCase().includes(q);
                         if (!match) return;
                     }
 
+                    const sched = gcalParseSessionSchedule(sess, idx);
+
                     results.push({
-                        goalId: goal.id,
-                        branchTitle: goal.title,
+                        isSession: true,
+                        sessionId: sess.id,
+                        sessionIndex: idx,
+                        _rawSession: sess,
+                        goalId: null,
+                        taskId: null,
+                        branchTitle: isArabic ? 'جلسة دراسة مكتملة' : 'Completed Study Session',
                         subject: subject,
                         subjectColor: getTagColor(subject),
-                        taskId: task.id,
-                        title: task.text,
-                        done: task.done,
-                        schedule: task.schedule
+                        title: sTitle,
+                        done: true,
+                        durationText: sess.duration || `${sched.durationMinutes} Min`,
+                        rawRange: sess.range || '--:--',
+                        schedule: {
+                            date: sched.date,
+                            start: sched.start,
+                            end: sched.end,
+                            allDay: false,
+                            notes: isArabic
+                                ? `سجل الوقت الفعلي: ${sess.range || '--:--'} | المدة: ${sess.duration || (sched.durationMinutes + ' Min')}`
+                                : `Logged Time: ${sess.range || '--:--'} | Duration: ${sess.duration || (sched.durationMinutes + ' Min')}`
+                        }
                     });
                 });
-            });
+            }
+
             return results;
         }
 
@@ -9496,8 +9633,9 @@ document.addEventListener('keydown', function(e) {
                     const widthPct = 100 / (ev.totalCols || 1);
                     const leftPct = (ev.colIndex || 0) * widthPct;
 
+                    const isSession = !!ev.isSession;
                     const card = document.createElement('div');
-                    card.className = `gcal-event-card ${ev.done ? 'is-done' : ''}`;
+                    card.className = `gcal-event-card ${ev.done ? 'is-done' : ''} ${isSession ? 'is-study-session' : ''}`;
                     card.style.top = `${startM}px`;
                     card.style.height = `${Math.max(26, duration)}px`;
                     card.style.left = `calc(${leftPct}% + 1px)`;
@@ -9505,11 +9643,11 @@ document.addEventListener('keydown', function(e) {
                     card.style.setProperty('--event-color', ev.subjectColor);
 
                     card.innerHTML = `
-                        <div class="gcal-event-title">${ev.title}</div>
+                        <div class="gcal-event-title">${isSession ? '⏱ ' : ''}${ev.title}</div>
                         <div class="gcal-event-time">${gcalFormatTime(ev.schedule.start)} – ${gcalFormatTime(ev.schedule.end)}</div>
                         <div class="gcal-event-meta-icons">
                             <span>#${ev.subject}</span>
-                            ${ev.done ? '<span>✓</span>' : ''}
+                            ${isSession ? '<span title="Recorded Study Session" style="font-size:10px; font-weight:700;">✓ ⏱</span>' : (ev.done ? '<span>✓</span>' : '')}
                         </div>
                         <div class="gcal-resize-handle"></div>
                     `;
@@ -9612,12 +9750,21 @@ document.addEventListener('keydown', function(e) {
         function gcalEnableEventDrag(card, eventData) {
             card.setAttribute('draggable', 'true');
             card.ondragstart = (e) => {
-                e.dataTransfer.setData('text/plain', JSON.stringify({
-                    type: 'move-event',
-                    goalId: eventData.goalId,
-                    taskId: eventData.taskId,
-                    duration: gcalMinutes(eventData.schedule.end) - gcalMinutes(eventData.schedule.start)
-                }));
+                if (eventData.isSession) {
+                    e.dataTransfer.setData('text/plain', JSON.stringify({
+                        type: 'move-session',
+                        sessionId: eventData.sessionId,
+                        sessionIndex: eventData.sessionIndex,
+                        duration: gcalMinutes(eventData.schedule.end) - gcalMinutes(eventData.schedule.start)
+                    }));
+                } else {
+                    e.dataTransfer.setData('text/plain', JSON.stringify({
+                        type: 'move-event',
+                        goalId: eventData.goalId,
+                        taskId: eventData.taskId,
+                        duration: gcalMinutes(eventData.schedule.end) - gcalMinutes(eventData.schedule.start)
+                    }));
+                }
                 card.classList.add('is-dragging');
             };
             card.ondragend = () => {
@@ -9650,6 +9797,24 @@ document.addEventListener('keydown', function(e) {
                     const curHeight = parseInt(card.style.height, 10);
                     const snapEnd = startM + curHeight;
                     const finalEndStr = `${gcalPad(Math.floor(snapEnd/60))}:${gcalPad(snapEnd%60)}`;
+
+                    if (ev.isSession) {
+                        let sessIdx = archivedSessionsArray.findIndex(s => (s.id && s.id === ev.sessionId) || s === ev._rawSession);
+                        if (sessIdx === -1 && typeof ev.sessionIndex === 'number') sessIdx = ev.sessionIndex;
+                        if (sessIdx !== -1) {
+                            const sess = archivedSessionsArray[sessIdx];
+                            sess.duration = curHeight + ' Min';
+                            sess.durationSeconds = curHeight * 60;
+                            sess.range = `${gcalFormatTime(ev.schedule.start)} - ${gcalFormatTime(finalEndStr)}`;
+                            dbSet('sessions', archivedSessionsArray);
+                            recalculateAndRenderDashboard();
+                            renderHistoryGridWithPagination();
+                            updateQuickStats();
+                            gcalRender();
+                            showToast('Updated duration', `${sess.title} (${curHeight} mins)`, 'success');
+                        }
+                        return;
+                    }
 
                     const goal = goalsArray.find(g => g.id === ev.goalId);
                     const task = goal?.tasks?.find(t => t.id === ev.taskId);
@@ -9706,6 +9871,23 @@ document.addEventListener('keydown', function(e) {
                         dbSet('goals', goalsArray);
                         gcalRender();
                         showToast('Lecture Moved', `${task.text} to ${targetDate} ${gcalFormatTime(startTimeStr)}`, 'success');
+                    }
+                } else if (data.type === 'move-session') {
+                    let sessIdx = archivedSessionsArray.findIndex(s => s.id === data.sessionId);
+                    if (sessIdx === -1 && typeof data.sessionIndex === 'number') sessIdx = data.sessionIndex;
+                    if (sessIdx !== -1) {
+                        const sess = archivedSessionsArray[sessIdx];
+                        const dur = data.duration || 25;
+                        const endM = snapStart + dur;
+                        const finalEndStr = `${gcalPad(Math.floor(endM/60))}:${gcalPad(endM%60)}`;
+                        sess.date = targetDate;
+                        sess.range = `${gcalFormatTime(startTimeStr)} - ${gcalFormatTime(finalEndStr)}`;
+                        dbSet('sessions', archivedSessionsArray);
+                        recalculateAndRenderDashboard();
+                        renderHistoryGridWithPagination();
+                        updateQuickStats();
+                        gcalRender();
+                        showToast('Session Moved', `${sess.title} to ${targetDate} ${gcalFormatTime(startTimeStr)}`, 'success');
                     }
                 }
             } catch (err) {
@@ -9769,7 +9951,7 @@ document.addEventListener('keydown', function(e) {
                     const chip = document.createElement('button');
                     chip.className = 'gcal-month-chip';
                     chip.style.setProperty('--event-color', ev.subjectColor);
-                    chip.innerText = `${ev.schedule.start ? gcalFormatTime(ev.schedule.start) + ' ' : ''}${ev.title}`;
+                    chip.innerText = `${ev.isSession ? '⏱ ' : ''}${ev.schedule.start ? gcalFormatTime(ev.schedule.start) + ' ' : ''}${ev.title}`;
                     chip.onclick = (e) => { e.stopPropagation(); gcalShowEventPopover(e, ev); };
                     cell.appendChild(chip);
                 });
@@ -9876,13 +10058,13 @@ document.addEventListener('keydown', function(e) {
                         <div style="display:flex; align-items:center; gap:12px;">
                             <span style="width:10px; height:10px; border-radius:50%; background:${ev.subjectColor};"></span>
                             <div>
-                                <div style="font-weight:700; color:var(--gcal-text);">${ev.title}</div>
-                                <div style="font-size:11px; color:var(--gcal-muted);">${ev.subject} › ${ev.branchTitle}</div>
+                                <div style="font-weight:700; color:var(--gcal-text);">${ev.isSession ? '⏱ ' : ''}${ev.title}</div>
+                                <div style="font-size:11px; color:var(--gcal-muted);">${ev.subject} › ${ev.branchTitle} ${ev.isSession ? '· ⏱ ' + (ev.durationText || '') : ''}</div>
                             </div>
                         </div>
                         <div style="display:flex; align-items:center; gap:12px;">
                             <span style="font-size:12px; color:var(--gcal-muted);">${ev.schedule.allDay ? 'All Day' : gcalFormatTime(ev.schedule.start) + ' – ' + gcalFormatTime(ev.schedule.end)}</span>
-                            <button class="gcal-popover-btn" title="Start Study" style="color:var(--accent-orange);" onclick="event.stopPropagation(); gcalStudyNow('${ev.goalId}', '${ev.taskId}')">⏱</button>
+                            <button class="gcal-popover-btn" title="Start Study" style="color:var(--accent-orange);" onclick="event.stopPropagation(); gcalStudyNow('${ev.goalId || ''}', '${ev.taskId || ''}', '${escapeGoalHtml(ev.title)}', '${ev.subject}')">⏱</button>
                         </div>
                     `;
                     row.onclick = (e) => gcalShowEventPopover(e, ev);
@@ -10035,7 +10217,8 @@ document.addEventListener('keydown', function(e) {
                 currentTagsList.forEach(subject => {
                     const color = getTagColor(subject);
                     const isChecked = gcalVisibleSubjects.has(subject);
-                    const count = (goalsArray || []).filter(g => (g.linkedTag || 'General') === subject).reduce((acc, g) => acc + (g.tasks?.length || 0), 0);
+                    const count = (goalsArray || []).filter(g => (g.linkedTag || 'General') === subject).reduce((acc, g) => acc + (g.tasks?.length || 0), 0)
+                        + (archivedSessionsArray || []).filter(s => (s.tag || 'General') === subject).length;
 
                     const row = document.createElement('div');
                     row.className = 'gcal-subject-row';
@@ -10120,6 +10303,10 @@ document.addEventListener('keydown', function(e) {
             const doneBtn = document.getElementById('gcal-popover-done-btn');
             doneBtn.style.color = ev.done ? 'var(--success)' : 'var(--gcal-text)';
             doneBtn.onclick = () => {
+                if (ev.isSession) {
+                    showToast(currentSystemLanguage === 'ar' ? 'جلسة دراسة مكتملة ومسجلة' : 'Completed Study Session', ev.title, 'success');
+                    return;
+                }
                 const goal = goalsArray.find(g => g.id === ev.goalId);
                 const task = goal?.tasks?.find(t => t.id === ev.taskId);
                 if (task) {
@@ -10136,11 +10323,28 @@ document.addEventListener('keydown', function(e) {
             // Edit button
             document.getElementById('gcal-popover-edit-btn').onclick = () => {
                 gcalClosePopover();
+                if (ev.isSession) {
+                    let sessIdx = archivedSessionsArray.findIndex(s => (s.id && s.id === ev.sessionId) || s === ev._rawSession);
+                    if (sessIdx === -1 && typeof ev.sessionIndex === 'number') sessIdx = ev.sessionIndex;
+                    if (sessIdx !== -1) {
+                        openEditSessionModal(sessIdx);
+                    }
+                    return;
+                }
                 gcalOpenCreateModal(ev);
             };
 
-            // Unschedule button
+            // Unschedule / Delete button
             document.getElementById('gcal-popover-delete-btn').onclick = () => {
+                if (ev.isSession) {
+                    let sessIdx = archivedSessionsArray.findIndex(s => (s.id && s.id === ev.sessionId) || s === ev._rawSession);
+                    if (sessIdx === -1 && typeof ev.sessionIndex === 'number') sessIdx = ev.sessionIndex;
+                    if (sessIdx !== -1) {
+                        gcalClosePopover();
+                        deleteIndividualSession(sessIdx);
+                    }
+                    return;
+                }
                 const goal = goalsArray.find(g => g.id === ev.goalId);
                 const task = goal?.tasks?.find(t => t.id === ev.taskId);
                 if (task) {
@@ -10156,7 +10360,7 @@ document.addEventListener('keydown', function(e) {
 
             // Start Study in Timer CTA
             document.getElementById('gcal-popover-study-btn').onclick = () => {
-                gcalStudyNow(ev.goalId, ev.taskId);
+                gcalStudyNow(ev.goalId, ev.taskId, ev.title, ev.subject);
             };
 
             // Calculate popover positioning near click
@@ -10185,34 +10389,38 @@ document.addEventListener('keydown', function(e) {
         });
 
         /* Bridge Calendar to Timer Screen ("Study Now") */
-        function gcalStudyNow(goalId, taskId) {
-            const goal = goalsArray.find(g => g.id === goalId);
-            const task = goal?.tasks?.find(t => t.id === taskId);
-            if (!task) return;
+        function gcalStudyNow(goalId, taskId, presetTitle, presetSubject) {
+            let sessionTitle = presetTitle || 'Study Session';
+            let subject = presetSubject || 'Medicine';
+
+            if (goalId && taskId) {
+                const goal = (goalsArray || []).find(g => g.id === goalId);
+                const task = goal?.tasks?.find(t => t.id === taskId);
+                if (task) sessionTitle = task.text || sessionTitle;
+                if (goal && goal.linkedTag) subject = goal.linkedTag;
+
+                timerSelectedBranchId = goal?.id || null;
+                if (typeof persistSelectedBranchForCurrentTag === 'function') {
+                    persistSelectedBranchForCurrentTag();
+                }
+                if (typeof refreshTimerSidebar === 'function') {
+                    refreshTimerSidebar();
+                }
+            }
 
             // 1. Set Timer Session Title
             const titleInput = document.getElementById('session-current-title');
-            if (titleInput) titleInput.value = task.text || 'Study Session';
+            if (titleInput) titleInput.value = sessionTitle;
 
             // 2. Select Subject Tag
-            const subject = goal.linkedTag || 'Medicine';
             if (currentTagsList.includes(subject) && typeof selectActiveTag === 'function') {
                 selectActiveTag(subject);
             }
 
-            // 3. Link Goal & Branch
-            timerSelectedBranchId = goal.id;
-            if (typeof persistSelectedBranchForCurrentTag === 'function') {
-                persistSelectedBranchForCurrentTag();
-            }
-            if (typeof refreshTimerSidebar === 'function') {
-                refreshTimerSidebar();
-            }
-
-            // 4. Switch directly to Timer Screen
+            // 3. Switch directly to Timer Screen
             activateScreen('timer-tab', 'screen-timer');
             gcalClosePopover();
-            showToast('Ready to Study!', `${task.text} loaded in Timer`, 'success');
+            showToast('Ready to Study!', `${sessionTitle} loaded in Timer`, 'success');
         }
 
         /* Modal: Create or Edit Lecture Schedule */
