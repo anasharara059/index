@@ -13,6 +13,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   togglePlayPause: () => ipcRenderer.send('mini-timer:toggle-play-pause'),
   toggleTheme: () => ipcRenderer.send('mini-timer:toggle-theme'),
   setOverlayMenuOpen: (isOpen) => ipcRenderer.send('mini-timer:set-menu-open', isOpen),
+  resetMiniTimerPosition: () => ipcRenderer.send('mini-timer:reset-position'),
   onMiniTimerState: (callback) => {
     ipcRenderer.on('mini-timer:state', (_event, state) => callback(state));
   },

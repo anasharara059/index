@@ -7,7 +7,7 @@
   <style>
     :root {
       --gold: #d9a54a;
-      --gold-glow: rgba(217, 165, 74, 0.45);
+      --gold-glow: rgba(217, 165, 74, 0.4);
       --pill-bg: rgba(12, 14, 20, 0.94);
       --pill-border: rgba(217, 165, 74, 0.42);
       --time-color: #d9a54a;
@@ -15,28 +15,22 @@
       --warning: #f59e0b;
       --success: #10b981;
       --track-bg: rgba(255, 255, 255, 0.12);
-      --btn-hover: rgba(255, 255, 255, 0.10);
-      --menu-bg: rgba(14, 17, 24, 0.96);
-      --menu-border: rgba(217, 165, 74, 0.35);
-      --menu-text: #e5e7eb;
-      --shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
+      --btn-hover: rgba(255, 255, 255, 0.12);
+      --shadow: 0 8px 24px rgba(0, 0, 0, 0.55), 0 0 12px rgba(217, 165, 74, 0.12);
     }
 
     /* Light Theme accommodation - High Contrast & Warm Elegance */
     body.theme-light {
       --gold: #b37e22;
-      --gold-glow: rgba(179, 126, 34, 0.35);
-      --pill-bg: rgba(255, 255, 255, 0.96);
-      --pill-border: rgba(179, 126, 34, 0.48);
+      --gold-glow: rgba(179, 126, 34, 0.3);
+      --pill-bg: rgba(255, 255, 255, 0.97);
+      --pill-border: rgba(179, 126, 34, 0.52);
       --time-color: #6b4507;
       --label-color: #5c4d3c;
       --warning: #d97706;
       --success: #059669;
       --track-bg: rgba(0, 0, 0, 0.10);
-      --btn-hover: rgba(0, 0, 0, 0.07);
-      --menu-bg: rgba(255, 255, 255, 0.97);
-      --menu-border: rgba(179, 126, 34, 0.35);
-      --menu-text: #2d2416;
+      --btn-hover: rgba(0, 0, 0, 0.08);
       --shadow: 0 8px 24px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.08);
     }
 
@@ -45,114 +39,85 @@
     html, body {
       margin: 0;
       padding: 0;
-      width: 160px;
-      height: 100%;
+      width: 230px;
+      height: 46px;
       background: transparent;
       overflow: hidden;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       user-select: none;
     }
 
-    #overlay-container {
-      width: 160px;
-      position: relative;
+    #hud-wrapper {
+      width: 100%;
+      height: 100%;
       display: flex;
-      flex-direction: column;
       align-items: center;
-      padding-top: 0;
+      justify-content: center;
     }
 
     /* -------------------------------------------------------------
-       TOP NOTCH ACCENT STRIP (when retracted at top screen edge)
-       ------------------------------------------------------------- */
-    #notch-strip {
-      width: 48px;
-      height: 5px;
-      background: linear-gradient(90deg, #f59e0b, #d9a54a);
-      border-radius: 0 0 4px 4px;
-      box-shadow: 0 0 8px rgba(217, 165, 74, 0.6);
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      cursor: pointer;
-      z-index: 10;
-      transition: opacity 0.2s ease;
-      opacity: 0.9;
-    }
-
-    /* -------------------------------------------------------------
-       MAIN CAPSULE PILL (Fixed ~2.5 cm: 154px width × 36px height)
+       THE CAPSULE PILL
+       Compact: ~2.5 cm (146px width × 36px height)
+       Expanded: 218px width with inline action tools
        ------------------------------------------------------------- */
     #timer-pill {
-      width: 154px;
       height: 36px;
-      min-width: 154px;
-      max-width: 154px;
-      margin-top: 2px;
+      border-radius: 18px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 8px 0 10px;
+      padding: 0 7px 0 9px;
       background: var(--pill-bg);
       border: 1px solid var(--pill-border);
-      border-radius: 18px;
       box-shadow: var(--shadow);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.18s ease, border-color 0.2s ease, background 0.2s ease;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       position: relative;
+      overflow: hidden;
       cursor: grab;
       -webkit-app-region: drag;
-      overflow: hidden;
+      transition: width 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                  opacity 0.2s ease,
+                  border-color 0.2s ease,
+                  box-shadow 0.2s ease;
+      opacity: 0.82;
+      width: 146px;
     }
 
     #timer-pill:active {
       cursor: grabbing;
     }
 
-    /* Auto-Hide physics when pinned to top */
-    #overlay-container.is-pinned-top:not(.is-always-visible) #timer-pill {
-      transform: translateY(-38px);
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    /* Drops down smoothly on hover or when revealed */
-    #overlay-container.is-pinned-top:not(.is-always-visible):hover #timer-pill,
-    #overlay-container.is-pinned-top:not(.is-always-visible).is-peek-revealed #timer-pill {
-      transform: translateY(0);
+    /* Hover effect: instant full brightness and gentle glow */
+    #timer-pill:hover,
+    #timer-pill.expanded {
       opacity: 1;
-      pointer-events: auto;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55), 0 0 14px rgba(217, 165, 74, 0.22);
     }
 
-    #overlay-container.is-pinned-top:not(.is-always-visible):hover #notch-strip,
-    #overlay-container.is-pinned-top:not(.is-always-visible).is-peek-revealed #notch-strip {
-      opacity: 0;
+    /* Expanded state reveals inline toolbar */
+    #timer-pill.expanded {
+      width: 218px;
     }
 
-    /* Always visible state */
-    #overlay-container.is-always-visible #timer-pill,
-    #overlay-container:not(.is-pinned-top) #timer-pill {
-      transform: translateY(0);
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    #overlay-container.is-always-visible #notch-strip,
-    #overlay-container:not(.is-pinned-top) #notch-strip {
-      display: none;
-    }
-
-    /* Status Pulse Dot */
-    #status-wrapper {
+    /* -------------------------------------------------------------
+       STATUS DOT / PLAY-PAUSE TRIGGER
+       ------------------------------------------------------------- */
+    #status-btn {
+      width: 20px;
+      height: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 14px;
-      height: 14px;
       cursor: pointer;
       -webkit-app-region: no-drag;
+      border-radius: 50%;
+      transition: background 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    #status-btn:hover {
+      background: var(--btn-hover);
     }
 
     #status-dot {
@@ -169,10 +134,12 @@
       box-shadow: 0 0 8px rgba(245, 158, 11, 0.7);
     }
 
-    /* Time Numbers */
+    /* -------------------------------------------------------------
+       DIGITAL TIME NUMBERS
+       ------------------------------------------------------------- */
     #time-display {
       font-family: "SF Mono", Monaco, Consolas, "Courier New", monospace;
-      font-size: 16.5px;
+      font-size: 16px;
       font-weight: 800;
       letter-spacing: 0.5px;
       color: var(--time-color);
@@ -182,14 +149,38 @@
       -webkit-app-region: no-drag;
       transition: color 0.18s ease;
       direction: ltr;
+      user-select: none;
+      padding: 0 2px;
     }
 
     .paused #time-display {
       color: var(--warning);
     }
 
-    /* Three Dots Button */
-    #dots-btn {
+    /* -------------------------------------------------------------
+       INLINE ACTION TOOLS (Slide into view when 3-dots clicked)
+       ------------------------------------------------------------- */
+    #action-tools {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      max-width: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: max-width 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                  opacity 0.18s ease,
+                  margin 0.22s ease;
+      -webkit-app-region: no-drag;
+      margin: 0;
+    }
+
+    #timer-pill.expanded #action-tools {
+      max-width: 84px;
+      opacity: 1;
+      margin: 0 3px;
+    }
+
+    .tool-btn {
       width: 22px;
       height: 22px;
       border: 0;
@@ -200,25 +191,63 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.15s ease;
+      transition: all 0.14s ease;
       padding: 0;
+      font-size: 11px;
+      flex-shrink: 0;
       -webkit-app-region: no-drag;
     }
 
-    #dots-btn:hover {
+    .tool-btn:hover {
       background: var(--btn-hover);
       color: var(--gold);
-      transform: scale(1.1);
+      transform: scale(1.12);
     }
 
-    #dots-btn svg {
+    .tool-btn.danger:hover {
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.15);
+    }
+
+    /* Three Dots Button */
+    #dots-toggle-btn {
+      width: 20px;
+      height: 20px;
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      color: var(--label-color);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+      padding: 0;
+      flex-shrink: 0;
+      -webkit-app-region: no-drag;
+    }
+
+    #dots-toggle-btn:hover {
+      background: var(--btn-hover);
+      color: var(--gold);
+    }
+
+    #dots-toggle-btn svg {
       width: 14px;
       height: 14px;
       fill: currentColor;
     }
 
-    /* Subtle Built-in Progress Bar (Strictly inside capsule - NEVER expands beyond 154px!) */
-    #pill-progress-track {
+    #timer-pill.expanded #dots-toggle-btn {
+      color: var(--gold);
+      background: var(--btn-hover);
+      transform: rotate(90deg);
+    }
+
+    /* -------------------------------------------------------------
+       MICRO-PROGRESS TRACK (Strictly inside the capsule pill)
+       ------------------------------------------------------------- */
+    #progress-line {
       position: absolute;
       bottom: 0;
       left: 10px;
@@ -230,108 +259,42 @@
       pointer-events: none;
     }
 
-    #pill-progress-fill {
+    #progress-fill {
       height: 100%;
       width: 0%;
       background: linear-gradient(90deg, #f59e0b, #d9a54a);
       border-radius: 2px;
-      transition: width 0.3s ease;
+      transition: width 0.35s ease;
     }
 
-    /* -------------------------------------------------------------
-       THREE-DOTS DROPDOWN MENU
-       ------------------------------------------------------------- */
-    #dots-menu {
-      width: 154px;
-      background: var(--menu-bg);
-      border: 1px solid var(--menu-border);
-      border-radius: 12px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      position: absolute;
-      top: 42px;
-      left: 3px;
-      padding: 4px;
-      display: none;
-      flex-direction: column;
-      gap: 2px;
-      z-index: 500;
-      -webkit-app-region: no-drag;
-      animation: menuFadeIn 0.16s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    #dots-menu.is-open {
-      display: flex;
-    }
-
-    @keyframes menuFadeIn {
-      from { opacity: 0; transform: translateY(-4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .menu-item {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      padding: 6px 8px;
-      border-radius: 7px;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--menu-text);
-      cursor: pointer;
-      transition: background 0.14s ease, color 0.14s ease;
-      white-space: nowrap;
-    }
-
-    .menu-item:hover {
-      background: var(--btn-hover);
-      color: var(--gold);
-    }
-
-    .menu-item .menu-icon {
-      font-size: 12px;
-      width: 16px;
-      text-align: center;
-      flex-shrink: 0;
-    }
-
-    .menu-divider {
-      height: 1px;
-      background: var(--track-bg);
-      margin: 2px 4px;
-    }
-
-    /* Completion Glow */
+    /* Session Completed Flash */
     #timer-pill.is-session-completed {
       border-color: #10b981;
       box-shadow: 0 0 16px rgba(16, 185, 129, 0.75);
-      animation: pulseCompleted 1.5s infinite alternate;
-    }
-
-    @keyframes pulseCompleted {
-      from { box-shadow: 0 0 8px rgba(16, 185, 129, 0.5); }
-      to { box-shadow: 0 0 20px rgba(16, 185, 129, 0.9); }
     }
   </style>
 </head>
 <body>
-  <div id="overlay-container" class="is-pinned-top">
-    <!-- Top Notch Accent Strip (Visible when collapsed at top edge) -->
-    <div id="notch-strip" title="مرر الفأرة هنا لإظهار المؤقت"></div>
-
-    <!-- The 2.5cm Capsule -->
+  <div id="hud-wrapper">
+    <!-- The Compact 2.5cm Capsule -->
     <div id="timer-pill" title="اسحب للتحريك أو انقر للتشغيل/الإيقاف">
       <!-- Status Indicator / Play-Pause -->
-      <div id="status-wrapper" title="تشغيل / إيقاف مؤقت">
+      <div id="status-btn" title="تشغيل / إيقاف مؤقت">
         <span id="status-dot"></span>
       </div>
 
       <!-- Time Display -->
       <span id="time-display" title="انقر للتشغيل أو الإيقاف المؤقت">25:00</span>
 
-      <!-- 3-Dots Menu Button -->
-      <button id="dots-btn" type="button" title="خيارات المؤقت">
+      <!-- Inline Action Tools (revealed when 3-dots clicked) -->
+      <div id="action-tools">
+        <button id="tool-theme" class="tool-btn" type="button" title="تبديل الثيم (نهاري / ليلي)">☀️</button>
+        <button id="tool-pin" class="tool-btn" type="button" title="إعادة التثبيت أعلى الشاشة (Dock Top)">📌</button>
+        <button id="tool-close" class="tool-btn danger" type="button" title="إخفاء المؤقت">✕</button>
+      </div>
+
+      <!-- 3-Dots Button -->
+      <button id="dots-toggle-btn" type="button" title="خيارات إضافية">
         <svg viewBox="0 0 24 24">
           <circle cx="12" cy="5" r="2"></circle>
           <circle cx="12" cy="12" r="2"></circle>
@@ -339,130 +302,49 @@
         </svg>
       </button>
 
-      <!-- Mini Progress Track inside the pill -->
-      <div id="pill-progress-track">
-        <div id="pill-progress-fill"></div>
-      </div>
-    </div>
-
-    <!-- 3-Dots Dropdown Menu -->
-    <div id="dots-menu">
-      <div class="menu-item" id="menu-play-pause">
-        <span class="menu-icon">⏯️</span>
-        <span id="menu-play-text">تشغيل / إيقاف</span>
-      </div>
-      <div class="menu-item" id="menu-theme">
-        <span class="menu-icon" id="menu-theme-icon">☀️</span>
-        <span id="menu-theme-text">الوضع النهاري</span>
-      </div>
-      <div class="menu-item" id="menu-dock">
-        <span class="menu-icon">📌</span>
-        <span id="menu-dock-text">أعلى الشاشة</span>
-      </div>
-      <div class="menu-item" id="menu-always-visible">
-        <span class="menu-icon">👁️</span>
-        <span id="menu-visible-text">إظهار دائم</span>
-      </div>
-      <div class="menu-divider"></div>
-      <div class="menu-item" id="menu-hide" style="color: #ef4444;">
-        <span class="menu-icon">✕</span>
-        <span>إخفاء المؤقت</span>
+      <!-- Micro-progress inside the pill -->
+      <div id="progress-line">
+        <div id="progress-fill"></div>
       </div>
     </div>
   </div>
 
   <script>
-    const container = document.getElementById('overlay-container');
     const timerPill = document.getElementById('timer-pill');
     const timeDisplay = document.getElementById('time-display');
-    const statusWrapper = document.getElementById('status-wrapper');
-    const progressFill = document.getElementById('pill-progress-fill');
-    const dotsBtn = document.getElementById('dots-btn');
-    const dotsMenu = document.getElementById('dots-menu');
-    const notchStrip = document.getElementById('notch-strip');
+    const statusBtn = document.getElementById('status-btn');
+    const progressFill = document.getElementById('progress-fill');
+    const dotsToggleBtn = document.getElementById('dots-toggle-btn');
+    const toolTheme = document.getElementById('tool-theme');
+    const toolPin = document.getElementById('tool-pin');
+    const toolClose = document.getElementById('tool-close');
 
-    // Menu Item Elements
-    const menuPlayPause = document.getElementById('menu-play-pause');
-    const menuPlayText = document.getElementById('menu-play-text');
-    const menuTheme = document.getElementById('menu-theme');
-    const menuThemeIcon = document.getElementById('menu-theme-icon');
-    const menuThemeText = document.getElementById('menu-theme-text');
-    const menuDock = document.getElementById('menu-dock');
-    const menuDockText = document.getElementById('menu-dock-text');
-    const menuAlwaysVisible = document.getElementById('menu-always-visible');
-    const menuVisibleText = document.getElementById('menu-visible-text');
-    const menuHide = document.getElementById('menu-hide');
-
-    // State
-    let isPinnedTop = localStorage.getItem('index_hud_pinned') !== 'false'; // default true
-    let isAlwaysVisible = localStorage.getItem('index_hud_always_visible') === 'true'; // default false (hover drop-down)
+    let isExpanded = false;
     let isLightMode = false;
-    let isMenuOpen = false;
-    let retractTimeout = null;
-
-    // Apply UI state
-    function applyUIState() {
-      container.classList.toggle('is-pinned-top', isPinnedTop);
-      container.classList.toggle('is-always-visible', isAlwaysVisible);
-      document.body.classList.toggle('theme-light', isLightMode);
-
-      menuDockText.textContent = isPinnedTop ? 'سحب حر (Float)' : 'تثبيت بالأعلى (Dock)';
-      menuVisibleText.textContent = isAlwaysVisible ? 'إخفاء تلقائي (Auto-Hide)' : 'إظهار دائم (Always On)';
-      menuThemeIcon.textContent = isLightMode ? '🌙' : '☀️';
-      menuThemeText.textContent = isLightMode ? 'الوضع الليلي' : 'الوضع النهاري';
-
-      if (!isPinnedTop) {
-        // Free float: make sure it's visible and window is expanded
-        if (window.electronAPI && typeof window.electronAPI.setCollapsedState === 'function') {
-          window.electronAPI.setCollapsedState(false);
-        }
-      } else if (isAlwaysVisible) {
-        if (window.electronAPI && typeof window.electronAPI.setCollapsedState === 'function') {
-          window.electronAPI.setCollapsedState(false);
-        }
-      } else {
-        // Pinned top with auto-hide
-        if (!container.classList.contains('is-peek-revealed') && !isMenuOpen) {
-          if (window.electronAPI && typeof window.electronAPI.setCollapsedState === 'function') {
-            window.electronAPI.setCollapsedState(true);
-          }
-        }
-      }
-    }
-
-    applyUIState();
+    let autoDimTimeout = null;
 
     // -------------------------------------------------------------
-    //  SMOOTH HOVER & AUTO-HIDE PHYSICS
+    //  GENTLE AUTO-DIMMING PHYSICS
+    //  Pill is ALWAYS visible and tangible, never disappears off-screen!
+    //  Dims gently when mouse leaves, wakes up to 100% on hover.
     // -------------------------------------------------------------
-    function revealCapsule() {
-      clearTimeout(retractTimeout);
-      if (window.electronAPI && typeof window.electronAPI.setCollapsedState === 'function') {
-        window.electronAPI.setCollapsedState(false);
-      }
-      container.classList.add('is-peek-revealed');
+    function wakeUpPill() {
+      clearTimeout(autoDimTimeout);
+      timerPill.style.opacity = '1';
     }
 
-    function scheduleRetract() {
-      if (!isPinnedTop || isAlwaysVisible || isMenuOpen) return;
-      clearTimeout(retractTimeout);
-      // Wait 1.2 seconds after mouse leaves before retracting
-      retractTimeout = setTimeout(() => {
-        container.classList.remove('is-peek-revealed');
-        // Wait for CSS slide-up animation (220ms) then collapse window
-        setTimeout(() => {
-          if (!container.classList.contains('is-peek-revealed') && !isMenuOpen) {
-            if (window.electronAPI && typeof window.electronAPI.setCollapsedState === 'function') {
-              window.electronAPI.setCollapsedState(true);
-            }
-          }
-        }, 230);
-      }, 1200);
+    function scheduleGentleDim() {
+      if (isExpanded) return;
+      clearTimeout(autoDimTimeout);
+      autoDimTimeout = setTimeout(() => {
+        if (!isExpanded) {
+          timerPill.style.opacity = '0.78';
+        }
+      }, 1500);
     }
 
-    container.addEventListener('mouseenter', revealCapsule);
-    container.addEventListener('mouseleave', scheduleRetract);
-    notchStrip.addEventListener('mouseenter', revealCapsule);
+    timerPill.addEventListener('mouseenter', wakeUpPill);
+    timerPill.addEventListener('mouseleave', scheduleGentleDim);
 
     // -------------------------------------------------------------
     //  PLAY / PAUSE CONTROL
@@ -477,134 +359,63 @@
       }
     }
 
-    statusWrapper.addEventListener('click', triggerPlayPause);
+    statusBtn.addEventListener('click', triggerPlayPause);
     timeDisplay.addEventListener('click', triggerPlayPause);
-    menuPlayPause.addEventListener('click', (e) => {
-      triggerPlayPause(e);
-      closeMenu();
-    });
 
     // -------------------------------------------------------------
-    //  THREE-DOTS MENU CONTROLS
+    //  THREE-DOTS EXPANDABLE INLINE TOOLBAR
     // -------------------------------------------------------------
-    function openMenu() {
-      isMenuOpen = true;
-      dotsMenu.classList.add('is-open');
-      revealCapsule();
-      if (window.electronAPI && typeof window.electronAPI.setOverlayMenuOpen === 'function') {
-        window.electronAPI.setOverlayMenuOpen(true);
+    function toggleExpanded(e) {
+      if (e) e.stopPropagation();
+      isExpanded = !isExpanded;
+      timerPill.classList.toggle('expanded', isExpanded);
+      if (isExpanded) {
+        wakeUpPill();
+      } else {
+        scheduleGentleDim();
       }
     }
 
-    function closeMenu() {
-      isMenuOpen = false;
-      dotsMenu.classList.remove('is-open');
-      if (window.electronAPI && typeof window.electronAPI.setOverlayMenuOpen === 'function') {
-        window.electronAPI.setOverlayMenuOpen(false);
-      }
-      scheduleRetract();
-    }
+    dotsToggleBtn.addEventListener('click', toggleExpanded);
 
-    dotsBtn.addEventListener('click', (e) => {
+    // Tool: Theme Toggle
+    toolTheme.addEventListener('click', (e) => {
       e.stopPropagation();
-      if (isMenuOpen) closeMenu();
-      else openMenu();
-    });
-
-    // Close menu when clicking outside
-    document.addEventListener('click', (e) => {
-      if (isMenuOpen && !e.target.closest('#dots-menu') && !e.target.closest('#dots-btn')) {
-        closeMenu();
-      }
-    });
-
-    // Menu Item: Theme Toggle
-    menuTheme.addEventListener('click', (e) => {
-      e.stopPropagation();
-      closeMenu();
       if (window.electronAPI && typeof window.electronAPI.toggleTheme === 'function') {
         window.electronAPI.toggleTheme();
       } else {
         isLightMode = !isLightMode;
-        applyUIState();
+        document.body.classList.toggle('theme-light', isLightMode);
+        toolTheme.textContent = isLightMode ? '🌙' : '☀️';
       }
     });
 
-    // Menu Item: Dock Top / Float
-    menuDock.addEventListener('click', (e) => {
+    // Tool: Reset Position (Dock Top)
+    toolPin.addEventListener('click', (e) => {
       e.stopPropagation();
-      closeMenu();
-      isPinnedTop = !isPinnedTop;
-      localStorage.setItem('index_hud_pinned', isPinnedTop);
-      applyUIState();
-      if (window.electronAPI && typeof window.electronAPI.pinMiniTimerTop === 'function') {
-        window.electronAPI.pinMiniTimerTop(isPinnedTop);
+      toggleExpanded();
+      if (window.electronAPI && typeof window.electronAPI.resetMiniTimerPosition === 'function') {
+        window.electronAPI.resetMiniTimerPosition();
       }
     });
 
-    // Menu Item: Always Visible / Auto-Hide
-    menuAlwaysVisible.addEventListener('click', (e) => {
+    // Tool: Close / Hide HUD
+    toolClose.addEventListener('click', (e) => {
       e.stopPropagation();
-      closeMenu();
-      isAlwaysVisible = !isAlwaysVisible;
-      localStorage.setItem('index_hud_always_visible', isAlwaysVisible);
-      applyUIState();
-    });
-
-    // Menu Item: Hide HUD
-    menuHide.addEventListener('click', (e) => {
-      e.stopPropagation();
-      closeMenu();
+      toggleExpanded();
       if (window.electronAPI && typeof window.electronAPI.hideMiniTimer === 'function') {
         window.electronAPI.hideMiniTimer();
       }
     });
 
-    // -------------------------------------------------------------
-    //  FREE DRAGGING SUPPORT (when unpinned)
-    // -------------------------------------------------------------
-    let dragging = false;
-    let startMouseX = 0;
-    let startMouseY = 0;
-    let startWindowX = 0;
-    let startWindowY = 0;
-
-    timerPill.addEventListener('mousedown', async (e) => {
-      if (e.target.closest('#dots-btn') || e.target.closest('#status-wrapper') || e.target.closest('#time-display') || isMenuOpen) return;
-      if (isPinnedTop) {
-        // If user drags while pinned, unpin
-        isPinnedTop = false;
-        localStorage.setItem('index_hud_pinned', false);
-        applyUIState();
-      }
-      dragging = true;
-      startMouseX = e.screenX;
-      startMouseY = e.screenY;
-      const pos = await window.electronAPI.getMiniTimerPosition();
-      if (pos) {
-        startWindowX = pos[0];
-        startWindowY = pos[1];
+    // Collapse when clicking outside the pill
+    document.addEventListener('click', (e) => {
+      if (isExpanded && (!e.target || typeof e.target.closest !== 'function' || !e.target.closest('#timer-pill'))) {
+        isExpanded = false;
+        timerPill.classList.remove('expanded');
+        scheduleGentleDim();
       }
     });
-
-    window.addEventListener('mousemove', async (e) => {
-      if (!dragging) return;
-      const x = startWindowX + (e.screenX - startMouseX);
-      const y = startWindowY + (e.screenY - startMouseY);
-
-      if (window.electronAPI && typeof window.electronAPI.snapMoveMiniTimer === 'function') {
-        const result = await window.electronAPI.snapMoveMiniTimer(x, y);
-        if (result && result.isPinnedTop) {
-          isPinnedTop = true;
-          localStorage.setItem('index_hud_pinned', true);
-          applyUIState();
-        }
-      } else if (window.electronAPI && typeof window.electronAPI.moveMiniTimer === 'function') {
-        window.electronAPI.moveMiniTimer(x, y);
-      }
-    });
-
-    window.addEventListener('mouseup', () => { dragging = false; });
 
     // -------------------------------------------------------------
     //  STATE SYNCHRONIZATION FROM MAIN WINDOW
@@ -622,7 +433,6 @@
 
         // Paused state
         timerPill.classList.toggle('paused', !!state.paused);
-        menuPlayText.textContent = state.running ? 'إيقاف مؤقت' : 'تشغيل العداد';
 
         // Progress bar (Strictly inside capsule)
         const pct = Number.isFinite(state.progress) ? Math.max(0, Math.min(100, state.progress)) : 0;
@@ -632,7 +442,7 @@
         if (state.completed) {
           timerPill.classList.add('is-session-completed');
           progressFill.style.width = '100%';
-          revealCapsule();
+          wakeUpPill();
         } else {
           timerPill.classList.remove('is-session-completed');
         }
@@ -642,7 +452,9 @@
           const wantsLight = state.theme === 'light';
           if (isLightMode !== wantsLight) {
             isLightMode = wantsLight;
-            applyUIState();
+            document.body.classList.toggle('theme-light', isLightMode);
+            toolTheme.textContent = isLightMode ? '🌙' : '☀️';
+            toolTheme.title = isLightMode ? 'التبديل إلى الوضع الليلي' : 'التبديل إلى الوضع النهاري';
           }
         }
       });

@@ -4955,6 +4955,9 @@ html[data-theme="light"] .ai-error-desc {
         function toggleDesktopOverlayHUD() {
             if (window.electronAPI && typeof window.electronAPI.updateMiniTimer === 'function') {
                 isDesktopOverlayForced = !isDesktopOverlayForced;
+                if (isDesktopOverlayForced && typeof window.electronAPI.resetMiniTimerPosition === 'function') {
+                    window.electronAPI.resetMiniTimerPosition();
+                }
                 syncDesktopMiniTimer({ forceShow: isDesktopOverlayForced, forceHide: !isDesktopOverlayForced && !isClockRunning && totalElapsedSecondsTracked <= 0 });
                 const btns = document.querySelectorAll('.btn-hud');
                 btns.forEach(b => b.classList.toggle('active', isDesktopOverlayForced));
