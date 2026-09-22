@@ -187,6 +187,9 @@
         .word-control-btn.btn-stop:hover { color: var(--danger); background: rgba(231, 76, 60, 0.15); box-shadow: 0 4px 20px rgba(231, 76, 60, 0.3); }
         .word-control-btn.btn-full { border-color: var(--accent-purple); }
         .word-control-btn.btn-full:hover { color: var(--accent-purple); background: rgba(62, 92, 138, 0.15); box-shadow: 0 4px 20px rgba(62, 92, 138, 0.3); }
+        .word-control-btn.btn-hud { border-color: rgba(56, 189, 248, 0.45); color: #38bdf8; }
+        .word-control-btn.btn-hud:hover { color: #38bdf8; background: rgba(56, 189, 248, 0.15); box-shadow: 0 4px 20px rgba(56, 189, 248, 0.3); }
+        .word-control-btn.btn-hud.active { background: #38bdf8; color: #08090d; border-color: #38bdf8; box-shadow: 0 4px 20px rgba(56, 189, 248, 0.45); }
         .quick-stats-row { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
         .quick-stat-chip { background: color-mix(in srgb, var(--text-light) 3%, transparent); border: 1px solid var(--border-soft); border-radius: 12px; padding: 10px 18px; font-size: 12px; color: var(--text-gray); display: flex; align-items: center; gap: 8px; transition: all 0.3s; }
         .quick-stat-chip:hover { border-color: var(--accent-orange); transform: translateY(-2px); }
@@ -1498,6 +1501,9 @@ button:not(:disabled):active { transform:translateY(1px) scale(.985); }
         html[data-theme="light"] .word-control-btn.btn-start { border-color: rgba(39,115,74,.48); }
         html[data-theme="light"] .word-control-btn.btn-start:hover { color: var(--day-green-deep); background: var(--day-green-soft); box-shadow:none; }
         html[data-theme="light"] .word-control-btn.btn-start.active { background: var(--day-green); color:#fff; }
+        html[data-theme="light"] .word-control-btn.btn-hud { border-color: rgba(2, 132, 199, 0.45); color: #0284c7; }
+        html[data-theme="light"] .word-control-btn.btn-hud:hover { color: #0369a1; background: rgba(2, 132, 199, 0.12); box-shadow: none; }
+        html[data-theme="light"] .word-control-btn.btn-hud.active { background: #0284c7; color: #fff; }
 
         html[data-theme="light"] .timer-task-item {
             border-radius: 10px !important;
@@ -4110,6 +4116,7 @@ html[data-theme="light"] .ai-error-desc {
                         <button class="word-control-btn btn-pause" onclick="pauseClock()" id="ctrl-pause">Pause</button>
                         <button class="word-control-btn btn-stop" onclick="stopAndSaveClock()" id="ctrl-stop">Stop</button>
                         <button class="word-control-btn btn-full" onclick="toggleDeepFocusMode()" id="ctrl-full">Focus</button>
+                        <button class="word-control-btn btn-hud" onclick="toggleDesktopOverlayHUD()" id="ctrl-hud" title="مؤقت عائم فوق كل التطبيقات والـ Full Screen (Desktop HUD)">HUD 🗗</button>
                     </div>
                     <div class="quick-stats-row" id="quick-stats">
                         <div class="quick-stat-chip"><span class="stat-icon">🔥</span><span>Today: <strong id="qs-today">0.0h</strong></span></div>
@@ -4813,6 +4820,7 @@ html[data-theme="light"] .ai-error-desc {
             <button class="word-control-btn btn-pause" onclick="pauseClock()">Pause</button>
             <button class="word-control-btn btn-stop" onclick="stopAndSaveClock()">Stop</button>
             <button class="word-control-btn btn-full" onclick="toggleDeepFocusMode()" id="fs-exit-btn">Exit Focus</button>
+            <button class="word-control-btn btn-hud" onclick="toggleDesktopOverlayHUD()" title="مؤقت عائم فوق كل التطبيقات والـ Full Screen (Desktop HUD)">HUD 🗗</button>
         </div>
         <button class="focus-park" type="button" onclick="parkFocusThought()" id="focus-park-btn">💭 Park a distraction</button>
     </div>
@@ -4865,31 +4873,202 @@ html[data-theme="light"] .ai-error-desc {
         //  وتشغيل الصوت فقط إذا انتهت الجلسة تلقائياً
         // ----------------------------------------------------------------
 
-        // Desktop always-on-top mini timer (Electron).
-        // This is a no-op when the HTML is opened directly in a normal browser.
-        function syncDesktopMiniTimer() {
+        // Desktop always-on-top mini timer (Electron) & PiP fallback.
+        let isDesktopOverlayUserEnabled = true;
+        let isDesktopOverlayForced = false;
+        let pipWindowInstance = null;
+
+        function syncDesktopMiniTimer(extraOpts = {}) {
+            const totalDisplaySeconds = Math.max(0, (runningMinutes * 60) + runningSeconds);
+            const miniHours = Math.floor(totalDisplaySeconds / 3600);
+            const miniMinutes = Math.floor((totalDisplaySeconds % 3600) / 60);
+            const miniSeconds = totalDisplaySeconds % 60;
+            const formattedTime = `${miniHours.toString().padStart(2, '0')}:${miniMinutes.toString().padStart(2, '0')}:${miniSeconds.toString().padStart(2, '0')}`;
+
+            let theme = 'dark';
+            try {
+                if (typeof currentAppTheme !== 'undefined' && currentAppTheme) {
+                    theme = currentAppTheme;
+                } else {
+                    theme = document.documentElement.getAttribute('data-theme') || 'dark';
+                }
+            } catch (_) {}
+
+            let tag = 'Study';
+            try {
+                if (typeof currentlySelectedTag !== 'undefined' && currentlySelectedTag) {
+                    tag = currentlySelectedTag;
+                }
+            } catch (_) {}
+
+            let progress = 0;
+            if (currentMode === 'stopwatch') {
+                progress = Math.min(100, Math.round((totalElapsedSecondsTracked / 3600) * 100));
+            } else {
+                const configTotalSec = (baseSetupMinutes * 60);
+                if (configTotalSec > 0) {
+                    progress = Math.min(100, Math.max(0, Math.round(((configTotalSec - totalDisplaySeconds) / configTotalSec) * 100)));
+                }
+            }
+
+            // Sync with Document PiP window if active in standard browser
+            if (pipWindowInstance && !pipWindowInstance.closed) {
+                try {
+                    const pipDoc = pipWindowInstance.document;
+                    const pTime = pipDoc.getElementById('pip-time');
+                    if (pTime) pTime.textContent = formattedTime;
+                    const pTag = pipDoc.getElementById('pip-tag');
+                    if (pTag) pTag.textContent = tag.slice(0, 14);
+                    const pStatus = pipDoc.getElementById('pip-status');
+                    if (pStatus) {
+                        pStatus.style.background = isClockRunning ? (theme === 'light' ? '#b37e22' : '#d9a54a') : '#f39c12';
+                    }
+                    pipDoc.documentElement.setAttribute('data-theme', theme);
+                } catch (_) {}
+            }
+
             try {
                 if (!window.electronAPI || typeof window.electronAPI.updateMiniTimer !== 'function') return;
-                const totalDisplaySeconds = Math.max(0, (runningMinutes * 60) + runningSeconds);
-                const miniHours = Math.floor(totalDisplaySeconds / 3600);
-                const miniMinutes = Math.floor((totalDisplaySeconds % 3600) / 60);
-                const miniSeconds = totalDisplaySeconds % 60;
+
+                const shouldBeVisible = extraOpts.forceHide ? false : (
+                    extraOpts.forceShow ? true : (
+                        isDesktopOverlayUserEnabled && (isClockRunning || totalElapsedSecondsTracked > 0 || isDesktopOverlayForced)
+                    )
+                );
+
                 window.electronAPI.updateMiniTimer({
-                    time: `${miniHours.toString().padStart(2, '0')}:${miniMinutes.toString().padStart(2, '0')}:${miniSeconds.toString().padStart(2, '0')}`,
+                    time: formattedTime,
                     running: !!isClockRunning,
                     paused: !isClockRunning && totalElapsedSecondsTracked > 0,
-                    visible: !!(isClockRunning || totalElapsedSecondsTracked > 0)
+                    visible: !!shouldBeVisible,
+                    progress: progress,
+                    theme: theme === 'light' ? 'light' : 'dark',
+                    mode: currentMode || 'pomodoro',
+                    tag: tag,
+                    completed: !!extraOpts.completed
                 });
             } catch (e) {
                 // The browser version of the app does not have Electron IPC.
             }
         }
 
+        function toggleDesktopOverlayHUD() {
+            if (window.electronAPI && typeof window.electronAPI.updateMiniTimer === 'function') {
+                isDesktopOverlayForced = !isDesktopOverlayForced;
+                syncDesktopMiniTimer({ forceShow: isDesktopOverlayForced, forceHide: !isDesktopOverlayForced && !isClockRunning && totalElapsedSecondsTracked <= 0 });
+                const btns = document.querySelectorAll('.btn-hud');
+                btns.forEach(b => b.classList.toggle('active', isDesktopOverlayForced));
+            } else if ('documentPictureInPicture' in window) {
+                toggleDocumentPiPTimer();
+            } else {
+                alert('المؤقت العائم دائماً فوق كل التطبيقات والـ Full Screen يعمل تلقائياً عند تشغيل برنامج INDEX كبرنامج تنفيذي (.exe) على الويندوز.');
+            }
+        }
+
+        async function toggleDocumentPiPTimer() {
+            try {
+                if (pipWindowInstance && !pipWindowInstance.closed) {
+                    pipWindowInstance.close();
+                    pipWindowInstance = null;
+                    const btns = document.querySelectorAll('.btn-hud');
+                    btns.forEach(b => b.classList.remove('active'));
+                    return;
+                }
+                if (!('documentPictureInPicture' in window)) return;
+                const pip = await window.documentPictureInPicture.requestWindow({
+                    width: 270,
+                    height: 58
+                });
+                pipWindowInstance = pip;
+                const btns = document.querySelectorAll('.btn-hud');
+                btns.forEach(b => b.classList.add('active'));
+
+                let theme = 'dark';
+                try {
+                    theme = currentAppTheme || document.documentElement.getAttribute('data-theme') || 'dark';
+                } catch (_) {}
+
+                pip.document.documentElement.setAttribute('data-theme', theme);
+                pip.document.body.style.margin = '0';
+                pip.document.body.style.padding = '0';
+                pip.document.body.style.background = theme === 'light' ? '#ffffff' : '#0c0e13';
+                pip.document.body.style.display = 'flex';
+                pip.document.body.style.alignItems = 'center';
+                pip.document.body.style.justifyContent = 'center';
+                pip.document.body.style.fontFamily = 'system-ui, -apple-system, sans-serif';
+                pip.document.body.style.overflow = 'hidden';
+                pip.document.body.style.height = '100%';
+                pip.document.body.style.boxSizing = 'border-box';
+
+                const isLight = theme === 'light';
+                const pipContainer = pip.document.createElement('div');
+                pipContainer.id = 'pip-timer-container';
+                pipContainer.style.cssText = `
+                    display:flex;align-items:center;gap:10px;padding:6px 14px;border-radius:10px;
+                    background:${isLight ? '#f9f6f0' : '#141720'};
+                    border:1px solid ${isLight ? 'rgba(179,126,34,0.45)' : 'rgba(217,165,74,0.45)'};
+                    cursor:pointer;user-select:none;box-shadow:0 4px 16px rgba(0,0,0,0.25);
+                `;
+
+                const pipStatus = pip.document.createElement('span');
+                pipStatus.id = 'pip-status';
+                pipStatus.style.cssText = `width:8px;height:8px;border-radius:50%;background:${isLight ? '#b37e22' : '#d9a54a'};box-shadow:0 0 8px ${isLight ? 'rgba(179,126,34,0.5)' : 'rgba(217,165,74,0.6)'};`;
+
+                const pipTime = pip.document.createElement('span');
+                pipTime.id = 'pip-time';
+                pipTime.style.cssText = `font-family:"Courier New",monospace;font-size:18px;font-weight:800;color:${isLight ? '#6b4507' : '#d9a54a'};letter-spacing:0.5px;`;
+                const totalDisplaySeconds = Math.max(0, (runningMinutes * 60) + runningSeconds);
+                const miniH = Math.floor(totalDisplaySeconds / 3600);
+                const miniM = Math.floor((totalDisplaySeconds % 3600) / 60);
+                const miniS = totalDisplaySeconds % 60;
+                pipTime.textContent = `${miniH.toString().padStart(2, '0')}:${miniM.toString().padStart(2, '0')}:${miniS.toString().padStart(2, '0')}`;
+
+                let tag = 'Study';
+                try { if (typeof currentlySelectedTag !== 'undefined' && currentlySelectedTag) tag = currentlySelectedTag; } catch (_) {}
+
+                const pipTag = pip.document.createElement('span');
+                pipTag.id = 'pip-tag';
+                pipTag.style.cssText = `font-size:9px;font-weight:800;color:${isLight ? '#5c4b37' : '#8b949e'};text-transform:uppercase;max-width:65px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;`;
+                pipTag.textContent = tag.slice(0, 14);
+
+                pipContainer.appendChild(pipStatus);
+                pipContainer.appendChild(pipTime);
+                pipContainer.appendChild(pipTag);
+                pip.document.body.appendChild(pipContainer);
+
+                pipContainer.addEventListener('click', () => {
+                    if (isClockRunning) pauseClock();
+                    else startClock();
+                });
+
+                pip.addEventListener('pagehide', () => {
+                    pipWindowInstance = null;
+                    const bList = document.querySelectorAll('.btn-hud');
+                    bList.forEach(b => b.classList.remove('active'));
+                });
+            } catch (err) {
+                console.error('PiP Window Error:', err);
+            }
+        }
+
+        // Listen to commands from the Desktop Overlay HUD (Play/Pause, etc.)
+        if (window.electronAPI && typeof window.electronAPI.onMiniTimerCommand === 'function') {
+            window.electronAPI.onMiniTimerCommand((cmd) => {
+                if (cmd?.action === 'toggle-play-pause') {
+                    if (isClockRunning) {
+                        pauseClock();
+                    } else {
+                        startClock();
+                    }
+                }
+            });
+        }
+
         function stopAndSaveClock(isTimeout = false) {
             isClockRunning = false;
             const miniTimerEl = document.getElementById('mini-floating-timer');
             if (miniTimerEl) miniTimerEl.classList.remove('is-visible', 'paused');
-            syncDesktopMiniTimer();
+            syncDesktopMiniTimer({ completed: !!isTimeout });
             if (timerWorker) timerWorker.postMessage({ type: 'stop' });
             workerStartTime = null;
             workerPausedAccumulator = 0;
@@ -5719,6 +5898,7 @@ html[data-theme="light"] .ai-error-desc {
             document.documentElement.setAttribute('data-theme', theme);
             const btn = document.getElementById('theme-toggle-btn');
             if (btn) btn.innerText = theme === 'light' ? '☀️' : '🌙';
+            syncDesktopMiniTimer();
         }
         function toggleAppTheme() {
             const next = currentAppTheme === 'light' ? 'dark' : 'light';
@@ -6767,6 +6947,7 @@ html[data-theme="light"] .ai-error-desc {
             refreshTimerSidebar();
             loadTimerNotesForCurrentTag();
             applySubjectTint();
+            syncDesktopMiniTimer();
         }
 
         function deleteTagFromSystem(tag) {

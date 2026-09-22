@@ -18,14 +18,18 @@
       --btn-hover: rgba(255, 255, 255, 0.12);
     }
 
-    /* Light Theme accommodation */
+    /* Light Theme accommodation - High Contrast & Clean Elegance */
     body.theme-light {
-      --panel-bg: #ffffff;
-      --border-color: #d6c6b2;
-      --time-color: #8c5b0d;
-      --label-color: #6e5e4f;
-      --track-bg: rgba(0, 0, 0, 0.08);
-      --btn-hover: rgba(0, 0, 0, 0.06);
+      --gold: #b37e22;
+      --gold-glow: rgba(179, 126, 34, 0.4);
+      --panel-bg: rgba(255, 255, 255, 0.96);
+      --border-color: rgba(179, 126, 34, 0.45);
+      --time-color: #6b4507;
+      --label-color: #4a3d2c;
+      --warning: #d97706;
+      --track-bg: rgba(0, 0, 0, 0.1);
+      --btn-hover: rgba(0, 0, 0, 0.08);
+      color: #2b2118;
     }
 
     /* Translucent / Glass accommodation */
@@ -33,7 +37,15 @@
       --panel-bg: rgba(12, 14, 19, 0.72);
     }
     body.theme-light.style-translucent {
-      --panel-bg: rgba(255, 255, 255, 0.82);
+      --panel-bg: rgba(255, 255, 255, 0.84);
+    }
+    body.theme-light #timer-pill {
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18), 0 2px 8px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(179, 126, 34, 0.25);
+    }
+    body.theme-light #opacity-badge {
+      background: rgba(255, 255, 255, 0.95);
+      color: #6b4507;
+      border-color: rgba(179, 126, 34, 0.45);
     }
 
     * { box-sizing: border-box; }
@@ -679,10 +691,17 @@
         }
       }
 
-      // Sync theme if user hasn't explicitly set a custom override
-      if (!localStorage.getItem('index_overlay_style') && state.theme) {
-        currentThemeMode = state.theme === 'light' ? 'light-solid' : 'dark-solid';
-        applyPreferences();
+      // Always synchronize Light / Dark mode dynamically with the main application
+      if (state.theme) {
+        const wantsLight = state.theme === 'light';
+        const isCurrentlyLight = currentThemeMode.startsWith('light');
+        if (wantsLight !== isCurrentlyLight) {
+          const isGlass = currentThemeMode.includes('glass');
+          currentThemeMode = wantsLight
+            ? (isGlass ? 'light-glass' : 'light-solid')
+            : (isGlass ? 'dark-glass' : 'dark-solid');
+          applyPreferences();
+        }
       }
     });
   </script>

@@ -74,13 +74,13 @@ let lastOverlayState = {
 function ensureOverlayOnTop() {
   if (!overlayWindow || overlayWindow.isDestroyed()) return;
   try {
-    // 'screen-saver' is the highest z-band level in Windows Desktop Window Manager.
-    // It stays strictly ABOVE fullscreen applications (YouTube fullscreen in Chrome/Edge, VLC, PotPlayer, MPV).
-    overlayWindow.setAlwaysOnTop(true, 'screen-saver');
+    // 'screen-saver' with level 1 is the highest z-band level in Windows Desktop Window Manager.
+    // It stays strictly ABOVE fullscreen applications (YouTube fullscreen, VLC, F11 browser, games).
+    overlayWindow.setAlwaysOnTop(true, 'screen-saver', 1);
     overlayWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
     overlayWindow.moveTop();
   } catch (err) {
-    try { overlayWindow.setAlwaysOnTop(true); } catch (_) {}
+    try { overlayWindow.setAlwaysOnTop(true, 'screen-saver'); } catch (_) {}
   }
 }
 
@@ -90,7 +90,7 @@ function createOverlayWindow() {
     height: 60,
     minWidth: 200,
     minHeight: 48,
-    maxWidth: 360,
+    maxWidth: 380,
     maxHeight: 100,
     transparent: true,
     frame: false,
@@ -101,7 +101,9 @@ function createOverlayWindow() {
     show: false,
     focusable: false, // Prevents stealing focus from full-screen media players and games
     hasShadow: false, // Avoids DWM shadow artifacts when floating over video surfaces
-    type: 'toolbar',  // Utility overlay type keeps Windows from suppressing it on fullscreen
+    minimizable: false,
+    maximizable: false,
+    fullscreenable: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
@@ -214,6 +216,13 @@ function calculateSnappedPosition(x, y, w, h) {
 app.whenReady().then(async () => {
   await createMainWindow();
   createOverlayWindow();
+
+  // Periodic assertion of topmost Z-order to survive dynamic fullscreen transitions
+  setInterval(() => {
+    if (overlayWindow && !overlayWindow.isDestroyed() && overlayWindow.isVisible()) {
+      ensureOverlayOnTop();
+    }
+  }, 2000);
 
   try {
     globalShortcut.register('CommandOrControl+Alt+G', () => {
