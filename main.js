@@ -84,14 +84,19 @@ function ensureOverlayOnTop() {
   }
 }
 
+const OVERLAY_W = 160;
+const OVERLAY_H_NORMAL = 44;
+const OVERLAY_H_COLLAPSED = 6;
+const OVERLAY_H_MENU = 195;
+
 function createOverlayWindow() {
   overlayWindow = new BrowserWindow({
-    width: 270,
-    height: 60,
-    minWidth: 200,
-    minHeight: 48,
-    maxWidth: 380,
-    maxHeight: 100,
+    width: OVERLAY_W,
+    height: OVERLAY_H_NORMAL,
+    minWidth: OVERLAY_W,
+    minHeight: OVERLAY_H_COLLAPSED,
+    maxWidth: OVERLAY_W,
+    maxHeight: OVERLAY_H_MENU,
     transparent: true,
     frame: false,
     resizable: false,
@@ -115,14 +120,11 @@ function createOverlayWindow() {
   overlayWindow.loadFile(path.join(__dirname, 'overlay.html'));
 
   overlayWindow.once('ready-to-show', () => {
-    const saved = overlayWindow.getPosition();
-    if (!saved || saved.length !== 2) {
-      const workArea = screen.getPrimaryDisplay().workArea;
-      overlayWindow.setPosition(
-        Math.round(workArea.x + (workArea.width - 270) / 2),
-        Math.round(workArea.y)
-      );
-    }
+    const workArea = screen.getPrimaryDisplay().workArea;
+    overlayWindow.setPosition(
+      Math.round(workArea.x + (workArea.width - OVERLAY_W) / 2),
+      Math.round(workArea.y)
+    );
     overlayWindow.webContents.send('mini-timer:state', lastOverlayState);
     ensureOverlayOnTop();
   });
@@ -297,8 +299,7 @@ ipcMain.on('mini-timer:pin-top', (_event, pinned) => {
     const pos = overlayWindow.getPosition();
     const display = screen.getDisplayNearestPoint({ x: pos[0], y: pos[1] });
     const area = display.workArea;
-    const [w, h] = overlayWindow.getSize();
-    const centerX = Math.round(area.x + (area.width - w) / 2);
+    const centerX = Math.round(area.x + (area.width - OVERLAY_W) / 2);
     const topY = area.y;
     overlayWindow.setPosition(centerX, topY);
     ensureOverlayOnTop();
@@ -308,11 +309,24 @@ ipcMain.on('mini-timer:pin-top', (_event, pinned) => {
 ipcMain.on('mini-timer:set-collapsed', (_event, collapsed) => {
   if (!overlayWindow || overlayWindow.isDestroyed()) return;
   isOverlayCollapsed = !!collapsed;
-  const [curW] = overlayWindow.getSize();
   const [curX, curY] = overlayWindow.getPosition();
-  const targetH = isOverlayCollapsed ? 7 : 60;
-  overlayWindow.setBounds({ x: curX, y: curY, width: curW, height: targetH });
+  const targetH = isOverlayCollapsed ? OVERLAY_H_COLLAPSED : OVERLAY_H_NORMAL;
+  overlayWindow.setBounds({ x: curX, y: curY, width: OVERLAY_W, height: targetH });
   ensureOverlayOnTop();
+});
+
+ipcMain.on('mini-timer:set-menu-open', (_event, isOpen) => {
+  if (!overlayWindow || overlayWindow.isDestroyed()) return;
+  const [curX, curY] = overlayWindow.getPosition();
+  const targetH = isOpen ? OVERLAY_H_MENU : (isOverlayCollapsed ? OVERLAY_H_COLLAPSED : OVERLAY_H_NORMAL);
+  overlayWindow.setBounds({ x: curX, y: curY, width: OVERLAY_W, height: targetH });
+  ensureOverlayOnTop();
+});
+
+ipcMain.on('mini-timer:toggle-theme', () => {
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.webContents.send('mini-timer:command', { action: 'toggle-theme' });
+  }
 });
 
 ipcMain.on('mini-timer:set-ghost-mode', (_event, isGhost) => {

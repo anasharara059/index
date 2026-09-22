@@ -5051,7 +5051,7 @@ html[data-theme="light"] .ai-error-desc {
             }
         }
 
-        // Listen to commands from the Desktop Overlay HUD (Play/Pause, etc.)
+        // Listen to commands from the Desktop Overlay HUD (Play/Pause, Theme, etc.)
         if (window.electronAPI && typeof window.electronAPI.onMiniTimerCommand === 'function') {
             window.electronAPI.onMiniTimerCommand((cmd) => {
                 if (cmd?.action === 'toggle-play-pause') {
@@ -5060,6 +5060,8 @@ html[data-theme="light"] .ai-error-desc {
                     } else {
                         startClock();
                     }
+                } else if (cmd?.action === 'toggle-theme') {
+                    toggleAppTheme();
                 }
             });
         }

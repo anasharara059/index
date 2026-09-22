@@ -1,58 +1,51 @@
 <!doctype html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>INDEX Timer HUD</title>
+  <title>INDEX Desktop HUD</title>
   <style>
     :root {
       --gold: #d9a54a;
       --gold-glow: rgba(217, 165, 74, 0.45);
-      --muted: #8b949e;
-      --warning: #f39c12;
-      --panel-bg: rgba(12, 14, 19, 0.96);
-      --border-color: rgba(217, 165, 74, 0.45);
+      --pill-bg: rgba(12, 14, 20, 0.94);
+      --pill-border: rgba(217, 165, 74, 0.42);
       --time-color: #d9a54a;
-      --label-color: #8b949e;
+      --label-color: #9ca3af;
+      --warning: #f59e0b;
+      --success: #10b981;
       --track-bg: rgba(255, 255, 255, 0.12);
-      --btn-hover: rgba(255, 255, 255, 0.12);
+      --btn-hover: rgba(255, 255, 255, 0.10);
+      --menu-bg: rgba(14, 17, 24, 0.96);
+      --menu-border: rgba(217, 165, 74, 0.35);
+      --menu-text: #e5e7eb;
+      --shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
     }
 
-    /* Light Theme accommodation - High Contrast & Clean Elegance */
+    /* Light Theme accommodation - High Contrast & Warm Elegance */
     body.theme-light {
       --gold: #b37e22;
-      --gold-glow: rgba(179, 126, 34, 0.4);
-      --panel-bg: rgba(255, 255, 255, 0.96);
-      --border-color: rgba(179, 126, 34, 0.45);
+      --gold-glow: rgba(179, 126, 34, 0.35);
+      --pill-bg: rgba(255, 255, 255, 0.96);
+      --pill-border: rgba(179, 126, 34, 0.48);
       --time-color: #6b4507;
-      --label-color: #4a3d2c;
+      --label-color: #5c4d3c;
       --warning: #d97706;
-      --track-bg: rgba(0, 0, 0, 0.1);
-      --btn-hover: rgba(0, 0, 0, 0.08);
-      color: #2b2118;
-    }
-
-    /* Translucent / Glass accommodation */
-    body.style-translucent {
-      --panel-bg: rgba(12, 14, 19, 0.72);
-    }
-    body.theme-light.style-translucent {
-      --panel-bg: rgba(255, 255, 255, 0.84);
-    }
-    body.theme-light #timer-pill {
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18), 0 2px 8px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(179, 126, 34, 0.25);
-    }
-    body.theme-light #opacity-badge {
-      background: rgba(255, 255, 255, 0.95);
-      color: #6b4507;
-      border-color: rgba(179, 126, 34, 0.45);
+      --success: #059669;
+      --track-bg: rgba(0, 0, 0, 0.10);
+      --btn-hover: rgba(0, 0, 0, 0.07);
+      --menu-bg: rgba(255, 255, 255, 0.97);
+      --menu-border: rgba(179, 126, 34, 0.35);
+      --menu-text: #2d2416;
+      --shadow: 0 8px 24px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.08);
     }
 
     * { box-sizing: border-box; }
 
     html, body {
       margin: 0;
-      width: 100%;
+      padding: 0;
+      width: 160px;
       height: 100%;
       background: transparent;
       overflow: hidden;
@@ -60,525 +53,422 @@
       user-select: none;
     }
 
-    body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      padding: 0;
-    }
-
     #overlay-container {
-      width: 100%;
-      height: 100%;
+      width: 160px;
       position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
+      padding-top: 0;
     }
 
-    /* Top Progress Bar Track & Indicator */
-    #progress-track {
-      width: 100%;
+    /* -------------------------------------------------------------
+       TOP NOTCH ACCENT STRIP (when retracted at top screen edge)
+       ------------------------------------------------------------- */
+    #notch-strip {
+      width: 48px;
       height: 5px;
-      background: var(--track-bg);
+      background: linear-gradient(90deg, #f59e0b, #d9a54a);
+      border-radius: 0 0 4px 4px;
+      box-shadow: 0 0 8px rgba(217, 165, 74, 0.6);
       position: absolute;
       top: 0;
-      left: 0;
-      right: 0;
-      z-index: 100;
-      overflow: hidden;
-      border-radius: 3px 3px 0 0;
+      left: 50%;
+      transform: translateX(-50%);
       cursor: pointer;
+      z-index: 10;
+      transition: opacity 0.2s ease;
+      opacity: 0.9;
     }
 
-    #progress-bar {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #f39c12, #d9a54a);
-      box-shadow: 0 0 10px rgba(217, 165, 74, 0.6);
-      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      border-radius: 3px;
-    }
-
-    /* Main Timer Pill Card */
+    /* -------------------------------------------------------------
+       MAIN CAPSULE PILL (Fixed ~2.5 cm: 154px width × 36px height)
+       ------------------------------------------------------------- */
     #timer-pill {
-      width: calc(100% - 6px);
-      height: 48px;
-      margin-top: 3px;
+      width: 154px;
+      height: 36px;
+      min-width: 154px;
+      max-width: 154px;
+      margin-top: 2px;
       display: flex;
       align-items: center;
-      gap: 7px;
+      justify-content: space-between;
       padding: 0 8px 0 10px;
-      background: var(--panel-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 11px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.42), 0 0 16px rgba(217, 165, 74, 0.08);
+      background: var(--pill-bg);
+      border: 1px solid var(--pill-border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
-      transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.18s ease, border-color 0.2s ease, background 0.2s ease;
+      position: relative;
       cursor: grab;
       -webkit-app-region: drag;
+      overflow: hidden;
     }
 
     #timer-pill:active {
       cursor: grabbing;
     }
 
-    /* Status Pulse Dot / Play-Pause Trigger */
+    /* Auto-Hide physics when pinned to top */
+    #overlay-container.is-pinned-top:not(.is-always-visible) #timer-pill {
+      transform: translateY(-38px);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Drops down smoothly on hover or when revealed */
+    #overlay-container.is-pinned-top:not(.is-always-visible):hover #timer-pill,
+    #overlay-container.is-pinned-top:not(.is-always-visible).is-peek-revealed #timer-pill {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #overlay-container.is-pinned-top:not(.is-always-visible):hover #notch-strip,
+    #overlay-container.is-pinned-top:not(.is-always-visible).is-peek-revealed #notch-strip {
+      opacity: 0;
+    }
+
+    /* Always visible state */
+    #overlay-container.is-always-visible #timer-pill,
+    #overlay-container:not(.is-pinned-top) #timer-pill {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #overlay-container.is-always-visible #notch-strip,
+    #overlay-container:not(.is-pinned-top) #notch-strip {
+      display: none;
+    }
+
+    /* Status Pulse Dot */
     #status-wrapper {
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 16px;
-      height: 16px;
+      width: 14px;
+      height: 14px;
       cursor: pointer;
       -webkit-app-region: no-drag;
     }
 
-    #status {
+    #status-dot {
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: var(--gold);
-      box-shadow: 0 0 10px var(--gold-glow);
-      transition: all 0.25s ease;
+      background: var(--success);
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.7);
+      transition: all 0.2s ease;
     }
 
-    .paused #status {
+    .paused #status-dot {
       background: var(--warning);
-      box-shadow: 0 0 10px rgba(243, 156, 18, 0.65);
+      box-shadow: 0 0 8px rgba(245, 158, 11, 0.7);
     }
 
-    /* Timer Digits */
-    #time {
-      font-family: "Courier New", "SF Mono", Monaco, Consolas, monospace;
-      font-size: 20px;
-      line-height: 1;
+    /* Time Numbers */
+    #time-display {
+      font-family: "SF Mono", Monaco, Consolas, "Courier New", monospace;
+      font-size: 16.5px;
       font-weight: 800;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
       color: var(--time-color);
       font-variant-numeric: tabular-nums;
       white-space: nowrap;
       cursor: pointer;
       -webkit-app-region: no-drag;
-      transition: color 0.2s ease;
+      transition: color 0.18s ease;
+      direction: ltr;
     }
 
-    .paused #time {
+    .paused #time-display {
       color: var(--warning);
     }
 
-    /* Mode / Tag Badge */
-    #label {
-      font-size: 8.5px;
-      font-weight: 800;
-      letter-spacing: 0.6px;
-      color: var(--label-color);
-      text-transform: uppercase;
-      max-width: 50px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      margin-left: 2px;
-    }
-
-    /* Action Buttons Group */
-    .hud-controls {
-      display: flex;
-      align-items: center;
-      gap: 3px;
-      margin-left: auto;
-      -webkit-app-region: no-drag;
-    }
-
-    .hud-btn {
+    /* Three Dots Button */
+    #dots-btn {
       width: 22px;
-      height: 24px;
+      height: 22px;
       border: 0;
-      border-radius: 5px;
+      border-radius: 50%;
       background: transparent;
       color: var(--label-color);
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.18s ease;
+      transition: all 0.15s ease;
       padding: 0;
+      -webkit-app-region: no-drag;
     }
 
-    .hud-btn:hover {
-      color: var(--gold);
+    #dots-btn:hover {
       background: var(--btn-hover);
-      transform: scale(1.08);
-    }
-
-    .hud-btn.active {
       color: var(--gold);
-      background: rgba(217, 165, 74, 0.18);
+      transform: scale(1.1);
     }
 
-    .hud-btn svg {
-      width: 13px;
-      height: 13px;
-      fill: none;
-      stroke: currentColor;
-      stroke-width: 2.2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
+    #dots-btn svg {
+      width: 14px;
+      height: 14px;
+      fill: currentColor;
     }
 
-    /* -------------------------------------------------------------
-       PINNED-TO-TOP + AUTO-HIDE DROPDOWN PHYSICS
-       ------------------------------------------------------------- */
-    #overlay-container.is-pinned-top {
-      /* When docked to top of screen, remove drag on container */
-    }
-
-    /* Auto-Hide mode when pinned to top: retracts to top edge showing progress bar */
-    #overlay-container.is-pinned-top:not(.is-always-expanded) #timer-pill {
-      transform: translateY(-44px);
-    }
-
-    /* Hover gesture: drops down smoothly when mouse approaches top edge */
-    #overlay-container.is-pinned-top:not(.is-always-expanded):hover #timer-pill,
-    #overlay-container.is-pinned-top:not(.is-always-expanded).is-peek-revealed #timer-pill {
-      transform: translateY(0);
-      box-shadow: 0 10px 32px rgba(0, 0, 0, 0.55), 0 0 20px rgba(217, 165, 74, 0.15);
-    }
-
-    /* Always-expanded mode: stays fully down at the top center */
-    #overlay-container.is-pinned-top.is-always-expanded #timer-pill {
-      transform: translateY(0);
-    }
-
-    /* When not pinned (free float): stays expanded and draggable */
-    #overlay-container:not(.is-pinned-top) #timer-pill {
-      transform: translateY(0);
-    }
-
-    /* -------------------------------------------------------------
-       SCROLL OPACITY BADGE
-       ------------------------------------------------------------- */
-    #opacity-badge {
+    /* Subtle Built-in Progress Bar (Strictly inside capsule - NEVER expands beyond 154px!) */
+    #pill-progress-track {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0.8);
-      background: rgba(12, 14, 19, 0.94);
-      color: var(--gold);
-      border: 1px solid var(--border-color);
-      padding: 3px 10px;
-      border-radius: 8px;
+      bottom: 0;
+      left: 10px;
+      right: 10px;
+      height: 2px;
+      background: var(--track-bg);
+      border-radius: 2px;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    #pill-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #f59e0b, #d9a54a);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+
+    /* -------------------------------------------------------------
+       THREE-DOTS DROPDOWN MENU
+       ------------------------------------------------------------- */
+    #dots-menu {
+      width: 154px;
+      background: var(--menu-bg);
+      border: 1px solid var(--menu-border);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      position: absolute;
+      top: 42px;
+      left: 3px;
+      padding: 4px;
+      display: none;
+      flex-direction: column;
+      gap: 2px;
+      z-index: 500;
+      -webkit-app-region: no-drag;
+      animation: menuFadeIn 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #dots-menu.is-open {
+      display: flex;
+    }
+
+    @keyframes menuFadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 8px;
+      border-radius: 7px;
       font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.5px;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.18s ease, transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
-      z-index: 300;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
-    }
-
-    #opacity-badge.show {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1);
-    }
-
-    /* -------------------------------------------------------------
-       GHOST / CLICK-THROUGH MODE
-       ------------------------------------------------------------- */
-    #timer-pill.is-ghost-mode {
-      border-color: rgba(100, 200, 255, 0.65);
-      box-shadow: 0 0 20px rgba(100, 200, 255, 0.28);
-    }
-
-    .hud-btn#ghost-btn.active {
-      color: #64c8ff;
-      background: rgba(100, 200, 255, 0.2);
-    }
-
-    #ghost-toast {
-      position: absolute;
-      bottom: -22px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(10, 15, 25, 0.95);
-      color: #64c8ff;
-      border: 1px solid rgba(100, 200, 255, 0.35);
-      font-size: 8px;
       font-weight: 700;
-      letter-spacing: 0.3px;
-      padding: 2px 7px;
-      border-radius: 4px;
+      color: var(--menu-text);
+      cursor: pointer;
+      transition: background 0.14s ease, color 0.14s ease;
       white-space: nowrap;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.2s ease;
-      z-index: 300;
     }
 
-    #ghost-toast.show {
-      opacity: 1;
+    .menu-item:hover {
+      background: var(--btn-hover);
+      color: var(--gold);
     }
 
-    /* -------------------------------------------------------------
-       VISUAL COMPLETION GLOW
-       ------------------------------------------------------------- */
-    @keyframes completionAuraGlow {
-      0%, 100% {
-        box-shadow: 0 0 16px rgba(217, 165, 74, 0.5), 0 0 32px rgba(243, 156, 18, 0.35);
-        border-color: rgba(217, 165, 74, 0.7);
-      }
-      50% {
-        box-shadow: 0 0 36px rgba(217, 165, 74, 0.95), 0 0 65px rgba(243, 156, 18, 0.75);
-        border-color: #f39c12;
-      }
+    .menu-item .menu-icon {
+      font-size: 12px;
+      width: 16px;
+      text-align: center;
+      flex-shrink: 0;
     }
 
+    .menu-divider {
+      height: 1px;
+      background: var(--track-bg);
+      margin: 2px 4px;
+    }
+
+    /* Completion Glow */
     #timer-pill.is-session-completed {
-      animation: completionAuraGlow 1.9s ease-in-out infinite;
-      border-color: #f39c12 !important;
+      border-color: #10b981;
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.75);
+      animation: pulseCompleted 1.5s infinite alternate;
     }
 
-    #timer-pill.is-session-completed #status {
-      background: #2ecc71;
-      box-shadow: 0 0 12px rgba(46, 204, 113, 0.9);
+    @keyframes pulseCompleted {
+      from { box-shadow: 0 0 8px rgba(16, 185, 129, 0.5); }
+      to { box-shadow: 0 0 20px rgba(16, 185, 129, 0.9); }
     }
   </style>
 </head>
 <body>
   <div id="overlay-container" class="is-pinned-top">
-    <!-- Progress Bar (Natural 5px thickness, golden amber) -->
-    <div id="progress-track" title="Session Progress">
-      <div id="progress-bar"></div>
-    </div>
+    <!-- Top Notch Accent Strip (Visible when collapsed at top edge) -->
+    <div id="notch-strip" title="مرر الفأرة هنا لإظهار المؤقت"></div>
 
-    <!-- Timer Pill Card -->
-    <div id="timer-pill">
-      <!-- Status dot (clickable play/pause) -->
-      <div id="status-wrapper" title="Click to Play / Pause">
-        <span id="status"></span>
+    <!-- The 2.5cm Capsule -->
+    <div id="timer-pill" title="اسحب للتحريك أو انقر للتشغيل/الإيقاف">
+      <!-- Status Indicator / Play-Pause -->
+      <div id="status-wrapper" title="تشغيل / إيقاف مؤقت">
+        <span id="status-dot"></span>
       </div>
 
-      <!-- Digits (clickable play/pause) -->
-      <span id="time" title="Click to Play / Pause">00:00:00</span>
+      <!-- Time Display -->
+      <span id="time-display" title="انقر للتشغيل أو الإيقاف المؤقت">25:00</span>
 
-      <!-- Mode / Subject label -->
-      <span id="label">FOCUS</span>
+      <!-- 3-Dots Menu Button -->
+      <button id="dots-btn" type="button" title="خيارات المؤقت">
+        <svg viewBox="0 0 24 24">
+          <circle cx="12" cy="5" r="2"></circle>
+          <circle cx="12" cy="12" r="2"></circle>
+          <circle cx="12" cy="19" r="2"></circle>
+        </svg>
+      </button>
 
-      <!-- Action Buttons -->
-      <div class="hud-controls">
-        <!-- Ghost / Click-Through Mode (وضع الشبح لمرور النقرات أثناء اللعب أو التصفح) -->
-        <button class="hud-btn" id="ghost-btn" title="Ghost / Click-Through Mode (Ctrl+Alt+G or Double-Click)">
-          <svg viewBox="0 0 24 24"><path d="M12 2a8 8 0 0 0-8 8v10l3-2 3 2 2-2 2 2 3-2 3 2V10a8 8 0 0 0-8-8z"></path><circle cx="9" cy="9" r="1.5" fill="currentColor"></circle><circle cx="15" cy="9" r="1.5" fill="currentColor"></circle></svg>
-        </button>
-
-        <!-- Pin to Top Center (بين إن توب) -->
-        <button class="hud-btn active" id="pin-top-btn" title="Pin to top center / Free float">
-          <svg viewBox="0 0 24 24"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14l-2-7V4h1V2H6v2h1v6l-2 7z"></path></svg>
-        </button>
-
-        <!-- Always Show / Auto-Hide Hover Toggle (إظهار دائم / إيماءة النزول) -->
-        <button class="hud-btn" id="always-expand-btn" title="Toggle Always Show / Auto-hide on hover">
-          <svg id="expand-icon" viewBox="0 0 24 24"><polyline points="7 13 12 18 17 13"></polyline><polyline points="7 6 12 11 17 6"></polyline></svg>
-        </button>
-
-        <!-- Theme / Opacity Accommodation (دارك / وايت مود / شفافة) -->
-        <button class="hud-btn" id="theme-btn" title="Theme & Opacity (Dark / Light / Glass)">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 0 0 20z" fill="currentColor"></path></svg>
-        </button>
-
-        <!-- Hide / Close -->
-        <button class="hud-btn" id="hide" title="Hide mini timer">
-          <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-        </button>
+      <!-- Mini Progress Track inside the pill -->
+      <div id="pill-progress-track">
+        <div id="pill-progress-fill"></div>
       </div>
     </div>
 
-    <!-- Feedback Badges -->
-    <div id="opacity-badge">100%</div>
-    <div id="ghost-toast">Ghost Mode Active (Clicks Pass Through) &bull; Ctrl+Alt+G to Exit</div>
+    <!-- 3-Dots Dropdown Menu -->
+    <div id="dots-menu">
+      <div class="menu-item" id="menu-play-pause">
+        <span class="menu-icon">⏯️</span>
+        <span id="menu-play-text">تشغيل / إيقاف</span>
+      </div>
+      <div class="menu-item" id="menu-theme">
+        <span class="menu-icon" id="menu-theme-icon">☀️</span>
+        <span id="menu-theme-text">الوضع النهاري</span>
+      </div>
+      <div class="menu-item" id="menu-dock">
+        <span class="menu-icon">📌</span>
+        <span id="menu-dock-text">أعلى الشاشة</span>
+      </div>
+      <div class="menu-item" id="menu-always-visible">
+        <span class="menu-icon">👁️</span>
+        <span id="menu-visible-text">إظهار دائم</span>
+      </div>
+      <div class="menu-divider"></div>
+      <div class="menu-item" id="menu-hide" style="color: #ef4444;">
+        <span class="menu-icon">✕</span>
+        <span>إخفاء المؤقت</span>
+      </div>
+    </div>
   </div>
 
   <script>
     const container = document.getElementById('overlay-container');
     const timerPill = document.getElementById('timer-pill');
-    const timeEl = document.getElementById('time');
-    const labelEl = document.getElementById('label');
-    const progressBar = document.getElementById('progress-bar');
-    const pinTopBtn = document.getElementById('pin-top-btn');
-    const alwaysExpandBtn = document.getElementById('always-expand-btn');
-    const themeBtn = document.getElementById('theme-btn');
-    const hideBtn = document.getElementById('hide');
+    const timeDisplay = document.getElementById('time-display');
     const statusWrapper = document.getElementById('status-wrapper');
+    const progressFill = document.getElementById('pill-progress-fill');
+    const dotsBtn = document.getElementById('dots-btn');
+    const dotsMenu = document.getElementById('dots-menu');
+    const notchStrip = document.getElementById('notch-strip');
 
-    // State & Preferences from localStorage
-    let isPinnedTop = localStorage.getItem('index_overlay_pinned') !== 'false'; // default true (Pin on Top)
-    let isAlwaysExpanded = localStorage.getItem('index_overlay_always_expanded') === 'true'; // default false (hover drop-down)
-    let currentThemeMode = localStorage.getItem('index_overlay_style') || 'dark-solid'; // dark-solid, dark-glass, light-solid, light-glass
-    let currentOpacity = parseFloat(localStorage.getItem('index_overlay_opacity') || '1.0');
-    let isGhostMode = false;
+    // Menu Item Elements
+    const menuPlayPause = document.getElementById('menu-play-pause');
+    const menuPlayText = document.getElementById('menu-play-text');
+    const menuTheme = document.getElementById('menu-theme');
+    const menuThemeIcon = document.getElementById('menu-theme-icon');
+    const menuThemeText = document.getElementById('menu-theme-text');
+    const menuDock = document.getElementById('menu-dock');
+    const menuDockText = document.getElementById('menu-dock-text');
+    const menuAlwaysVisible = document.getElementById('menu-always-visible');
+    const menuVisibleText = document.getElementById('menu-visible-text');
+    const menuHide = document.getElementById('menu-hide');
 
-    const ghostBtn = document.getElementById('ghost-btn');
-    const opacityBadge = document.getElementById('opacity-badge');
-    const ghostToast = document.getElementById('ghost-toast');
+    // State
+    let isPinnedTop = localStorage.getItem('index_hud_pinned') !== 'false'; // default true
+    let isAlwaysVisible = localStorage.getItem('index_hud_always_visible') === 'true'; // default false (hover drop-down)
+    let isLightMode = false;
+    let isMenuOpen = false;
+    let retractTimeout = null;
 
-    // Initialize custom opacity
-    timerPill.style.opacity = currentOpacity;
-    if (window.electronAPI && typeof window.electronAPI.setWindowOpacity === 'function') {
-      window.electronAPI.setWindowOpacity(currentOpacity);
+    // Apply UI state
+    function applyUIState() {
+      container.classList.toggle('is-pinned-top', isPinnedTop);
+      container.classList.toggle('is-always-visible', isAlwaysVisible);
+      document.body.classList.toggle('theme-light', isLightMode);
+
+      menuDockText.textContent = isPinnedTop ? 'سحب حر (Float)' : 'تثبيت بالأعلى (Dock)';
+      menuVisibleText.textContent = isAlwaysVisible ? 'إخفاء تلقائي (Auto-Hide)' : 'إظهار دائم (Always On)';
+      menuThemeIcon.textContent = isLightMode ? '🌙' : '☀️';
+      menuThemeText.textContent = isLightMode ? 'الوضع الليلي' : 'الوضع النهاري';
+
+      if (!isPinnedTop) {
+        // Free float: make sure it's visible and window is expanded
+        if (window.electronAPI && typeof window.electronAPI.setCollapsedState === 'function') {
+          window.electronAPI.setCollapsedState(false);
+        }
+      } else if (isAlwaysVisible) {
+        if (window.electronAPI && typeof window.electronAPI.setCollapsedState === 'function') {
+          window.electronAPI.setCollapsedState(false);
+        }
+      } else {
+        // Pinned top with auto-hide
+        if (!container.classList.contains('is-peek-revealed') && !isMenuOpen) {
+          if (window.electronAPI && typeof window.electronAPI.setCollapsedState === 'function') {
+            window.electronAPI.setCollapsedState(true);
+          }
+        }
+      }
     }
 
-    function syncTopCollapsedState() {
-      if (!window.electronAPI || typeof window.electronAPI.setCollapsedState !== 'function') return;
-      if (isPinnedTop && !isAlwaysExpanded && !container.classList.contains('is-peek-revealed')) {
-        window.electronAPI.setCollapsedState(true);
-      } else {
+    applyUIState();
+
+    // -------------------------------------------------------------
+    //  SMOOTH HOVER & AUTO-HIDE PHYSICS
+    // -------------------------------------------------------------
+    function revealCapsule() {
+      clearTimeout(retractTimeout);
+      if (window.electronAPI && typeof window.electronAPI.setCollapsedState === 'function') {
         window.electronAPI.setCollapsedState(false);
       }
+      container.classList.add('is-peek-revealed');
     }
 
-    function applyPreferences() {
-      // 1. Pinned to Top
-      container.classList.toggle('is-pinned-top', isPinnedTop);
-      pinTopBtn.classList.toggle('active', isPinnedTop);
-      pinTopBtn.title = isPinnedTop ? 'Pinned to top center (click to unpin and drag freely)' : 'Free floating (click to pin to top center)';
-
-      // 2. Always Expanded vs Auto-Hide
-      container.classList.toggle('is-always-expanded', isAlwaysExpanded);
-      alwaysExpandBtn.classList.toggle('active', isAlwaysExpanded);
-      alwaysExpandBtn.style.display = isPinnedTop ? 'inline-flex' : 'none';
-      alwaysExpandBtn.title = isAlwaysExpanded ? 'Always Visible (click for auto-hide hover drop-down)' : 'Auto-Hide (drops down on mouse hover, click to keep always visible)';
-
-      const expandIcon = document.getElementById('expand-icon');
-      if (expandIcon) {
-        expandIcon.innerHTML = isAlwaysExpanded
-          ? '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path>'
-          : '<polyline points="7 13 12 18 17 13"></polyline><polyline points="7 6 12 11 17 6"></polyline>';
-      }
-
-      // 3. Theme & Opacity Styles
-      document.body.classList.remove('theme-light', 'style-translucent');
-      if (currentThemeMode === 'light-solid') {
-        document.body.classList.add('theme-light');
-      } else if (currentThemeMode === 'light-glass') {
-        document.body.classList.add('theme-light', 'style-translucent');
-      } else if (currentThemeMode === 'dark-glass') {
-        document.body.classList.add('style-translucent');
-      } // else dark-solid (default)
-
-      syncTopCollapsedState();
+    function scheduleRetract() {
+      if (!isPinnedTop || isAlwaysVisible || isMenuOpen) return;
+      clearTimeout(retractTimeout);
+      // Wait 1.2 seconds after mouse leaves before retracting
+      retractTimeout = setTimeout(() => {
+        container.classList.remove('is-peek-revealed');
+        // Wait for CSS slide-up animation (220ms) then collapse window
+        setTimeout(() => {
+          if (!container.classList.contains('is-peek-revealed') && !isMenuOpen) {
+            if (window.electronAPI && typeof window.electronAPI.setCollapsedState === 'function') {
+              window.electronAPI.setCollapsedState(true);
+            }
+          }
+        }, 230);
+      }, 1200);
     }
 
-    applyPreferences();
+    container.addEventListener('mouseenter', revealCapsule);
+    container.addEventListener('mouseleave', scheduleRetract);
+    notchStrip.addEventListener('mouseenter', revealCapsule);
 
-    // Notify Electron main process of initial pin-to-top state
-    if (isPinnedTop && window.electronAPI && typeof window.electronAPI.pinMiniTimerTop === 'function') {
-      window.electronAPI.pinMiniTimerTop(true);
-    }
-
-    // Toggle Pin to Top Center
-    pinTopBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      isPinnedTop = !isPinnedTop;
-      localStorage.setItem('index_overlay_pinned', isPinnedTop);
-      applyPreferences();
-      if (window.electronAPI && typeof window.electronAPI.pinMiniTimerTop === 'function') {
-        window.electronAPI.pinMiniTimerTop(isPinnedTop);
-      }
-    });
-
-    // Toggle Always Expanded vs Auto-Hide Hover
-    alwaysExpandBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      isAlwaysExpanded = !isAlwaysExpanded;
-      localStorage.setItem('index_overlay_always_expanded', isAlwaysExpanded);
-      applyPreferences();
-    });
-
-    // Cycle Themes (Dark Solid -> Dark Glass -> Light Solid -> Light Glass)
-    themeBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const order = ['dark-solid', 'dark-glass', 'light-solid', 'light-glass'];
-      const nextIdx = (order.indexOf(currentThemeMode) + 1) % order.length;
-      currentThemeMode = order[nextIdx];
-      localStorage.setItem('index_overlay_style', currentThemeMode);
-      applyPreferences();
-    });
-
-    // Ghost / Click-Through Mode Logic
-    let ghostToastTimeout = null;
-    function showGhostToast(msg) {
-      if (!ghostToast) return;
-      if (msg) ghostToast.textContent = msg;
-      ghostToast.classList.add('show');
-      clearTimeout(ghostToastTimeout);
-      ghostToastTimeout = setTimeout(() => ghostToast.classList.remove('show'), 2600);
-    }
-
-    function setGhostMode(active) {
-      isGhostMode = !!active;
-      timerPill.classList.toggle('is-ghost-mode', isGhostMode);
-      if (ghostBtn) ghostBtn.classList.toggle('active', isGhostMode);
-      if (window.electronAPI && typeof window.electronAPI.setGhostMode === 'function') {
-        window.electronAPI.setGhostMode(isGhostMode);
-      }
-      if (isGhostMode) {
-        showGhostToast('👻 Ghost Mode Active (Clicks Pass Through) • Ctrl+Alt+G to Exit');
-      }
-    }
-
-    if (ghostBtn) {
-      ghostBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        setGhostMode(!isGhostMode);
-      });
-    }
-
-    // Double-click on HUD capsule toggles ghost mode
-    timerPill.addEventListener('dblclick', (e) => {
-      if (e.target.closest('.hud-controls') || e.target.closest('#status-wrapper')) return;
-      setGhostMode(!isGhostMode);
-    });
-
-    if (window.electronAPI && typeof window.electronAPI.onGhostModeChanged === 'function') {
-      window.electronAPI.onGhostModeChanged((ghostState) => {
-        isGhostMode = !!ghostState;
-        timerPill.classList.toggle('is-ghost-mode', isGhostMode);
-        if (ghostBtn) ghostBtn.classList.toggle('active', isGhostMode);
-        if (isGhostMode) {
-          showGhostToast('👻 Ghost Mode Active • Ctrl+Alt+G to Exit');
-        }
-      });
-    }
-
-    // Scroll Wheel Opacity Adjustment (20% to 100%)
-    let opacityBadgeTimeout = null;
-    function showOpacityBadge(text) {
-      if (!opacityBadge) return;
-      opacityBadge.textContent = text;
-      opacityBadge.classList.add('show');
-      clearTimeout(opacityBadgeTimeout);
-      opacityBadgeTimeout = setTimeout(() => opacityBadge.classList.remove('show'), 850);
-    }
-
-    window.addEventListener('wheel', (e) => {
-      e.preventDefault();
-      const delta = e.deltaY < 0 ? 0.05 : -0.05;
-      currentOpacity = Math.max(0.20, Math.min(1.0, Math.round((currentOpacity + delta) * 100) / 100));
-      timerPill.style.opacity = currentOpacity;
-      if (window.electronAPI && typeof window.electronAPI.setWindowOpacity === 'function') {
-        window.electronAPI.setWindowOpacity(currentOpacity);
-      }
-      showOpacityBadge(Math.round(currentOpacity * 100) + '%');
-      localStorage.setItem('index_overlay_opacity', currentOpacity);
-    }, { passive: false });
-
-    // Play / Pause Toggle
+    // -------------------------------------------------------------
+    //  PLAY / PAUSE CONTROL
+    // -------------------------------------------------------------
     function triggerPlayPause(e) {
       if (e) e.stopPropagation();
-      // If completed glow is active, clicking clears it
       if (timerPill.classList.contains('is-session-completed')) {
         timerPill.classList.remove('is-session-completed');
       }
@@ -586,25 +476,93 @@
         window.electronAPI.togglePlayPause();
       }
     }
-    statusWrapper.addEventListener('click', triggerPlayPause);
-    timeEl.addEventListener('click', triggerPlayPause);
 
-    // Dismiss completion glow on click
-    timerPill.addEventListener('click', (e) => {
-      if (timerPill.classList.contains('is-session-completed')) {
-        timerPill.classList.remove('is-session-completed');
+    statusWrapper.addEventListener('click', triggerPlayPause);
+    timeDisplay.addEventListener('click', triggerPlayPause);
+    menuPlayPause.addEventListener('click', (e) => {
+      triggerPlayPause(e);
+      closeMenu();
+    });
+
+    // -------------------------------------------------------------
+    //  THREE-DOTS MENU CONTROLS
+    // -------------------------------------------------------------
+    function openMenu() {
+      isMenuOpen = true;
+      dotsMenu.classList.add('is-open');
+      revealCapsule();
+      if (window.electronAPI && typeof window.electronAPI.setOverlayMenuOpen === 'function') {
+        window.electronAPI.setOverlayMenuOpen(true);
+      }
+    }
+
+    function closeMenu() {
+      isMenuOpen = false;
+      dotsMenu.classList.remove('is-open');
+      if (window.electronAPI && typeof window.electronAPI.setOverlayMenuOpen === 'function') {
+        window.electronAPI.setOverlayMenuOpen(false);
+      }
+      scheduleRetract();
+    }
+
+    dotsBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (isMenuOpen) closeMenu();
+      else openMenu();
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (isMenuOpen && !e.target.closest('#dots-menu') && !e.target.closest('#dots-btn')) {
+        closeMenu();
       }
     });
 
-    // Hide / Close Window
-    hideBtn.addEventListener('click', (e) => {
+    // Menu Item: Theme Toggle
+    menuTheme.addEventListener('click', (e) => {
       e.stopPropagation();
+      closeMenu();
+      if (window.electronAPI && typeof window.electronAPI.toggleTheme === 'function') {
+        window.electronAPI.toggleTheme();
+      } else {
+        isLightMode = !isLightMode;
+        applyUIState();
+      }
+    });
+
+    // Menu Item: Dock Top / Float
+    menuDock.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeMenu();
+      isPinnedTop = !isPinnedTop;
+      localStorage.setItem('index_hud_pinned', isPinnedTop);
+      applyUIState();
+      if (window.electronAPI && typeof window.electronAPI.pinMiniTimerTop === 'function') {
+        window.electronAPI.pinMiniTimerTop(isPinnedTop);
+      }
+    });
+
+    // Menu Item: Always Visible / Auto-Hide
+    menuAlwaysVisible.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeMenu();
+      isAlwaysVisible = !isAlwaysVisible;
+      localStorage.setItem('index_hud_always_visible', isAlwaysVisible);
+      applyUIState();
+    });
+
+    // Menu Item: Hide HUD
+    menuHide.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeMenu();
       if (window.electronAPI && typeof window.electronAPI.hideMiniTimer === 'function') {
         window.electronAPI.hideMiniTimer();
       }
     });
 
-    // Free Dragging with Magnetic Edge Snapping
+    // -------------------------------------------------------------
+    //  FREE DRAGGING SUPPORT (when unpinned)
+    // -------------------------------------------------------------
     let dragging = false;
     let startMouseX = 0;
     let startMouseY = 0;
@@ -612,12 +570,12 @@
     let startWindowY = 0;
 
     timerPill.addEventListener('mousedown', async (e) => {
-      if (e.target.closest('.hud-controls') || e.target.closest('#status-wrapper') || e.target.closest('#time')) return;
+      if (e.target.closest('#dots-btn') || e.target.closest('#status-wrapper') || e.target.closest('#time-display') || isMenuOpen) return;
       if (isPinnedTop) {
-        // If user actively drags while pinned, unpin to allow free dragging
+        // If user drags while pinned, unpin
         isPinnedTop = false;
-        localStorage.setItem('index_overlay_pinned', false);
-        applyPreferences();
+        localStorage.setItem('index_hud_pinned', false);
+        applyUIState();
       }
       dragging = true;
       startMouseX = e.screenX;
@@ -638,8 +596,8 @@
         const result = await window.electronAPI.snapMoveMiniTimer(x, y);
         if (result && result.isPinnedTop) {
           isPinnedTop = true;
-          localStorage.setItem('index_overlay_pinned', true);
-          applyPreferences();
+          localStorage.setItem('index_hud_pinned', true);
+          applyUIState();
         }
       } else if (window.electronAPI && typeof window.electronAPI.moveMiniTimer === 'function') {
         window.electronAPI.moveMiniTimer(x, y);
@@ -648,62 +606,47 @@
 
     window.addEventListener('mouseup', () => { dragging = false; });
 
-    // Hover Peek Debounce for Top Pinned Mode (TickTick Style)
-    let hidePeekTimeout = null;
-    container.addEventListener('mouseenter', () => {
-      clearTimeout(hidePeekTimeout);
-      if (window.electronAPI && typeof window.electronAPI.setCollapsedState === 'function') {
-        window.electronAPI.setCollapsedState(false);
-      }
-      container.classList.add('is-peek-revealed');
-    });
+    // -------------------------------------------------------------
+    //  STATE SYNCHRONIZATION FROM MAIN WINDOW
+    // -------------------------------------------------------------
+    if (window.electronAPI && typeof window.electronAPI.onMiniTimerState === 'function') {
+      window.electronAPI.onMiniTimerState((state) => {
+        if (!state) return;
 
-    container.addEventListener('mouseleave', () => {
-      hidePeekTimeout = setTimeout(() => {
-        container.classList.remove('is-peek-revealed');
-        syncTopCollapsedState();
-      }, 700);
-    });
+        // Format time (HH:MM:SS -> MM:SS if hours is 00)
+        let timeStr = state.time || '25:00';
+        if (timeStr.startsWith('00:')) {
+          timeStr = timeStr.slice(3);
+        }
+        timeDisplay.textContent = timeStr;
 
-    // State Synchronization from Main Window
-    window.electronAPI.onMiniTimerState((state) => {
-      if (!state) return;
-      timeEl.textContent = state.time || '00:00:00';
-      timerPill.classList.toggle('paused', !!state.paused);
+        // Paused state
+        timerPill.classList.toggle('paused', !!state.paused);
+        menuPlayText.textContent = state.running ? 'إيقاف مؤقت' : 'تشغيل العداد';
 
-      // Visual Completion Glow
-      if (state.completed) {
-        timerPill.classList.add('is-session-completed');
-        labelEl.textContent = 'DONE 🎉';
-        progressBar.style.width = '100%';
-      } else {
-        timerPill.classList.remove('is-session-completed');
-        
-        // Update Progress Bar
+        // Progress bar (Strictly inside capsule)
         const pct = Number.isFinite(state.progress) ? Math.max(0, Math.min(100, state.progress)) : 0;
-        progressBar.style.width = pct + '%';
-        
-        // Update Label
-        if (state.tag) {
-          labelEl.textContent = state.tag.toUpperCase();
-        } else if (state.mode) {
-          labelEl.textContent = state.mode.toUpperCase();
-        }
-      }
+        progressFill.style.width = pct + '%';
 
-      // Always synchronize Light / Dark mode dynamically with the main application
-      if (state.theme) {
-        const wantsLight = state.theme === 'light';
-        const isCurrentlyLight = currentThemeMode.startsWith('light');
-        if (wantsLight !== isCurrentlyLight) {
-          const isGlass = currentThemeMode.includes('glass');
-          currentThemeMode = wantsLight
-            ? (isGlass ? 'light-glass' : 'light-solid')
-            : (isGlass ? 'dark-glass' : 'dark-solid');
-          applyPreferences();
+        // Completion glow
+        if (state.completed) {
+          timerPill.classList.add('is-session-completed');
+          progressFill.style.width = '100%';
+          revealCapsule();
+        } else {
+          timerPill.classList.remove('is-session-completed');
         }
-      }
-    });
+
+        // Theme sync
+        if (state.theme) {
+          const wantsLight = state.theme === 'light';
+          if (isLightMode !== wantsLight) {
+            isLightMode = wantsLight;
+            applyUIState();
+          }
+        }
+      });
+    }
   </script>
 </body>
 </html>

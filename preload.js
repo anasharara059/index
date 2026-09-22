@@ -11,6 +11,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   setGhostMode: (isGhost) => ipcRenderer.send('mini-timer:set-ghost-mode', isGhost),
   setWindowOpacity: (val) => ipcRenderer.send('mini-timer:set-opacity', val),
   togglePlayPause: () => ipcRenderer.send('mini-timer:toggle-play-pause'),
+  toggleTheme: () => ipcRenderer.send('mini-timer:toggle-theme'),
+  setOverlayMenuOpen: (isOpen) => ipcRenderer.send('mini-timer:set-menu-open', isOpen),
   onMiniTimerState: (callback) => {
     ipcRenderer.on('mini-timer:state', (_event, state) => callback(state));
   },
