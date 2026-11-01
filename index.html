@@ -4433,6 +4433,141 @@ html[data-theme="light"] .ai-error-desc {
         }
     </style>
 
+
+    <style id="analysis-weekly-chart-xy">
+        /* Weekly Subject Breakdown only: clear 90-degree axes and one proportional stacked bar per day. */
+        #screen-analysis #weekly-chart-holder .wsc-summary { margin:0 0 8px !important; gap:6px !important; }
+        #screen-analysis #weekly-chart-holder .wsc-chart-shell {
+            display:flex; direction:ltr; align-items:stretch; gap:6px;
+            width:100%; min-width:0; margin:2px 0 0;
+        }
+        #screen-analysis #weekly-chart-holder .wsc-y-axis {
+            position:relative; flex:0 0 34px; width:34px; height:184px; margin-top:20px;
+        }
+        #screen-analysis #weekly-chart-holder .wsc-y-tick {
+            position:absolute; right:3px; transform:translateY(-50%);
+            color:var(--text-gray); font-size:8px; line-height:1;
+            font-variant-numeric:tabular-nums; white-space:nowrap;
+        }
+        #screen-analysis #weekly-chart-holder .wsc-y-tick.at-top { transform:none; }
+        #screen-analysis #weekly-chart-holder .wsc-y-tick.at-bottom { transform:translateY(-100%); }
+        #screen-analysis #weekly-chart-holder .wsc-chart-main { flex:1 1 auto; min-width:0; }
+        #screen-analysis #weekly-chart-holder .wsc-daily-totals,
+        #screen-analysis #weekly-chart-holder .wsc-x-axis {
+            display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:4px;
+        }
+        #screen-analysis #weekly-chart-holder .wsc-daily-totals {
+            min-height:17px; margin:0 0 3px; align-items:end;
+        }
+        #screen-analysis #weekly-chart-holder .wsc-daily-total {
+            min-width:0; text-align:center; color:var(--text-gray);
+            font-size:8px; line-height:1.15; font-weight:700;
+            font-variant-numeric:tabular-nums; white-space:nowrap;
+        }
+        #screen-analysis #weekly-chart-holder .wsc-daily-total.is-today { color:var(--accent-orange); }
+        #screen-analysis #weekly-chart-holder .wsc-plot {
+            position:relative; width:100%; min-width:0; overflow:hidden;
+            border-left:1.5px solid var(--text-gray);
+            border-bottom:1.5px solid var(--text-gray);
+            background:color-mix(in srgb,var(--text-light) 1.2%,transparent);
+        }
+        #screen-analysis #weekly-chart-holder .wsc-gridline {
+            position:absolute; left:0; right:0; height:0;
+            border-top:1px dashed color-mix(in srgb,var(--text-gray) 24%,transparent);
+            pointer-events:none;
+        }
+        #screen-analysis #weekly-chart-holder .wsc-columns {
+            position:absolute; inset:0 2px 0 2px; z-index:1;
+            display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:5px;
+        }
+        #screen-analysis #weekly-chart-holder .wsc-column {
+            min-width:0; height:100%; display:flex; align-items:flex-end; justify-content:center;
+            position:relative;
+        }
+        #screen-analysis #weekly-chart-holder .wsc-bar-stack {
+            width:min(48px,76%); max-width:48px; min-width:12px;
+            max-height:100%; display:flex; flex-direction:column-reverse;
+            overflow:hidden; border:1px solid color-mix(in srgb,var(--text-light) 18%,var(--border-soft));
+            border-bottom:0; border-radius:5px 5px 0 0;
+            box-shadow:0 2px 5px rgba(0,0,0,.08);
+        }
+        #screen-analysis #weekly-chart-holder .wsc-bar-segment {
+            box-sizing:border-box; flex:0 0 auto; width:100%; min-width:0;
+            display:flex; align-items:center; justify-content:center; overflow:hidden;
+            border-top:1px solid rgba(255,255,255,.25);
+        }
+        #screen-analysis #weekly-chart-holder .wsc-bar-segment-label {
+            display:flex; flex-direction:column; align-items:center; justify-content:center;
+            max-width:100%; padding:0 2px; overflow:hidden; gap:1px;
+            color:#fff; font-size:8px; line-height:1.05; font-weight:800;
+            text-align:center; text-overflow:clip; white-space:nowrap;
+            text-shadow:0 1px 2px rgba(0,0,0,.65);
+        }
+        #screen-analysis #weekly-chart-holder .wsc-bar-segment-time {
+            color:#fff; font-size:6px; line-height:1; font-weight:700;
+            font-variant-numeric:tabular-nums; white-space:nowrap;
+        }
+        #screen-analysis #weekly-chart-holder .wsc-zero-bar {
+            width:min(28px,65%); height:2px; margin-bottom:0;
+            background:color-mix(in srgb,var(--text-gray) 55%,transparent);
+            border-radius:2px;
+        }
+        #screen-analysis #weekly-chart-holder .wsc-x-axis {
+            margin-top:5px; direction:ltr; align-items:start;
+        }
+        #screen-analysis #weekly-chart-holder .wsc-x-label {
+            display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
+            min-width:0; gap:2px; text-align:center; color:var(--text-light);
+        }
+        #screen-analysis #weekly-chart-holder .wsc-x-label strong {
+            font-size:9px; line-height:1.1; font-weight:800; white-space:nowrap;
+        }
+        #screen-analysis #weekly-chart-holder .wsc-x-label small {
+            color:var(--text-gray); font-size:7px; line-height:1.1; white-space:nowrap;
+        }
+        #screen-analysis #weekly-chart-holder .wsc-x-label.is-today strong { color:var(--accent-orange); }
+        #screen-analysis #weekly-chart-holder .wsc-subject-totals {
+            margin-top:10px; padding-top:8px; border-top:1px solid var(--border-soft);
+        }
+        #screen-analysis #weekly-chart-holder .wsc-subject-totals-heading {
+            margin-bottom:6px; color:var(--text-light); font-size:9px; line-height:1.2; font-weight:800;
+        }
+        #screen-analysis #weekly-chart-holder .wsc-subjects-grid {
+            display:grid; grid-template-columns:repeat(auto-fit,minmax(112px,1fr)); gap:5px;
+        }
+        #screen-analysis #weekly-chart-holder .wsc-subject-total {
+            min-width:0; display:flex; align-items:center; justify-content:space-between; gap:6px;
+            padding:5px 7px; border:1px solid var(--border-soft); border-radius:6px;
+            background:color-mix(in srgb,var(--text-light) 2%,transparent);
+        }
+        #screen-analysis #weekly-chart-holder .wsc-subject-total-name {
+            min-width:0; display:flex; align-items:center; gap:5px; overflow:hidden;
+        }
+        #screen-analysis #weekly-chart-holder .wsc-subject-total-name i {
+            width:7px; height:7px; flex:0 0 7px; border-radius:2px;
+        }
+        #screen-analysis #weekly-chart-holder .wsc-subject-total-name b {
+            min-width:0; overflow:hidden; color:var(--text-light); font-size:8px;
+            font-weight:700; text-overflow:ellipsis; white-space:nowrap;
+        }
+        #screen-analysis #weekly-chart-holder .wsc-subject-total-time {
+            flex:0 0 auto; color:var(--accent-orange); font-size:8px;
+            font-weight:800; font-variant-numeric:tabular-nums; white-space:nowrap;
+        }
+        #screen-analysis #weekly-chart-holder .wsc-no-subjects {
+            grid-column:1/-1; padding:7px; color:var(--text-gray); font-size:8px;
+        }
+        @media (max-width:600px) {
+            #screen-analysis #weekly-chart-holder .wsc-y-axis { flex-basis:29px; width:29px; }
+            #screen-analysis #weekly-chart-holder .wsc-y-tick { font-size:7px; right:2px; }
+            #screen-analysis #weekly-chart-holder .wsc-columns { gap:2px; }
+            #screen-analysis #weekly-chart-holder .wsc-bar-stack { width:78%; min-width:8px; }
+            #screen-analysis #weekly-chart-holder .wsc-x-label strong { font-size:8px; }
+            #screen-analysis #weekly-chart-holder .wsc-daily-total { font-size:7px; }
+            #screen-analysis #weekly-chart-holder .wsc-subjects-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+        }
+    </style>
+
 </head>
 <body>
     <div class="toast-container" id="toast-container"></div>
@@ -8016,7 +8151,8 @@ html[data-theme="light"] .ai-error-desc {
 
             const isAr = currentSystemLanguage === 'ar';
             const weekdaysArabic = ["السبت", "الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة"];
-            const weekdaysEnglish = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
+            const weekdaysEnglish = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+            const shortWeekdaysEnglish = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
             const weekStart = getWeekStartDate(currentViewedWeekOffset);
             const weekEnd = getWeekEndDate(weekStart);
             const weekNum = getWeekNumber(weekStart);
@@ -8024,7 +8160,7 @@ html[data-theme="light"] .ai-error-desc {
             const isCurrentWeek = currentViewedWeekOffset === 0;
             const isPastWeek = currentViewedWeekOffset < 0;
 
-            // Compact week navigation sits in the upper corner, not as a large banner.
+            // Small week navigator stays in the upper-right corner of the chart.
             const toolbar = document.createElement('div');
             toolbar.className = 'weekly-chart-toolbar';
             const nav = document.createElement('div');
@@ -8049,7 +8185,6 @@ html[data-theme="light"] .ai-error-desc {
             const weekBadge = document.createElement('span');
             weekBadge.className = 'weekly-chart-week-badge' + (isCurrentWeek ? ' is-current' : '');
             weekBadge.textContent = `${isAr ? 'الأسبوع' : 'Week'} ${weekNum} · ${year}`;
-            if (isCurrentWeek) weekBadge.title = isAr ? 'الأسبوع الحالي' : 'Current week';
             const weekRange = document.createElement('span');
             weekRange.className = 'weekly-chart-week-range';
             weekRange.textContent = formatWeekRange(weekStart);
@@ -8060,7 +8195,7 @@ html[data-theme="light"] .ai-error-desc {
             toolbar.appendChild(nav);
             holder.appendChild(toolbar);
 
-            // Collect exactly the seven days in the selected Saturday-to-Friday week.
+            // Keep the app's Saturday-to-Friday week convention and group the saved sessions by day + subject.
             const weeklyDataArray = [];
             for (let i = 0; i < 7; i++) {
                 const dayDate = new Date(weekStart);
@@ -8070,6 +8205,7 @@ html[data-theme="light"] .ai-error-desc {
                     date: dayDate,
                     dateISO: getLocalISODate(dayDate),
                     dayEN: weekdaysEnglish[i],
+                    dayENShort: shortWeekdaysEnglish[i],
                     dayAR: weekdaysArabic[i],
                     totalTime: 0,
                     segments: [],
@@ -8093,11 +8229,13 @@ html[data-theme="light"] .ai-error-desc {
 
             const totalWeekMinutes = weeklyDataArray.reduce((sum, day) => sum + day.totalTime, 0);
             const activeDays = weeklyDataArray.filter(day => day.totalTime > 0).length;
-            const maxDailyMinutes = Math.max(60, ...weeklyDataArray.map(day => day.totalTime));
+            const maxDailyMinutes = Math.max(0, ...weeklyDataArray.map(day => day.totalTime));
+            const scaleMaxMinutes = Math.max(60, Math.ceil(maxDailyMinutes / 60) * 60);
+            const plotHeight = 184;
 
-            // Compact summary chips preserve the original weekly total / active-days information.
+            // Week total and active-day summaries remain explicit and independent from the Y-axis scale.
             const summary = document.createElement('div');
-            summary.className = 'weekly-chart-summary';
+            summary.className = 'weekly-chart-summary wsc-summary';
             const summaryItems = [
                 { label: isAr ? 'إجمالي الأسبوع' : 'Week Total', value: formatMinutesToHM(totalWeekMinutes), tone: 'gold' },
                 { label: isAr ? 'الأيام النشطة' : 'Active Days', value: `${activeDays}/7`, tone: 'purple' }
@@ -8120,123 +8258,160 @@ html[data-theme="light"] .ai-error-desc {
             });
             holder.appendChild(summary);
 
-            const makeDayColumn = day => {
-                const card = document.createElement('div');
-                card.className = 'weekly-bar-day' + (day.isToday ? ' is-today' : '') + (day.totalTime === 0 ? ' is-empty' : '');
+            // Build a true X/Y chart: the Y axis is study time; each X-axis day is a proportional stacked bar.
+            const chartShell = document.createElement('div');
+            chartShell.className = 'wsc-chart-shell';
+            chartShell.setAttribute('role', 'img');
+            chartShell.setAttribute('aria-label', isAr ? 'رسم بياني لساعات الدراسة اليومية موزعة حسب المادة' : 'Weekly study time by day and subject');
 
-                const header = document.createElement('div');
-                header.className = 'weekly-bar-day-header';
-                const dayInfo = document.createElement('div');
-                dayInfo.className = 'weekly-bar-day-info';
-                const dayName = document.createElement('span');
-                dayName.className = 'weekly-bar-day-name';
-                dayName.textContent = isAr ? day.dayAR : day.dayEN;
-                const date = document.createElement('span');
-                date.className = 'weekly-bar-day-date';
-                date.textContent = day.date.toLocaleDateString(isAr ? 'ar-EG' : 'en-US', { month: 'numeric', day: 'numeric' });
-                dayInfo.append(dayName, date);
-                const total = document.createElement('strong');
-                total.className = 'weekly-bar-day-total';
-                total.textContent = day.totalTime > 0 ? formatMinutesToHM(day.totalTime) : '—';
-                header.append(dayInfo, total);
-                card.appendChild(header);
+            const yAxis = document.createElement('div');
+            yAxis.className = 'wsc-y-axis';
+            const main = document.createElement('div');
+            main.className = 'wsc-chart-main';
 
-                const stage = document.createElement('div');
-                stage.className = 'weekly-bar-stage';
-                const track = document.createElement('div');
-                track.className = 'weekly-bar-track';
-                track.setAttribute('role', 'img');
-                track.setAttribute('aria-label', `${isAr ? day.dayAR : day.dayEN}: ${formatMinutesToHM(day.totalTime)}`);
+            const totalsRow = document.createElement('div');
+            totalsRow.className = 'wsc-daily-totals';
+            weeklyDataArray.forEach(day => {
+                const total = document.createElement('span');
+                total.className = 'wsc-daily-total' + (day.isToday ? ' is-today' : '');
+                total.textContent = formatMinutesToHM(day.totalTime);
+                total.title = `${isAr ? day.dayAR : day.dayEN}: ${formatMinutesToHM(day.totalTime)}`;
+                totalsRow.appendChild(total);
+            });
+
+            const plot = document.createElement('div');
+            plot.className = 'wsc-plot';
+            plot.style.height = `${plotHeight}px`;
+
+            // Five labeled Y-axis ticks and matching horizontal guide lines.
+            [100, 75, 50, 25, 0].forEach(percent => {
+                const tick = document.createElement('span');
+                tick.className = 'wsc-y-tick';
+                tick.textContent = formatMinutesToHM(Math.round(scaleMaxMinutes * percent / 100));
+                tick.style.top = `${100 - percent}%`;
+                if (percent === 100) tick.classList.add('at-top');
+                if (percent === 0) tick.classList.add('at-bottom');
+                yAxis.appendChild(tick);
+
+                if (percent > 0) {
+                    const line = document.createElement('div');
+                    line.className = 'wsc-gridline';
+                    line.style.top = `${100 - percent}%`;
+                    plot.appendChild(line);
+                }
+            });
+
+            const columns = document.createElement('div');
+            columns.className = 'wsc-columns';
+            weeklyDataArray.forEach(day => {
+                const column = document.createElement('div');
+                column.className = 'wsc-column' + (day.isToday ? ' is-today' : '');
+                column.setAttribute('aria-label', `${isAr ? day.dayAR : day.dayEN}: ${formatMinutesToHM(day.totalTime)}`);
 
                 if (day.totalTime > 0) {
                     const stack = document.createElement('div');
-                    stack.className = 'weekly-bar-stack';
-                    stack.style.height = `${Math.max(12, (day.totalTime / maxDailyMinutes) * 100)}%`;
-                    // Stack subject segments from the baseline upward; subject labels are embedded when readable.
-                    day.segments.forEach(segment => {
-                        const share = (segment.time / day.totalTime) * 100;
+                    stack.className = 'wsc-bar-stack';
+                    const barHeight = Math.max(2, (day.totalTime / scaleMaxMinutes) * plotHeight);
+                    stack.style.height = `${barHeight}px`;
+                    stack.title = `${isAr ? day.dayAR : day.dayEN}: ${formatMinutesToHM(day.totalTime)}`;
+
+                    // Larger subjects sit at the baseline; segment heights are proportional to each subject's minutes.
+                    [...day.segments].sort((a, b) => b.time - a.time).forEach(segment => {
+                        const share = segment.time / day.totalTime;
+                        const segmentHeight = barHeight * share;
                         const segmentEl = document.createElement('div');
-                        segmentEl.className = 'weekly-bar-segment';
-                        segmentEl.style.height = `${share}%`;
+                        segmentEl.className = 'wsc-bar-segment';
+                        segmentEl.style.height = `${segmentHeight}px`;
                         segmentEl.style.backgroundColor = getTagColor(segment.tag);
-                        const segmentMinutesHeight = (day.totalTime / maxDailyMinutes) * 118 * share / 100;
-                        segmentEl.title = `${segment.tag}: ${formatMinutesToHM(segment.time)} (${Math.round(share)}%)`;
-                        if (segmentMinutesHeight >= 20) {
-                            const segmentLabel = document.createElement('span');
-                            segmentLabel.className = 'weekly-bar-segment-label';
+                        segmentEl.title = `${segment.tag}: ${formatMinutesToHM(segment.time)} (${Math.round(share * 100)}%)`;
+                        if (segmentHeight >= 23) {
+                            const label = document.createElement('span');
+                            label.className = 'wsc-bar-segment-label';
                             const words = segment.tag.trim().split(/\s+/);
-                            const shortLabel = segment.tag.length <= 9 ? segment.tag : (words.length > 1 ? words.map(word => word[0]).join('').slice(0, 5) : segment.tag.slice(0, 8) + '…');
-                            segmentLabel.textContent = shortLabel;
-                            segmentEl.appendChild(segmentLabel);
+                            const shortName = segment.tag.length <= 9
+                                ? segment.tag
+                                : (words.length > 1 ? words.map(word => word[0]).join('').slice(0, 5) : segment.tag.slice(0, 8) + '…');
+                            const nameText = document.createElement('span');
+                            nameText.textContent = shortName;
+                            label.appendChild(nameText);
+                            if (segmentHeight >= 38) {
+                                const timeText = document.createElement('small');
+                                timeText.className = 'wsc-bar-segment-time';
+                                timeText.textContent = formatMinutesToHM(segment.time);
+                                label.appendChild(timeText);
+                            }
+                            segmentEl.appendChild(label);
                         }
                         stack.appendChild(segmentEl);
                     });
-                    track.appendChild(stack);
+                    column.appendChild(stack);
                 } else {
-                    const emptyMark = document.createElement('span');
-                    emptyMark.className = 'weekly-bar-empty-mark';
-                    emptyMark.textContent = '—';
-                    track.appendChild(emptyMark);
+                    const empty = document.createElement('span');
+                    empty.className = 'wsc-zero-bar';
+                    empty.title = isAr ? 'لا توجد دراسة في هذا اليوم' : 'No study recorded';
+                    column.appendChild(empty);
                 }
-                stage.appendChild(track);
-                card.appendChild(stage);
+                columns.appendChild(column);
+            });
+            plot.appendChild(columns);
 
-                // Short per-day labels make every studied subject discoverable even for thin bar segments.
-                if (day.segments.length) {
-                    const tagList = document.createElement('div');
-                    tagList.className = 'weekly-bar-day-tags';
-                    day.segments.forEach(segment => {
-                        const tag = document.createElement('span');
-                        tag.className = 'weekly-bar-day-tag';
-                        tag.title = `${segment.tag}: ${formatMinutesToHM(segment.time)}`;
-                        const dot = document.createElement('i');
-                        dot.style.backgroundColor = getTagColor(segment.tag);
-                        const name = document.createElement('span');
-                        name.textContent = segment.tag;
-                        tag.append(dot, name);
-                        tagList.appendChild(tag);
-                    });
-                    card.appendChild(tagList);
-                } else {
-                    const emptyText = document.createElement('div');
-                    emptyText.className = 'weekly-bar-no-study';
-                    emptyText.textContent = isAr ? 'لا توجد جلسات' : 'No study';
-                    card.appendChild(emptyText);
-                }
-                return card;
-            };
+            const xAxis = document.createElement('div');
+            xAxis.className = 'wsc-x-axis';
+            weeklyDataArray.forEach(day => {
+                const label = document.createElement('div');
+                label.className = 'wsc-x-label' + (day.isToday ? ' is-today' : '');
+                const name = document.createElement('strong');
+                name.textContent = isAr ? day.dayAR : day.dayENShort;
+                const date = document.createElement('small');
+                date.textContent = day.date.toLocaleDateString(isAr ? 'ar-EG' : 'en-US', { month: 'numeric', day: 'numeric' });
+                label.append(name, date);
+                xAxis.appendChild(label);
+            });
 
-            // Four daily columns on the first row, three wider columns centered on the second row.
-            const firstRow = document.createElement('div');
-            firstRow.className = 'weekly-bars-row weekly-bars-row-four';
-            weeklyDataArray.slice(0, 4).forEach(day => firstRow.appendChild(makeDayColumn(day)));
-            const secondRow = document.createElement('div');
-            secondRow.className = 'weekly-bars-row weekly-bars-row-three';
-            weeklyDataArray.slice(4).forEach(day => secondRow.appendChild(makeDayColumn(day)));
-            holder.append(firstRow, secondRow);
+            main.append(totalsRow, plot, xAxis);
+            chartShell.append(yAxis, main);
+            holder.appendChild(chartShell);
 
-            // Compact full-name legend retains the weekly subject totals without the old oversized cards.
-            if (totalWeekMinutes > 0) {
-                const weekTagMap = {};
-                weeklyDataArray.forEach(day => day.segments.forEach(segment => {
-                    weekTagMap[segment.tag] = (weekTagMap[segment.tag] || 0) + segment.time;
-                }));
-                const legend = document.createElement('div');
-                legend.className = 'weekly-bars-legend';
-                Object.entries(weekTagMap).sort((a, b) => b[1] - a[1]).forEach(([tagName, minutes]) => {
-                    const item = document.createElement('span');
-                    item.className = 'weekly-bars-legend-item';
-                    const dot = document.createElement('i');
-                    dot.style.backgroundColor = getTagColor(tagName);
-                    const name = document.createElement('b');
-                    name.textContent = tagName;
-                    const time = document.createElement('small');
-                    time.textContent = formatMinutesToHM(minutes);
-                    item.append(dot, name, time);
-                    legend.appendChild(item);
-                });
-                holder.appendChild(legend);
+            // Subject totals for the selected week: full names + total hours/minutes, with no percentage display.
+            const weekTagMap = {};
+            weeklyDataArray.forEach(day => day.segments.forEach(segment => {
+                weekTagMap[segment.tag] = (weekTagMap[segment.tag] || 0) + segment.time;
+            }));
+            const subjectTotals = document.createElement('div');
+            subjectTotals.className = 'wsc-subject-totals';
+            const subjectHeading = document.createElement('div');
+            subjectHeading.className = 'wsc-subject-totals-heading';
+            subjectHeading.textContent = isAr ? 'إجمالي كل مادة خلال الأسبوع' : 'Weekly Subject Totals';
+            subjectTotals.appendChild(subjectHeading);
+
+            const subjectsGrid = document.createElement('div');
+            subjectsGrid.className = 'wsc-subjects-grid';
+            Object.entries(weekTagMap).sort((a, b) => b[1] - a[1]).forEach(([tagName, minutes]) => {
+                const item = document.createElement('div');
+                item.className = 'wsc-subject-total';
+                const left = document.createElement('span');
+                left.className = 'wsc-subject-total-name';
+                const dot = document.createElement('i');
+                dot.style.backgroundColor = getTagColor(tagName);
+                const name = document.createElement('b');
+                name.textContent = tagName;
+                left.append(dot, name);
+                const time = document.createElement('strong');
+                time.className = 'wsc-subject-total-time';
+                time.textContent = formatMinutesToHM(minutes);
+                item.title = `${tagName}: ${formatMinutesToHM(minutes)}`;
+                item.append(left, time);
+                subjectsGrid.appendChild(item);
+            });
+
+            if (Object.keys(weekTagMap).length === 0) {
+                const emptyText = document.createElement('div');
+                emptyText.className = 'wsc-no-subjects';
+                emptyText.textContent = isAr ? 'لا توجد مواد مسجلة في هذا الأسبوع' : 'No subjects recorded for this week';
+                subjectsGrid.appendChild(emptyText);
             }
+            subjectTotals.appendChild(subjectsGrid);
+            holder.appendChild(subjectTotals);
         }
 
         function updateFilterOptions() {
