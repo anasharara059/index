@@ -4145,6 +4145,150 @@ html[data-theme="light"] .ai-error-desc {
             #screen-analysis .productivity-hours-row { grid-template-columns:26px repeat(12,minmax(0,1fr)) !important; gap:3px !important; }
             #screen-analysis .productivity-hour-heat { height:36px; }
         }
+
+
+        /* Final visual balance: compact weekly grid without empty day rows. */
+        #screen-analysis .analysis-week-productivity-grid {
+            grid-template-columns:minmax(0, 1.08fr) minmax(0, .92fr) !important;
+            gap:12px !important;
+            align-items:start !important;
+        }
+        #screen-analysis .analysis-week-productivity-grid > .charts-container-box {
+            padding:14px 15px !important;
+        }
+        #screen-analysis .analysis-week-productivity-grid .charts-box-title {
+            margin-bottom:8px !important;
+            padding-bottom:7px !important;
+        }
+        #screen-analysis #weekly-chart-holder > div:first-child {
+            padding:6px 8px !important;
+            margin-bottom:7px !important;
+        }
+        #screen-analysis #weekly-chart-holder .weekly-days-grid {
+            display:grid !important;
+            grid-template-columns:repeat(2,minmax(0,1fr));
+            gap:3px 9px;
+            align-items:start;
+            margin-bottom:5px;
+        }
+        #screen-analysis #weekly-chart-holder .weekly-day-row {
+            min-width:0;
+            align-items:center !important;
+            gap:6px !important;
+            padding:5px 3px !important;
+            border-bottom:1px solid var(--border-soft) !important;
+        }
+        #screen-analysis #weekly-chart-holder .weekly-day-row > div:first-child {
+            width:39px !important;
+            flex:0 0 39px !important;
+        }
+        #screen-analysis #weekly-chart-holder .weekly-day-label {
+            font-size:9px !important;
+            line-height:1.2;
+        }
+        #screen-analysis #weekly-chart-holder .weekly-day-row > div:first-child > div:last-child {
+            font-size:8px !important;
+            margin-top:1px !important;
+        }
+        #screen-analysis #weekly-chart-holder .weekly-day-row > div:nth-child(2) {
+            min-width:0;
+        }
+        #screen-analysis #weekly-chart-holder .weekly-day-row > div:nth-child(2) > div:first-child {
+            font-size:9px !important;
+            line-height:1.2;
+            padding:0 !important;
+        }
+        #screen-analysis #weekly-chart-holder .weekly-day-row .weekly-stacked-track {
+            height:11px !important;
+            border-radius:3px !important;
+        }
+        #screen-analysis #weekly-chart-holder .weekly-day-row .weekly-stacked-track + div {
+            gap:4px !important;
+            margin-top:2px !important;
+        }
+        #screen-analysis #weekly-chart-holder .weekly-day-row .weekly-stacked-track + div > div {
+            font-size:8px !important;
+            gap:3px !important;
+        }
+        #screen-analysis #weekly-chart-holder .weekly-day-row .weekly-stacked-track + div > div > span:first-child {
+            width:5px !important;
+            height:5px !important;
+        }
+        #screen-analysis #weekly-chart-holder .weekly-day-row .weekly-stacked-track + div + div {
+            font-size:8px !important;
+            margin-top:1px !important;
+        }
+        #screen-analysis #weekly-chart-holder > div:nth-last-child(2) {
+            margin-top:6px !important;
+            margin-bottom:5px !important;
+            padding-top:6px !important;
+            font-size:10px !important;
+        }
+        #screen-analysis #weekly-chart-holder > div:last-child {
+            display:flex !important;
+            flex-wrap:wrap;
+            gap:5px !important;
+        }
+        #screen-analysis #weekly-chart-holder > div:last-child > div {
+            flex:1 1 130px;
+            min-width:0;
+            gap:6px !important;
+            padding:5px 6px !important;
+            border-radius:5px !important;
+        }
+        #screen-analysis #weekly-chart-holder > div:last-child > div > div:first-child {
+            width:24px !important;
+            height:24px !important;
+            flex:0 0 24px !important;
+            border-radius:4px !important;
+            font-size:9px !important;
+        }
+        #screen-analysis #weekly-chart-holder > div:last-child > div > div:nth-child(2) > div:first-child {
+            font-size:9px !important;
+        }
+        #screen-analysis #weekly-chart-holder > div:last-child > div > div:nth-child(2) > div:last-child {
+            font-size:8px !important;
+        }
+
+        /* The hourly panel stays content-sized: no forced blank area below it. */
+        #screen-analysis .analysis-productivity-panel {
+            padding:14px 14px 12px !important;
+        }
+        #screen-analysis .analysis-productivity-panel .charts-box-title {
+            margin-bottom:8px !important;
+            padding-bottom:7px !important;
+        }
+        #screen-analysis #productivity-heatmap-container {
+            padding:0 !important;
+        }
+        #screen-analysis .productivity-hours-grid {
+            gap:6px !important;
+        }
+        #screen-analysis .productivity-hours-row {
+            grid-template-columns:27px repeat(12,minmax(0,1fr)) !important;
+            gap:3px !important;
+        }
+        #screen-analysis .productivity-hour-cell { gap:3px !important; }
+        #screen-analysis .productivity-hour-label { font-size:8px !important; }
+        #screen-analysis .productivity-hour-heat { height:39px !important; border-radius:4px !important; }
+        #screen-analysis .productivity-period-markers > div { padding:3px 1px !important; font-size:8px !important; }
+
+        @media (max-width:950px) {
+            #screen-analysis .analysis-week-productivity-grid {
+                grid-template-columns:minmax(0,1fr) !important;
+                gap:12px !important;
+            }
+        }
+        @media (max-width:600px) {
+            #screen-analysis #weekly-chart-holder .weekly-days-grid {
+                grid-template-columns:minmax(0,1fr);
+            }
+            #screen-analysis .productivity-hours-row {
+                grid-template-columns:24px repeat(12,minmax(0,1fr)) !important;
+                gap:2px !important;
+            }
+            #screen-analysis .productivity-hour-heat { height:34px !important; }
+        }
     </style>
 </head>
 <body>
@@ -7849,6 +7993,10 @@ html[data-theme="light"] .ai-error-desc {
             weekSummary.innerHTML = summaryHTML;
             holder.appendChild(weekSummary);
 
+            // Keep all seven days visible, but place them in a compact two-column grid.
+            const weeklyDaysGrid = document.createElement('div');
+            weeklyDaysGrid.className = 'weekly-days-grid';
+
             weeklyDataArray.forEach(day => {
                 const dayRow = document.createElement('div');
                 dayRow.className = 'weekly-day-row';
@@ -7923,8 +8071,10 @@ html[data-theme="light"] .ai-error-desc {
 
                 dayRow.appendChild(labelCol);
                 dayRow.appendChild(contentCol);
-                holder.appendChild(dayRow);
+                weeklyDaysGrid.appendChild(dayRow);
             });
+
+            holder.appendChild(weeklyDaysGrid);
 
             if (totalWeekMinutes > 0) {
                 const weekDistHeader = document.createElement('div');
