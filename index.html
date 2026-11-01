@@ -3930,6 +3930,31 @@ html[data-theme="light"] .ai-error-desc {
     color: #641e16 !important;
 }
     </style>
+    <style id="analysis-period-selectors">
+        #screen-analysis .analysis-all-time-summary {
+            display:flex; align-items:center; justify-content:space-between; gap:18px;
+            padding:16px 20px; border:1px solid var(--border-soft); border-radius:14px;
+            background:color-mix(in srgb, var(--text-light) 2.5%, transparent);
+        }
+        #screen-analysis .analysis-all-time-copy { display:flex; flex-direction:column; gap:4px; min-width:0; }
+        #screen-analysis .analysis-all-time-label { color:var(--text-gray); font-size:11px; font-weight:800; letter-spacing:.7px; text-transform:uppercase; }
+        #screen-analysis .analysis-all-time-hint { color:var(--text-gray); font-size:11px; line-height:1.5; }
+        #screen-analysis .analysis-all-time-value { color:var(--accent-orange); font-size:clamp(22px,3vw,30px); font-weight:850; white-space:nowrap; font-variant-numeric:tabular-nums; }
+        #screen-analysis .analysis-period-heading { display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+        #screen-analysis .analysis-period-select {
+            max-width:100%; min-width:130px; height:30px; padding:4px 26px 4px 9px;
+            border:1px solid var(--border-soft); border-radius:8px; outline:none;
+            background:color-mix(in srgb, var(--bg-deep) 88%, var(--text-light) 12%);
+            color:var(--text-light); font:600 11px system-ui,sans-serif; cursor:pointer;
+        }
+        #screen-analysis .analysis-period-select:focus { border-color:var(--accent-orange); }
+        #screen-analysis .analysis-period-select option { background:var(--bg-deep); color:var(--text-light); }
+        #screen-analysis .analysis-year-note { color:var(--text-gray); font-size:11px; line-height:1.5; margin-top:5px; }
+        @media (max-width:720px) {
+            #screen-analysis .analysis-all-time-summary { align-items:flex-start; padding:14px 16px; }
+            #screen-analysis .analysis-period-select { min-width:116px; font-size:10px; }
+        }
+    </style>
 </head>
 <body>
     <div class="toast-container" id="toast-container"></div>
@@ -4160,6 +4185,13 @@ html[data-theme="light"] .ai-error-desc {
                     </div>
                     <button class="export-btn ai-trigger-btn" onclick="IndexAiAgent.openModal()">✨ <span id="ai-banner-btn-txt">Launch Analysis</span></button>
                 </div>
+                <div class="analysis-all-time-summary" id="analysis-all-time-summary">
+                    <div class="analysis-all-time-copy">
+                        <span class="analysis-all-time-label" id="m-alltime-lbl">All Time</span>
+                        <span class="analysis-all-time-hint" id="m-alltime-hint">Total recorded study time across the program</span>
+                    </div>
+                    <strong class="analysis-all-time-value" id="m-alltime-val">0m</strong>
+                </div>
                 <div class="metrics-cards-grid">
                     <div class="metric-card-box">
                         <div class="metric-text-group">
@@ -4174,7 +4206,10 @@ html[data-theme="light"] .ai-error-desc {
                     </div>
                     <div class="metric-card-box">
                         <div class="metric-text-group">
-                            <div class="label" id="m-week-lbl">Current Week Progress</div>
+                            <div class="analysis-period-heading">
+                                <div class="label" id="m-week-lbl">Weekly Studies</div>
+                                <select class="analysis-period-select" id="analysis-week-select" aria-label="Select study week"></select>
+                            </div>
                             <div class="value-wrapper"><div class="value" id="m-week-val">0.0</div><div class="unit" id="m-week-unit">Hrs</div></div>
                             <div class="subtext orange"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 21h8M12 17v4M7 4h10M17 4v7c0 2.76-2.24 5-5 5s-5-2.24-5-5V4M4 4h3v7c0 1.1.9 2 2 2M20 4h-3v7c0 1.1-.9 2-2 2"/></svg><span id="m-week-sub-txt">2.2 hrs to goal</span></div>
                         </div>
@@ -4185,7 +4220,10 @@ html[data-theme="light"] .ai-error-desc {
                     </div>
                     <div class="metric-card-box">
                         <div class="metric-text-group">
-                            <div class="label" id="m-month-lbl">Monthly Statistics</div>
+                            <div class="analysis-period-heading">
+                                <div class="label" id="m-month-lbl">Monthly Statistics</div>
+                                <select class="analysis-period-select" id="analysis-month-select" aria-label="Select month"></select>
+                            </div>
                             <div class="value-wrapper"><div class="value" id="m-month-val">0.0</div><div class="unit" id="m-month-unit">Hrs</div></div>
                             <div class="subtext gray"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg><span id="m-month-sub-txt">19 days streak</span></div>
                         </div>
@@ -4193,6 +4231,17 @@ html[data-theme="light"] .ai-error-desc {
                             <svg class="mini-ring-svg" viewBox="0 0 68 68"><circle class="mini-ring-bg" cx="34" cy="34" r="28"></circle><circle class="mini-ring-fill fill-green" id="ring-month" cx="34" cy="34" r="28"></circle></svg>
                             <div class="mini-ring-text" id="ring-month-txt">0%</div>
                         </div>
+                    </div>
+                    <div class="metric-card-box">
+                        <div class="metric-text-group">
+                            <div class="analysis-period-heading">
+                                <div class="label" id="m-year-lbl">Year Statistics</div>
+                                <select class="analysis-period-select" id="analysis-year-select" aria-label="Select year"></select>
+                            </div>
+                            <div class="value-wrapper"><div class="value" id="m-year-val">0m</div></div>
+                            <div class="analysis-year-note" id="m-year-note">Total study time in the selected year</div>
+                        </div>
+                        <div class="mini-ring-wrapper" aria-hidden="true" style="font-size:25px;color:var(--accent-orange);">▦</div>
                     </div>
                 </div>
                 <div class="charts-double-column">
@@ -5366,6 +5415,9 @@ html[data-theme="light"] .ai-error-desc {
         const paginationMaxItemsPerPage = 5;
         let analysisSelectedYear = new Date().getFullYear();
         let analysisSelectedMonth = new Date().getMonth();
+        let dashboardSelectedWeekStartISO = null;
+        let dashboardSelectedMonthKey = null;
+        let dashboardSelectedStatsYear = new Date().getFullYear();
         let tagContextMenuTarget = null;
         let userStatusCache = {};
         let lastAdminAccessSnap = null;
@@ -6147,6 +6199,8 @@ html[data-theme="light"] .ai-error-desc {
             updateEditAddModalLabels();
             if (typeof updateGcalHeaderToggleBtn === 'function') updateGcalHeaderToggleBtn();
             if (typeof renderStudyTrendChart === 'function') renderStudyTrendChart();
+            syncAnalysisPeriodLabels();
+            populateAnalysisPeriodSelectors();
             if (window.IndexAiAgent && typeof IndexAiAgent.syncLanguage === 'function') {
                 IndexAiAgent.syncLanguage(currentSystemLanguage);
             }
@@ -7097,28 +7151,170 @@ html[data-theme="light"] .ai-error-desc {
             }
         });
 
+        const ANALYSIS_PERIOD_FIRST_YEAR = 2025;
+        const ANALYSIS_PERIOD_LAST_YEAR = 2027;
+
+        function analysisDateFromISO(isoDate) {
+            const parts = String(isoDate || '').split('-').map(Number);
+            if (parts.length !== 3 || parts.some(Number.isNaN)) return new Date();
+            return new Date(parts[0], parts[1] - 1, parts[2]);
+        }
+
+        function getAnalysisISOWeekYear(date) {
+            const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+            d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+            return d.getUTCFullYear();
+        }
+
+        function populateAnalysisPeriodSelectors() {
+            const weekSelect = document.getElementById('analysis-week-select');
+            const monthSelect = document.getElementById('analysis-month-select');
+            const yearSelect = document.getElementById('analysis-year-select');
+            if (!weekSelect || !monthSelect || !yearSelect) return;
+
+            const now = new Date();
+            const currentWeekISO = getLocalISODate(getWeekStartSaturday(now));
+            if (!dashboardSelectedWeekStartISO) dashboardSelectedWeekStartISO = currentWeekISO;
+            if (!dashboardSelectedMonthKey) dashboardSelectedMonthKey = getLocalISODate(now).slice(0, 7);
+            if (!dashboardSelectedStatsYear) dashboardSelectedStatsYear = now.getFullYear();
+
+            // Avoid rebuilding dropdown options on every dashboard refresh; rebuild only once or after a language switch.
+            if (weekSelect.dataset.analysisLanguage === currentSystemLanguage && weekSelect.options.length && monthSelect.options.length && yearSelect.options.length) return;
+
+            const locale = currentSystemLanguage === 'ar' ? 'ar-EG' : 'en-US';
+            const weekOptions = [];
+            for (let year = ANALYSIS_PERIOD_FIRST_YEAR; year <= ANALYSIS_PERIOD_LAST_YEAR; year++) {
+                let cursor = new Date(year, 0, 1);
+                while (cursor.getDay() !== 6) cursor.setDate(cursor.getDate() + 1);
+                while (cursor.getFullYear() === year) {
+                    const start = new Date(cursor);
+                    const end = new Date(start); end.setDate(end.getDate() + 6);
+                    const weekNumber = getWeekNumber(start);
+                    const weekYear = getAnalysisISOWeekYear(start);
+                    const startLabel = start.toLocaleDateString(locale, { month: 'short', day: 'numeric' });
+                    const endLabel = end.toLocaleDateString(locale, { month: 'short', day: 'numeric' });
+                    weekOptions.push({
+                        value: getLocalISODate(start),
+                        label: (currentSystemLanguage === 'ar' ? 'الأسبوع ' : 'Week ') + weekNumber + ' · ' + weekYear + ' (' + startLabel + ' – ' + endLabel + ')'
+                    });
+                    cursor.setDate(cursor.getDate() + 7);
+                }
+            }
+            if (!weekOptions.some(option => option.value === dashboardSelectedWeekStartISO)) {
+                const selectedStart = analysisDateFromISO(dashboardSelectedWeekStartISO);
+                const selectedEnd = new Date(selectedStart); selectedEnd.setDate(selectedEnd.getDate() + 6);
+                weekOptions.push({
+                    value: dashboardSelectedWeekStartISO,
+                    label: (currentSystemLanguage === 'ar' ? 'الأسبوع ' : 'Week ') + getWeekNumber(selectedStart) + ' · ' + getAnalysisISOWeekYear(selectedStart) + ' (' + selectedStart.toLocaleDateString(locale, {month:'short',day:'numeric'}) + ' – ' + selectedEnd.toLocaleDateString(locale, {month:'short',day:'numeric'}) + ')'
+                });
+            }
+            weekOptions.sort((a, b) => a.value.localeCompare(b.value));
+
+            const monthOptions = [];
+            const monthStartYear = Math.min(ANALYSIS_PERIOD_FIRST_YEAR, now.getFullYear());
+            const monthEndYear = Math.max(ANALYSIS_PERIOD_LAST_YEAR, now.getFullYear());
+            for (let year = monthEndYear; year >= monthStartYear; year--) {
+                for (let month = 11; month >= 0; month--) {
+                    const value = year + '-' + String(month + 1).padStart(2, '0');
+                    monthOptions.push({ value, label: new Date(year, month, 1).toLocaleDateString(locale, { month: 'long', year: 'numeric' }) });
+                }
+            }
+
+            const yearValues = new Set();
+            for (let year = ANALYSIS_PERIOD_FIRST_YEAR; year <= ANALYSIS_PERIOD_LAST_YEAR; year++) yearValues.add(year);
+            yearValues.add(now.getFullYear());
+            yearValues.add(Number(dashboardSelectedStatsYear));
+            const yearOptions = [...yearValues].sort((a, b) => b - a).map(year => ({ value: String(year), label: String(year) }));
+
+            const fillSelect = (select, options, selectedValue) => {
+                select.innerHTML = '';
+                options.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.value;
+                    option.textContent = item.label;
+                    select.appendChild(option);
+                });
+                select.value = String(selectedValue);
+                if (select.value !== String(selectedValue) && options.length) select.value = options[0].value;
+            };
+
+            fillSelect(weekSelect, weekOptions, dashboardSelectedWeekStartISO);
+            dashboardSelectedWeekStartISO = weekSelect.value || dashboardSelectedWeekStartISO;
+            fillSelect(monthSelect, monthOptions, dashboardSelectedMonthKey);
+            dashboardSelectedMonthKey = monthSelect.value || dashboardSelectedMonthKey;
+            fillSelect(yearSelect, yearOptions, dashboardSelectedStatsYear);
+            dashboardSelectedStatsYear = Number(yearSelect.value || dashboardSelectedStatsYear);
+            weekSelect.dataset.analysisLanguage = currentSystemLanguage;
+
+            if (weekSelect.dataset.analysisBound !== '1') {
+                weekSelect.addEventListener('change', () => {
+                    dashboardSelectedWeekStartISO = weekSelect.value;
+                    recalculateAndRenderDashboard();
+                });
+                weekSelect.dataset.analysisBound = '1';
+            }
+            if (monthSelect.dataset.analysisBound !== '1') {
+                monthSelect.addEventListener('change', () => {
+                    dashboardSelectedMonthKey = monthSelect.value;
+                    recalculateAndRenderDashboard();
+                });
+                monthSelect.dataset.analysisBound = '1';
+            }
+            if (yearSelect.dataset.analysisBound !== '1') {
+                yearSelect.addEventListener('change', () => {
+                    dashboardSelectedStatsYear = Number(yearSelect.value);
+                    recalculateAndRenderDashboard();
+                });
+                yearSelect.dataset.analysisBound = '1';
+            }
+        }
+
+        function syncAnalysisPeriodLabels() {
+            const isAr = currentSystemLanguage === 'ar';
+            const setText = (id, value) => { const el = document.getElementById(id); if (el) el.innerText = value; };
+            setText('m-week-lbl', isAr ? 'دراسة الأسبوع' : 'Weekly Studies');
+            setText('m-month-lbl', isAr ? 'الإحصائيات الشهرية' : 'Monthly Statistics');
+            setText('m-year-lbl', isAr ? 'إحصائيات السنة' : 'Year Statistics');
+            setText('m-alltime-lbl', isAr ? 'إجمالي كل الوقت' : 'All Time');
+            setText('m-alltime-hint', isAr ? 'إجمالي وقت الدراسة المسجل في البرنامج عبر جميع السنوات' : 'Total recorded study time across all years');
+            setText('m-year-note', isAr ? 'إجمالي وقت الدراسة في السنة المحددة' : 'Total study time in the selected year');
+            const weekSelect = document.getElementById('analysis-week-select');
+            const monthSelect = document.getElementById('analysis-month-select');
+            const yearSelect = document.getElementById('analysis-year-select');
+            if (weekSelect) weekSelect.setAttribute('aria-label', isAr ? 'اختر أسبوع الدراسة' : 'Select study week');
+            if (monthSelect) monthSelect.setAttribute('aria-label', isAr ? 'اختر الشهر' : 'Select month');
+            if (yearSelect) yearSelect.setAttribute('aria-label', isAr ? 'اختر السنة' : 'Select year');
+        }
+
         function recalculateAndRenderDashboard() {
+            populateAnalysisPeriodSelectors();
+            syncAnalysisPeriodLabels();
             const todayISO = getLocalISODate(new Date());
             const yesterdayDate = new Date(); yesterdayDate.setDate(yesterdayDate.getDate() - 1);
             const yesterdayISO = getLocalISODate(yesterdayDate);
-            const weekStart = getWeekStartSaturday();
-            const monthPrefix = todayISO.slice(0, 7);
-            const yearPrefix = todayISO.slice(0, 4);
+            const weekStart = analysisDateFromISO(dashboardSelectedWeekStartISO || getLocalISODate(getWeekStartSaturday()));
+            const weekEnd = new Date(weekStart); weekEnd.setDate(weekEnd.getDate() + 6);
+            const weekStartISO = getLocalISODate(weekStart);
+            const weekEndISO = getLocalISODate(weekEnd);
+            const monthPrefix = dashboardSelectedMonthKey || todayISO.slice(0, 7);
+            const yearPrefix = String(dashboardSelectedStatsYear || new Date().getFullYear());
 
-            let todayMinutes = 0, yesterdayMinutes = 0, weekMinutes = 0, monthMinutes = 0, yearMinutes = 0;
+            let todayMinutes = 0, yesterdayMinutes = 0, weekMinutes = 0, monthMinutes = 0, yearMinutes = 0, allTimeMinutes = 0;
             let tagMinutesSumMap = {};
             currentTagsList.forEach(t => tagMinutesSumMap[t] = 0);
 
             archivedSessionsArray.forEach(session => {
                 let minutesVal = parseInt(session.duration) || 0;
+                const sessionDate = String(session.date || '').slice(0, 10);
                 if (tagMinutesSumMap[session.tag] !== undefined) tagMinutesSumMap[session.tag] += minutesVal;
                 else tagMinutesSumMap[session.tag] = minutesVal;
-                
-                if (session.date === todayISO) todayMinutes += minutesVal;
-                if (session.date === yesterdayISO) yesterdayMinutes += minutesVal;
-                if (new Date(session.date + 'T00:00:00') >= weekStart) weekMinutes += minutesVal;
-                if (session.date.startsWith(monthPrefix)) monthMinutes += minutesVal;
-                if (session.date.startsWith(yearPrefix)) yearMinutes += minutesVal;
+
+                allTimeMinutes += minutesVal;
+                if (sessionDate === todayISO) todayMinutes += minutesVal;
+                if (sessionDate === yesterdayISO) yesterdayMinutes += minutesVal;
+                if (sessionDate >= weekStartISO && sessionDate <= weekEndISO) weekMinutes += minutesVal;
+                if (sessionDate.startsWith(monthPrefix)) monthMinutes += minutesVal;
+                if (sessionDate.startsWith(yearPrefix)) yearMinutes += minutesVal;
             });
 
 
@@ -7133,6 +7329,17 @@ html[data-theme="light"] .ai-error-desc {
             if (weekValEl) weekValEl.innerText = formatMinutesToHM(weekMinutes);
             let monthValEl = document.getElementById('m-month-val');
             if (monthValEl) monthValEl.innerText = formatMinutesToHM(monthMinutes);
+            let yearValEl = document.getElementById('m-year-val');
+            if (yearValEl) yearValEl.innerText = formatMinutesToHM(yearMinutes);
+            let allTimeValEl = document.getElementById('m-alltime-val');
+            if (allTimeValEl) allTimeValEl.innerText = formatMinutesToHM(allTimeMinutes);
+            let allTimeHintEl = document.getElementById('m-alltime-hint');
+            if (allTimeHintEl) {
+                const sessionCount = archivedSessionsArray.length;
+                allTimeHintEl.innerText = currentSystemLanguage === 'ar'
+                    ? 'إجمالي وقت الدراسة المسجل في البرنامج · ' + sessionCount + ' جلسة'
+                    : 'Total recorded study time · ' + sessionCount + ' sessions';
+            }
             const DAILY_GOAL = studyGoals.daily || 4;
             const WEEKLY_GOAL = studyGoals.weekly || 28;
             const MONTHLY_GOAL = studyGoals.monthly || 120;
