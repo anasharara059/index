@@ -4030,9 +4030,7 @@ html[data-theme="light"] .ai-error-desc {
         #screen-analysis #productivity-heatmap-container > div {
             gap:6px !important;
         }
-        #screen-analysis #productivity-heatmap-container > div > div:nth-child(2) {
-            height:38px !important;
-        }
+        #screen-analysis .productivity-hour-heat { height:43px !important; }
         #screen-analysis .analysis-study-trend-panel {
             padding:18px 20px;
         }
@@ -4106,6 +4104,47 @@ html[data-theme="light"] .ai-error-desc {
             padding:17px 18px !important;
         }
         html[data-theme="light"] #screen-analysis .analysis-study-trend-panel { padding:18px 20px !important; }
+
+        /* Final balance pass: compact weekly detail and let the productivity card fit its content. */
+        #screen-analysis .analysis-week-productivity-grid { align-items:start !important; }
+        #screen-analysis .analysis-week-productivity-grid > .charts-container-box { align-self:start; height:auto; }
+        #screen-analysis .analysis-productivity-panel { padding:16px 16px 14px !important; }
+        #screen-analysis .analysis-productivity-panel .charts-box-title { margin-bottom:10px; padding-bottom:9px; }
+        #screen-analysis #productivity-heatmap-container { overflow:visible !important; }
+        #screen-analysis .productivity-hours-grid { gap:8px !important; }
+        #screen-analysis .productivity-hours-row { grid-template-columns:30px repeat(12,minmax(0,1fr)) !important; gap:4px !important; }
+        #screen-analysis .productivity-hour-label { font-size:9px; }
+        #screen-analysis .productivity-hour-heat { height:43px; }
+
+        /* Weekly card: tighter summary, daily rows, subject legends and weekly distribution. */
+        #screen-analysis #weekly-chart-holder > div:first-child { padding:7px 9px !important; margin-bottom:8px !important; }
+        #screen-analysis #weekly-chart-holder > div:nth-child(2) { gap:7px !important; margin-bottom:8px !important; }
+        #screen-analysis #weekly-chart-holder > div:nth-child(2) > div { padding:6px 9px !important; border-radius:6px !important; }
+        #screen-analysis #weekly-chart-holder > div:nth-child(2) > div > div:nth-child(2) { font-size:15px !important; }
+        #screen-analysis #weekly-chart-holder .weekly-day-row { gap:7px !important; padding:6px 0 !important; }
+        #screen-analysis #weekly-chart-holder .weekly-day-row > div:first-child { width:46px !important; flex:0 0 46px !important; }
+        #screen-analysis #weekly-chart-holder .weekly-day-label { font-size:10px !important; }
+        #screen-analysis #weekly-chart-holder .weekly-day-row > div:nth-child(2) > div:first-child { height:14px !important; border-radius:3px !important; }
+        #screen-analysis #weekly-chart-holder .weekly-day-row .weekly-stacked-track + div { gap:6px !important; margin-top:3px !important; }
+        #screen-analysis #weekly-chart-holder .weekly-day-row .weekly-stacked-track + div > div { font-size:9px !important; gap:3px !important; }
+        #screen-analysis #weekly-chart-holder .weekly-day-row .weekly-stacked-track + div > div > span:first-child { width:6px !important; height:6px !important; }
+        #screen-analysis #weekly-chart-holder .weekly-day-row .weekly-stacked-track + div + div { font-size:9px !important; margin-top:3px !important; }
+        #screen-analysis #weekly-chart-holder > div:nth-last-child(2) { margin-top:10px !important; margin-bottom:6px !important; padding-top:8px !important; font-size:11px !important; }
+        #screen-analysis #weekly-chart-holder > div:last-child { grid-template-columns:repeat(2,minmax(0,1fr)) !important; gap:6px !important; }
+        #screen-analysis #weekly-chart-holder > div:last-child > div { gap:7px !important; padding:6px 7px !important; border-radius:6px !important; }
+        #screen-analysis #weekly-chart-holder > div:last-child > div > div:first-child { width:27px !important; height:27px !important; border-radius:5px !important; font-size:10px !important; flex:0 0 27px !important; }
+        #screen-analysis #weekly-chart-holder > div:last-child > div > div:nth-child(2) > div:first-child { font-size:10px !important; }
+        #screen-analysis #weekly-chart-holder > div:last-child > div > div:nth-child(2) > div:last-child { font-size:9px !important; }
+
+        @media (max-width:950px) {
+            #screen-analysis .analysis-week-productivity-grid { align-items:stretch !important; }
+            #screen-analysis .analysis-week-productivity-grid > .charts-container-box { width:100%; }
+        }
+        @media (max-width:720px) {
+            #screen-analysis #weekly-chart-holder > div:last-child { grid-template-columns:1fr !important; }
+            #screen-analysis .productivity-hours-row { grid-template-columns:26px repeat(12,minmax(0,1fr)) !important; gap:3px !important; }
+            #screen-analysis .productivity-hour-heat { height:36px; }
+        }
     </style>
 </head>
 <body>
@@ -4397,7 +4436,7 @@ html[data-theme="light"] .ai-error-desc {
                         <div class="weekly-breakdown-wrapper" id="weekly-chart-holder"></div>
                     </div>
                 <!-- 🕒 Productivity Hours (24h Heat Timeline) -->
-                <div class="charts-container-box">
+                <div class="charts-container-box analysis-productivity-panel">
                     <div class="charts-box-title" id="chart-productivity-title">🕒 Productivity Hours</div>
                     <div style="margin-bottom: 12px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
@@ -9535,173 +9574,101 @@ document.addEventListener('keydown', function(e) {
             const maxMinutes = Math.max(...hourMinutes, 1);
             const totalMinutes = hourMinutes.reduce((a, b) => a + b, 0);
 
-            // Create the 24h timeline
+            // Render the 24-hour timeline in two readable 12-hour rows:
+            // 12 AM–11 AM first, then 12 PM–11 PM.
             const wrapper = document.createElement('div');
-            wrapper.style.cssText = 'display: flex; flex-direction: column; gap: 8px;';
+            wrapper.className = 'productivity-hours-grid';
+            wrapper.style.cssText = 'display:flex;flex-direction:column;gap:9px;width:100%;';
 
-            // Hour labels row
-            const labelsRow = document.createElement('div');
-            labelsRow.style.cssText = 'display: flex; gap: 2px; padding-left: 50px;';
+            for (let periodIndex = 0; periodIndex < 2; periodIndex++) {
+                const firstHour = periodIndex * 12;
+                const row = document.createElement('div');
+                row.className = 'productivity-hours-row';
+                row.style.cssText = 'display:grid;grid-template-columns:34px repeat(12,minmax(0,1fr));gap:5px;align-items:stretch;width:100%;';
 
-            for (let h = 0; h < 24; h++) {
-                const label = document.createElement('div');
-                label.style.cssText = 'flex: 1; text-align: center; font-size: 9px; color: var(--text-gray); font-weight: 600; min-width: 22px;';
-                label.innerText = formatHour12Short(h);
-                labelsRow.appendChild(label);
-            }
-            wrapper.appendChild(labelsRow);
+                const periodLabel = document.createElement('div');
+                periodLabel.className = 'productivity-period-label';
+                periodLabel.style.cssText = 'display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:var(--text-gray);letter-spacing:.3px;';
+                periodLabel.innerText = currentSystemLanguage === 'ar' ? (periodIndex === 0 ? 'ص' : 'م') : (periodIndex === 0 ? 'AM' : 'PM');
+                row.appendChild(periodLabel);
 
-            // Main heat row
-            const heatRow = document.createElement('div');
-            heatRow.style.cssText = 'display: flex; gap: 2px; align-items: stretch; height: 48px;';
+                for (let offset = 0; offset < 12; offset++) {
+                    const h = firstHour + offset;
+                    const mins = hourMinutes[h];
+                    const sessions = hourSessionCounts[h];
+                    const intensity = mins / maxMinutes;
 
-            // Time period label
-            const periodLabel = document.createElement('div');
-            periodLabel.style.cssText = 'width: 48px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--text-gray); font-weight: 700; flex-shrink: 0;';
-            periodLabel.innerText = currentSystemLanguage === 'ar' ? '24س' : '24h';
-            heatRow.appendChild(periodLabel);
+                    const hourCell = document.createElement('div');
+                    hourCell.className = 'productivity-hour-cell';
+                    hourCell.style.cssText = 'display:flex;flex-direction:column;gap:4px;min-width:0;';
 
-            for (let h = 0; h < 24; h++) {
-                const mins = hourMinutes[h];
-                const sessions = hourSessionCounts[h];
-                const intensity = maxMinutes > 0 ? mins / maxMinutes : 0;
+                    const hourLabel = document.createElement('div');
+                    hourLabel.className = 'productivity-hour-label';
+                    hourLabel.style.cssText = 'text-align:center;font-size:9px;line-height:1.2;color:var(--text-gray);font-weight:700;font-variant-numeric:tabular-nums;';
+                    hourLabel.innerText = formatHour12Short(h);
+                    hourCell.appendChild(hourLabel);
 
-                const cell = document.createElement('div');
-                cell.style.cssText = `
-                    flex: 1;
-                    min-width: 22px;
-                    border-radius: 6px;
-                    transition: all 0.3s ease;
-                    cursor: pointer;
-                    position: relative;
-                    display: flex;
-                    align-items: flex-end;
-                    justify-content: center;
-                    padding-bottom: 4px;
-                `;
+                    const heatCell = document.createElement('div');
+                    heatCell.className = 'productivity-hour-heat';
+                    heatCell.style.cssText = 'position:relative;height:43px;min-width:0;overflow:hidden;border-radius:5px;display:flex;align-items:flex-end;justify-content:center;background:' + (intensity > 0 ? `rgba(217,165,74,${0.10 + intensity * 0.85})` : 'rgba(255,255,255,0.035)') + ';border:' + (intensity > 0.7 ? '1px solid rgba(217,165,74,0.5)' : '1px solid var(--border-soft)') + ';';
 
-                // Color based on intensity
-                const alpha = 0.1 + (intensity * 0.85);
-                const bgColor = intensity > 0 
-                    ? `rgba(217, 165, 74, ${alpha})`
-                    : 'rgba(255, 255, 255, 0.03)';
+                    if (intensity > 0) {
+                        const bar = document.createElement('div');
+                        bar.style.cssText = `position:absolute;left:2px;right:2px;bottom:0;height:${Math.max(5, intensity * 100)}%;background:linear-gradient(to top,rgba(217,165,74,.68),rgba(217,165,74,.12));border-radius:0 0 4px 4px;`;
+                        heatCell.appendChild(bar);
+                    }
 
-                cell.style.background = bgColor;
-                cell.style.border = intensity > 0.7 
-                    ? '1px solid rgba(217, 165, 74, 0.5)' 
-                    : '1px solid transparent';
+                    if (sessions > 0) {
+                        const count = document.createElement('span');
+                        count.className = 'productivity-hour-count';
+                        count.style.cssText = 'position:absolute;top:2px;inset-inline-end:2px;z-index:2;min-width:12px;padding:1px 2px;border-radius:8px;background:rgba(8,9,13,.78);color:var(--accent-orange);font-size:8px;line-height:1.2;text-align:center;font-weight:800;';
+                        count.innerText = sessions;
+                        heatCell.appendChild(count);
+                    }
 
-                // Height indicator bar inside cell
-                if (intensity > 0) {
-                    const bar = document.createElement('div');
-                    bar.style.cssText = `
-                        position: absolute;
-                        bottom: 0;
-                        left: 2px;
-                        right: 2px;
-                        height: ${Math.max(4, intensity * 100)}%;
-                        background: linear-gradient(to top, rgba(217, 165, 74, 0.6), rgba(217, 165, 74, 0.1));
-                        border-radius: 0 0 4px 4px;
-                        transition: height 0.5s ease;
-                    `;
-                    cell.appendChild(bar);
+                    // Preserve the exact per-hour details on hover.
+                    heatCell.addEventListener('mouseenter', () => {
+                        const existing = document.getElementById('prod-tooltip');
+                        if (existing) existing.remove();
+                        const tooltip = document.createElement('div');
+                        tooltip.id = 'prod-tooltip';
+                        tooltip.style.cssText = 'position:fixed;z-index:10000;background:rgba(8,9,13,.98);color:#fff;padding:10px 14px;border-radius:8px;font-size:12px;border:1px solid rgba(217,165,74,.3);box-shadow:0 8px 30px rgba(0,0,0,.45);pointer-events:none;white-space:nowrap;';
+                        const timeLabel = `${formatHour12(h, currentSystemLanguage)} - ${formatHour12((h + 1) % 24, currentSystemLanguage)}`;
+                        const pct = totalMinutes > 0 ? Math.round((mins / totalMinutes) * 100) : 0;
+                        tooltip.innerHTML = `
+                            <div style="font-weight:800;color:var(--accent-orange);margin-bottom:4px;">${timeLabel}</div>
+                            <div style="font-weight:600;">${formatMinutesToHM(mins)}</div>
+                            <div style="color:var(--text-gray);font-size:11px;margin-top:2px;">${sessions} ${currentSystemLanguage === 'ar' ? 'جلسة' : 'session' + (sessions !== 1 ? 's' : '')} · ${pct}% ${currentSystemLanguage === 'ar' ? 'من الإجمالي' : 'of total'}</div>
+                        `;
+                        document.body.appendChild(tooltip);
+                        const rect = heatCell.getBoundingClientRect();
+                        tooltip.style.left = Math.max(10, Math.min(window.innerWidth - tooltip.offsetWidth - 10, rect.left + rect.width / 2 - tooltip.offsetWidth / 2)) + 'px';
+                        tooltip.style.top = Math.max(10, rect.top - tooltip.offsetHeight - 8) + 'px';
+                    });
+                    heatCell.addEventListener('mouseleave', () => {
+                        const tooltip = document.getElementById('prod-tooltip');
+                        if (tooltip) tooltip.remove();
+                    });
+
+                    hourCell.appendChild(heatCell);
+                    row.appendChild(hourCell);
                 }
-
-                // Session count badge
-                if (sessions > 0) {
-                    const badge = document.createElement('div');
-                    badge.style.cssText = `
-                        position: absolute;
-                        top: 2px;
-                        right: 2px;
-                        background: rgba(8, 9, 13, 0.8);
-                        color: var(--accent-orange);
-                        font-size: 8px;
-                        font-weight: 800;
-                        width: 14px;
-                        height: 14px;
-                        border-radius: 50%;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        z-index: 2;
-                    `;
-                    badge.innerText = sessions;
-                    cell.appendChild(badge);
-                }
-
-                // Tooltip
-                cell.addEventListener('mouseenter', (e) => {
-                    const existing = document.getElementById('prod-tooltip');
-                    if (existing) existing.remove();
-
-                    const tooltip = document.createElement('div');
-                    tooltip.id = 'prod-tooltip';
-                    tooltip.style.cssText = `
-                        position: fixed;
-                        z-index: 10000;
-                        background: rgba(8, 9, 13, 0.98);
-                        color: #fff;
-                        padding: 10px 16px;
-                        border-radius: 12px;
-                        font-size: 12px;
-                        border: 1px solid rgba(217, 165, 74, 0.3);
-                        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
-                        pointer-events: none;
-                        white-space: nowrap;
-                        backdrop-filter: blur(10px);
-                    `;
-
-                    const timeLabel = `${formatHour12(h, currentSystemLanguage)} - ${formatHour12((h + 1) % 24, currentSystemLanguage)}`;
-                    const pct = totalMinutes > 0 ? Math.round((mins / totalMinutes) * 100) : 0;
-                    tooltip.innerHTML = `
-                        <div style="font-weight: 800; color: var(--accent-orange); margin-bottom: 4px;">${timeLabel}</div>
-                        <div style="color: var(--text-light); font-weight: 600;">${formatMinutesToHM(mins)}</div>
-                        <div style="color: var(--text-gray); font-size: 11px; margin-top: 2px;">${sessions} ${currentSystemLanguage === 'ar' ? 'جلسة' : 'session' + (sessions !== 1 ? 's' : '')} · ${pct}% ${currentSystemLanguage === 'ar' ? 'من الإجمالي' : 'of total'}</div>
-                    `;
-
-                    document.body.appendChild(tooltip);
-                    const rect = cell.getBoundingClientRect();
-                    tooltip.style.left = Math.max(10, rect.left + rect.width / 2 - tooltip.offsetWidth / 2) + 'px';
-                    tooltip.style.top = Math.max(10, rect.top - tooltip.offsetHeight - 10) + 'px';
-                });
-
-                cell.addEventListener('mouseleave', () => {
-                    const tt = document.getElementById('prod-tooltip');
-                    if (tt) tt.remove();
-                });
-
-                heatRow.appendChild(cell);
+                wrapper.appendChild(row);
             }
-            wrapper.appendChild(heatRow);
 
-            // Time period markers
+            // Keep the original four time-of-day labels, now evenly spaced below both rows.
             const markersRow = document.createElement('div');
-            markersRow.style.cssText = 'display: flex; gap: 2px; padding-left: 50px; margin-top: 4px;';
-
+            markersRow.className = 'productivity-period-markers';
+            markersRow.style.cssText = 'display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin-top:1px;';
             const periods = [
-                { start: 0, end: 5, label: currentSystemLanguage === 'ar' ? 'ليلاً' : 'Night', color: 'rgba(62, 92, 138, 0.6)' },
-                { start: 6, end: 11, label: currentSystemLanguage === 'ar' ? 'صباحاً' : 'Morning', color: 'rgba(217, 165, 74, 0.6)' },
-                { start: 12, end: 17, label: currentSystemLanguage === 'ar' ? 'ظهراً' : 'Afternoon', color: 'rgba(0, 210, 106, 0.6)' },
-                { start: 18, end: 23, label: currentSystemLanguage === 'ar' ? 'مساءً' : 'Evening', color: 'rgba(155, 89, 182, 0.6)' }
+                { label: currentSystemLanguage === 'ar' ? 'ليلاً' : 'Night', color: 'rgba(62, 92, 138, 0.6)' },
+                { label: currentSystemLanguage === 'ar' ? 'صباحاً' : 'Morning', color: 'rgba(217, 165, 74, 0.6)' },
+                { label: currentSystemLanguage === 'ar' ? 'ظهراً' : 'Afternoon', color: 'rgba(0, 210, 106, 0.6)' },
+                { label: currentSystemLanguage === 'ar' ? 'مساءً' : 'Evening', color: 'rgba(155, 89, 182, 0.6)' }
             ];
-
             periods.forEach(period => {
                 const marker = document.createElement('div');
-                const width = ((period.end - period.start + 1) / 24) * 100;
-                marker.style.cssText = `
-                    width: calc(${width}% - 2px);
-                    text-align: center;
-                    font-size: 9px;
-                    color: ${period.color};
-                    font-weight: 700;
-                    text-transform: uppercase;
-                    letter-spacing: 0.5px;
-                    padding: 4px 0;
-                    border-radius: 4px;
-                    background: ${period.color.replace('0.6', '0.08')};
-                    border: 1px solid ${period.color.replace('0.6', '0.2')};
-                `;
+                marker.style.cssText = `text-align:center;font-size:9px;color:${period.color};font-weight:700;padding:4px 2px;border-radius:4px;background:${period.color.replace('0.6','0.08')};border:1px solid ${period.color.replace('0.6','0.2')};`;
                 marker.innerText = period.label;
                 markersRow.appendChild(marker);
             });
