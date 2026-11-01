@@ -4290,6 +4290,149 @@ html[data-theme="light"] .ai-error-desc {
             #screen-analysis .productivity-hour-heat { height:34px !important; }
         }
     </style>
+
+    <style id="analysis-weekly-bars-polish">
+        /* Tighten the Analysis heading and AI banner spacing without changing its palette or copy. */
+        #screen-analysis .dashboard-scaled-panel { gap:10px !important; }
+        #screen-analysis #dash-header-title { margin-bottom:0 !important; padding-bottom:7px !important; }
+        #screen-analysis #ai-quick-banner { margin:0 0 2px !important; padding:12px 18px !important; }
+
+        /* Week chart + productivity: balanced two-column dashboard, slightly wider hourly panel. */
+        #screen-analysis .analysis-week-productivity-grid {
+            grid-template-columns:minmax(0,.96fr) minmax(0,1.04fr) !important;
+            gap:12px !important;
+            align-items:stretch !important;
+        }
+        #screen-analysis .analysis-week-productivity-grid > .charts-container-box {
+            min-width:0 !important;
+            height:100%;
+            padding:14px 15px !important;
+        }
+        #screen-analysis .analysis-week-productivity-grid .charts-box-title {
+            margin-bottom:7px !important;
+            padding-bottom:7px !important;
+        }
+
+        /* Compact week selector in the top corner. */
+        #screen-analysis .weekly-chart-toolbar { display:flex; justify-content:flex-end; margin:0 0 8px; }
+        #screen-analysis .weekly-chart-nav { display:flex; align-items:center; gap:5px; min-width:0; }
+        #screen-analysis .weekly-chart-nav-btn {
+            display:inline-flex; align-items:center; justify-content:center;
+            width:24px; height:24px; flex:0 0 24px; padding:0;
+            border:1px solid var(--border-soft); border-radius:6px;
+            background:color-mix(in srgb,var(--text-light) 3%,transparent);
+            color:var(--text-gray); font:700 13px system-ui,sans-serif; cursor:pointer;
+        }
+        #screen-analysis .weekly-chart-nav-btn:hover { border-color:var(--accent-orange); color:var(--accent-orange); }
+        #screen-analysis .weekly-chart-current-btn { color:var(--success); }
+        #screen-analysis .weekly-chart-week-meta { display:flex; flex-direction:column; align-items:flex-end; gap:1px; min-width:0; }
+        #screen-analysis .weekly-chart-week-badge { font-size:10px; line-height:1.25; font-weight:800; color:var(--text-light); white-space:nowrap; }
+        #screen-analysis .weekly-chart-week-badge.is-current { color:var(--accent-orange); }
+        #screen-analysis .weekly-chart-week-range { color:var(--text-gray); font-size:8px; line-height:1.2; white-space:nowrap; }
+
+        /* Weekly summary chips. */
+        #screen-analysis .weekly-chart-summary { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:9px; }
+        #screen-analysis .weekly-chart-summary-chip {
+            display:flex; align-items:center; gap:7px; padding:5px 8px;
+            border:1px solid var(--border-soft); border-radius:6px;
+            background:color-mix(in srgb,var(--text-light) 2.5%,transparent);
+        }
+        #screen-analysis .weekly-chart-summary-label { color:var(--text-gray); font-size:8px; font-weight:650; }
+        #screen-analysis .weekly-chart-summary-value { color:var(--text-light); font-size:10px; font-weight:800; }
+        #screen-analysis .weekly-chart-summary-chip.tone-gold .weekly-chart-summary-value { color:var(--accent-orange); }
+        #screen-analysis .weekly-chart-summary-chip.tone-purple .weekly-chart-summary-value { color:var(--accent-purple); }
+        #screen-analysis .weekly-chart-summary-chip.tone-green .weekly-chart-summary-value { color:var(--success); }
+
+        /* Seven vertical day columns: four on top, three centered below. */
+        #screen-analysis .weekly-bars-row { display:grid; gap:7px; align-items:stretch; }
+        #screen-analysis .weekly-bars-row-four { grid-template-columns:repeat(4,minmax(0,1fr)); margin-bottom:8px; }
+        #screen-analysis .weekly-bars-row-three { grid-template-columns:repeat(3,minmax(0,1fr)); }
+        #screen-analysis .weekly-bar-day {
+            min-width:0; padding:6px 5px 5px;
+            border:1px solid var(--border-soft); border-radius:7px;
+            background:color-mix(in srgb,var(--text-light) 2%,transparent);
+            display:flex; flex-direction:column; gap:4px;
+        }
+        #screen-analysis .weekly-bar-day.is-today { border-color:color-mix(in srgb,var(--accent-orange) 48%,var(--border-soft)); }
+        #screen-analysis .weekly-bar-day-header { display:flex; align-items:center; justify-content:space-between; gap:3px; min-width:0; }
+        #screen-analysis .weekly-bar-day-info { display:flex; flex-direction:column; min-width:0; }
+        #screen-analysis .weekly-bar-day-name { color:var(--text-light); font-size:9px; font-weight:800; line-height:1.2; }
+        #screen-analysis .weekly-bar-day.is-today .weekly-bar-day-name { color:var(--accent-orange); }
+        #screen-analysis .weekly-bar-day-date { color:var(--text-gray); font-size:7px; line-height:1.2; }
+        #screen-analysis .weekly-bar-day-total { color:var(--accent-orange); font-size:8px; font-weight:800; white-space:nowrap; font-variant-numeric:tabular-nums; }
+        #screen-analysis .weekly-bar-stage { height:112px; display:flex; align-items:flex-end; justify-content:center; padding:0 0 1px; }
+        #screen-analysis .weekly-bar-track {
+            position:relative; width:min(58px,72%); height:100%;
+            display:flex; align-items:flex-end; justify-content:center;
+            overflow:hidden; border-radius:5px 5px 3px 3px;
+            border:1px solid var(--border-soft);
+            background:color-mix(in srgb,var(--text-light) 4%,transparent);
+        }
+        #screen-analysis .weekly-bar-stack {
+            width:100%; max-height:100%; min-height:12px;
+            display:flex; flex-direction:column-reverse; overflow:hidden;
+            border-radius:4px 4px 2px 2px;
+        }
+        #screen-analysis .weekly-bar-segment {
+            width:100%; min-height:1px; flex:0 0 auto;
+            display:flex; align-items:center; justify-content:center; overflow:hidden;
+            border-top:1px solid rgba(255,255,255,.16);
+        }
+        #screen-analysis .weekly-bar-segment-label {
+            max-width:100%; padding:0 2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+            color:#fff; font-size:7px; line-height:1.1; font-weight:800;
+            text-shadow:0 1px 2px rgba(0,0,0,.45); text-align:center;
+        }
+        #screen-analysis .weekly-bar-empty-mark { color:var(--text-gray); font-size:12px; opacity:.65; }
+        #screen-analysis .weekly-bar-day-tags { display:flex; flex-direction:column; gap:2px; min-height:18px; }
+        #screen-analysis .weekly-bar-day-tag { display:flex; align-items:center; gap:4px; min-width:0; color:var(--text-gray); font-size:7px; line-height:1.2; }
+        #screen-analysis .weekly-bar-day-tag i,
+        #screen-analysis .weekly-bars-legend-item i { display:inline-block; width:6px; height:6px; flex:0 0 6px; border-radius:2px; }
+        #screen-analysis .weekly-bar-day-tag span { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+        #screen-analysis .weekly-bar-no-study { color:var(--text-gray); font-size:7px; text-align:center; min-height:18px; }
+        #screen-analysis .weekly-bars-legend {
+            display:flex; flex-wrap:wrap; align-items:center; gap:5px 9px;
+            margin-top:9px; padding-top:7px; border-top:1px solid var(--border-soft);
+        }
+        #screen-analysis .weekly-bars-legend-item { display:inline-flex; align-items:center; gap:4px; min-width:0; color:var(--text-light); font-size:8px; }
+        #screen-analysis .weekly-bars-legend-item b { font-weight:700; }
+        #screen-analysis .weekly-bars-legend-item small { color:var(--text-gray); font-size:7px; }
+
+        /* Give the larger Productivity Hours panel enough height to use the shared row gracefully. */
+        #screen-analysis .analysis-productivity-panel { display:flex; flex-direction:column; min-width:0; }
+        #screen-analysis .analysis-productivity-panel #productivity-heatmap-container { flex:1 1 auto; display:flex; padding:0 !important; }
+        #screen-analysis .analysis-productivity-panel .productivity-hours-grid {
+            width:100%; min-height:310px; flex:1 1 auto;
+            display:flex; flex-direction:column; justify-content:space-between; gap:10px !important;
+        }
+        #screen-analysis .analysis-productivity-panel .productivity-hours-row {
+            grid-template-columns:30px repeat(12,minmax(0,1fr)) !important;
+            gap:4px !important; align-items:stretch; min-height:88px;
+        }
+        #screen-analysis .analysis-productivity-panel .productivity-hour-cell { gap:5px !important; }
+        #screen-analysis .analysis-productivity-panel .productivity-hour-label { font-size:9px !important; }
+        #screen-analysis .analysis-productivity-panel .productivity-hour-heat { height:66px !important; border-radius:5px !important; }
+        #screen-analysis .analysis-productivity-panel .productivity-period-markers { gap:5px !important; }
+        #screen-analysis .analysis-productivity-panel .productivity-period-markers > div { padding:5px 2px !important; font-size:9px !important; }
+        #screen-analysis .analysis-productivity-panel #productivity-heatmap-container .productivity-hours-grid > div:last-child { margin-top:5px !important; gap:8px !important; }
+        #screen-analysis .analysis-productivity-panel #productivity-heatmap-container .productivity-hours-grid > div:last-child > div {
+            flex:1 1 0; min-width:0; padding:11px 7px !important; border-radius:7px !important;
+        }
+
+        /* Responsive: retain all seven day columns while reducing to two per row on narrow screens. */
+        @media (max-width:1050px) {
+            #screen-analysis .analysis-week-productivity-grid { grid-template-columns:minmax(0,1fr) !important; }
+            #screen-analysis .analysis-productivity-panel .productivity-hours-grid { min-height:285px; }
+        }
+        @media (max-width:600px) {
+            #screen-analysis .weekly-bars-row-four { grid-template-columns:repeat(2,minmax(0,1fr)); }
+            #screen-analysis .weekly-bars-row-three { grid-template-columns:repeat(2,minmax(0,1fr)); }
+            #screen-analysis .weekly-bar-stage { height:94px; }
+            #screen-analysis .analysis-productivity-panel .productivity-hours-row { grid-template-columns:22px repeat(12,minmax(0,1fr)) !important; gap:2px !important; }
+            #screen-analysis .analysis-productivity-panel .productivity-hour-heat { height:43px !important; }
+        }
+    </style>
+
 </head>
 <body>
     <div class="toast-container" id="toast-container"></div>
@@ -4514,13 +4657,6 @@ html[data-theme="light"] .ai-error-desc {
                         </div>
                     </div>
                     <button class="export-btn ai-trigger-btn" onclick="IndexAiAgent.openModal()">✨ <span id="ai-banner-btn-txt">Launch Analysis</span></button>
-                </div>
-                <div class="analysis-all-time-summary" id="analysis-all-time-summary">
-                    <div class="analysis-all-time-copy">
-                        <span class="analysis-all-time-label" id="m-alltime-lbl">All Time</span>
-                        <span class="analysis-all-time-hint" id="m-alltime-hint">Total recorded study time across the program</span>
-                    </div>
-                    <strong class="analysis-all-time-value" id="m-alltime-val">0m</strong>
                 </div>
                 <div class="metrics-cards-grid">
                     <div class="metric-card-box">
@@ -7691,7 +7827,7 @@ html[data-theme="light"] .ai-error-desc {
             const monthPrefix = dashboardSelectedMonthKey || todayISO.slice(0, 7);
             const yearPrefix = String(dashboardSelectedStatsYear || new Date().getFullYear());
 
-            let todayMinutes = 0, yesterdayMinutes = 0, weekMinutes = 0, monthMinutes = 0, yearMinutes = 0, allTimeMinutes = 0;
+            let todayMinutes = 0, yesterdayMinutes = 0, weekMinutes = 0, monthMinutes = 0, yearMinutes = 0;
             let tagMinutesSumMap = {};
             currentTagsList.forEach(t => tagMinutesSumMap[t] = 0);
 
@@ -7701,7 +7837,6 @@ html[data-theme="light"] .ai-error-desc {
                 if (tagMinutesSumMap[session.tag] !== undefined) tagMinutesSumMap[session.tag] += minutesVal;
                 else tagMinutesSumMap[session.tag] = minutesVal;
 
-                allTimeMinutes += minutesVal;
                 if (sessionDate === todayISO) todayMinutes += minutesVal;
                 if (sessionDate === yesterdayISO) yesterdayMinutes += minutesVal;
                 if (sessionDate >= weekStartISO && sessionDate <= weekEndISO) weekMinutes += minutesVal;
@@ -7723,15 +7858,6 @@ html[data-theme="light"] .ai-error-desc {
             if (monthValEl) monthValEl.innerText = formatMinutesToHM(monthMinutes);
             let yearValEl = document.getElementById('m-year-val');
             if (yearValEl) yearValEl.innerText = formatMinutesToHM(yearMinutes);
-            let allTimeValEl = document.getElementById('m-alltime-val');
-            if (allTimeValEl) allTimeValEl.innerText = formatMinutesToHM(allTimeMinutes);
-            let allTimeHintEl = document.getElementById('m-alltime-hint');
-            if (allTimeHintEl) {
-                const sessionCount = archivedSessionsArray.length;
-                allTimeHintEl.innerText = currentSystemLanguage === 'ar'
-                    ? 'إجمالي وقت الدراسة المسجل في البرنامج · ' + sessionCount + ' جلسة'
-                    : 'Total recorded study time · ' + sessionCount + ' sessions';
-            }
             const DAILY_GOAL = studyGoals.daily || 4;
             const WEEKLY_GOAL = studyGoals.weekly || 28;
             const MONTHLY_GOAL = studyGoals.monthly || 120;
@@ -7885,11 +8011,12 @@ html[data-theme="light"] .ai-error-desc {
 
         function renderWeeklySegmentedChart() {
             const holder = document.getElementById('weekly-chart-holder');
+            if (!holder) return;
             holder.innerHTML = '';
 
+            const isAr = currentSystemLanguage === 'ar';
             const weekdaysArabic = ["السبت", "الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة"];
             const weekdaysEnglish = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
-
             const weekStart = getWeekStartDate(currentViewedWeekOffset);
             const weekEnd = getWeekEndDate(weekStart);
             const weekNum = getWeekNumber(weekStart);
@@ -7897,54 +8024,44 @@ html[data-theme="light"] .ai-error-desc {
             const isCurrentWeek = currentViewedWeekOffset === 0;
             const isPastWeek = currentViewedWeekOffset < 0;
 
-            const navHeader = document.createElement('div');
-            navHeader.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding:14px 18px;background:linear-gradient(135deg, rgba(217,165,74,0.06), rgba(62,92,138,0.04));border-radius:14px;border:1px solid rgba(217,165,74,0.12);';
+            // Compact week navigation sits in the upper corner, not as a large banner.
+            const toolbar = document.createElement('div');
+            toolbar.className = 'weekly-chart-toolbar';
+            const nav = document.createElement('div');
+            nav.className = 'weekly-chart-nav';
 
-            const prevBtn = document.createElement('button');
-            prevBtn.innerHTML = currentSystemLanguage === 'ar' ? '▶' : '◀';
-            prevBtn.style.cssText = 'background:rgba(217,165,74,0.12);border:1px solid rgba(217,165,74,0.25);color:var(--accent-orange);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:12px;font-weight:700;transition:all 0.2s;display:flex;align-items:center;justify-content:center;';
-            prevBtn.onmouseover = function() { this.style.background='rgba(217,165,74,0.25)'; this.style.transform='scale(1.1)'; };
-            prevBtn.onmouseout = function() { this.style.background='rgba(217,165,74,0.12)'; this.style.transform='scale(1)'; };
-            prevBtn.onclick = function() { navigateWeek(-1); };
-            prevBtn.title = currentSystemLanguage === 'ar' ? 'الأسبوع السابق' : 'Previous Week';
+            const makeNavButton = (symbol, title, action, extraClass = '') => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'weekly-chart-nav-btn ' + extraClass;
+                button.textContent = symbol;
+                button.title = title;
+                button.setAttribute('aria-label', title);
+                button.addEventListener('click', action);
+                return button;
+            };
+            const prevBtn = makeNavButton(isAr ? '›' : '‹', isAr ? 'الأسبوع السابق' : 'Previous week', () => navigateWeek(-1));
+            const nextBtn = makeNavButton(isAr ? '‹' : '›', isAr ? 'الأسبوع القادم' : 'Next week', () => navigateWeek(1));
+            const currentBtn = makeNavButton('◎', isAr ? 'الأسبوع الحالي' : 'Current week', () => goToCurrentWeek(), 'weekly-chart-current-btn');
 
-            const nextBtn = document.createElement('button');
-            nextBtn.innerHTML = currentSystemLanguage === 'ar' ? '◀' : '▶';
-            nextBtn.style.cssText = 'background:rgba(217,165,74,0.12);border:1px solid rgba(217,165,74,0.25);color:var(--accent-orange);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:12px;font-weight:700;transition:all 0.2s;display:flex;align-items:center;justify-content:center;';
-            nextBtn.onmouseover = function() { this.style.background='rgba(217,165,74,0.25)'; this.style.transform='scale(1.1)'; };
-            nextBtn.onmouseout = function() { this.style.background='rgba(217,165,74,0.12)'; this.style.transform='scale(1)'; };
-            nextBtn.onclick = function() { navigateWeek(1); };
-            nextBtn.title = currentSystemLanguage === 'ar' ? 'الأسبوع القادم' : 'Next Week';
+            const weekMeta = document.createElement('div');
+            weekMeta.className = 'weekly-chart-week-meta';
+            const weekBadge = document.createElement('span');
+            weekBadge.className = 'weekly-chart-week-badge' + (isCurrentWeek ? ' is-current' : '');
+            weekBadge.textContent = `${isAr ? 'الأسبوع' : 'Week'} ${weekNum} · ${year}`;
+            if (isCurrentWeek) weekBadge.title = isAr ? 'الأسبوع الحالي' : 'Current week';
+            const weekRange = document.createElement('span');
+            weekRange.className = 'weekly-chart-week-range';
+            weekRange.textContent = formatWeekRange(weekStart);
+            weekMeta.append(weekBadge, weekRange);
 
-            const weekInfo = document.createElement('div');
-            weekInfo.style.cssText = 'text-align:center;flex:1;';
-            const weekBadge = document.createElement('div');
-            weekBadge.style.cssText = 'font-size:16px;font-weight:800;margin-bottom:3px;color:' + (isCurrentWeek ? 'var(--accent-orange)' : 'var(--text-light)') + ';';
-            weekBadge.innerHTML = (currentSystemLanguage === 'ar' ? 'الأسبوع ' : 'Week ') + weekNum + ', ' + year;
-            if (isCurrentWeek) weekBadge.innerHTML += ' <span style="font-size:10px;background:var(--accent-orange);color:#000;padding:1px 6px;border-radius:6px;margin-' + (currentSystemLanguage === 'ar' ? 'right' : 'left') + ':6px;">' + (currentSystemLanguage === 'ar' ? 'الحالي' : 'NOW') + '</span>';
-            else if (isPastWeek && getArchivedWeekData(currentViewedWeekOffset)) weekBadge.innerHTML += ' <span style="font-size:9px;color:var(--success);">✓</span>';
-            const weekRange = document.createElement('div');
-            weekRange.style.cssText = 'font-size:11px;color:var(--text-gray);font-weight:500;';
-            weekRange.innerText = formatWeekRange(weekStart);
-            weekInfo.appendChild(weekBadge);
-            weekInfo.appendChild(weekRange);
+            if (isAr) nav.append(nextBtn, currentBtn, weekMeta, prevBtn);
+            else nav.append(prevBtn, weekMeta, currentBtn, nextBtn);
+            toolbar.appendChild(nav);
+            holder.appendChild(toolbar);
 
-            const currentBtn = document.createElement('button');
-            currentBtn.innerHTML = '◎';
-            currentBtn.style.cssText = 'background:rgba(0,210,106,0.08);border:1px solid rgba(0,210,106,0.2);color:var(--success);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:14px;font-weight:700;transition:all 0.2s;display:flex;align-items:center;justify-content:center;';
-            currentBtn.onmouseover = function() { this.style.background='rgba(0,210,106,0.2)'; this.style.transform='scale(1.1)'; };
-            currentBtn.onmouseout = function() { this.style.background='rgba(0,210,106,0.08)'; this.style.transform='scale(1)'; };
-            currentBtn.onclick = function() { goToCurrentWeek(); };
-            currentBtn.title = currentSystemLanguage === 'ar' ? 'الأسبوع الحالي' : 'Current Week';
-
-            if (currentSystemLanguage === 'ar') {
-                navHeader.appendChild(nextBtn); navHeader.appendChild(weekInfo); navHeader.appendChild(currentBtn); navHeader.appendChild(prevBtn);
-            } else {
-                navHeader.appendChild(prevBtn); navHeader.appendChild(weekInfo); navHeader.appendChild(currentBtn); navHeader.appendChild(nextBtn);
-            }
-            holder.appendChild(navHeader);
-
-            let weeklyDataArray = [];
+            // Collect exactly the seven days in the selected Saturday-to-Friday week.
+            const weeklyDataArray = [];
             for (let i = 0; i < 7; i++) {
                 const dayDate = new Date(weekStart);
                 dayDate.setDate(dayDate.getDate() + i);
@@ -7961,153 +8078,164 @@ html[data-theme="light"] .ai-error-desc {
             }
 
             archivedSessionsArray.forEach(session => {
-                const sDate = new Date(session.date + 'T00:00:00');
-                if (sDate >= weekStart && sDate <= weekEnd) {
-                    const dayIndex = Math.floor((sDate - weekStart) / 86400000);
-                    if (dayIndex >= 0 && dayIndex < 7) {
-                        const minsVal = parseInt(session.duration) || 0;
-                        const dayObj = weeklyDataArray[dayIndex];
-                        dayObj.totalTime += minsVal;
-                        let seg = dayObj.segments.find(s => s.tag === session.tag);
-                        if (seg) seg.time += minsVal;
-                        else dayObj.segments.push({ tag: session.tag, time: minsVal });
-                    }
-                }
+                const sessionISO = String(session.date || '').slice(0, 10);
+                if (sessionISO < getLocalISODate(weekStart) || sessionISO > getLocalISODate(weekEnd)) return;
+                const day = weeklyDataArray.find(item => item.dateISO === sessionISO);
+                if (!day) return;
+                const minutes = Math.max(0, parseInt(session.duration, 10) || 0);
+                if (!minutes) return;
+                day.totalTime += minutes;
+                const tag = String(session.tag || (isAr ? 'بدون مادة' : 'Unassigned'));
+                const existing = day.segments.find(item => item.tag === tag);
+                if (existing) existing.time += minutes;
+                else day.segments.push({ tag, time: minutes });
             });
 
-            let maxDailyMinutes = 0;
-            weeklyDataArray.forEach(d => { if (d.totalTime > maxDailyMinutes) maxDailyMinutes = d.totalTime; });
-            if (maxDailyMinutes === 0) maxDailyMinutes = 60;
+            const totalWeekMinutes = weeklyDataArray.reduce((sum, day) => sum + day.totalTime, 0);
+            const activeDays = weeklyDataArray.filter(day => day.totalTime > 0).length;
+            const maxDailyMinutes = Math.max(60, ...weeklyDataArray.map(day => day.totalTime));
 
-            const totalWeekMinutes = weeklyDataArray.reduce((sum, d) => sum + d.totalTime, 0);
-            const activeDays = weeklyDataArray.filter(d => d.totalTime > 0).length;
-
-            const weekSummary = document.createElement('div');
-            weekSummary.style.cssText = 'display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap;';
-            let summaryHTML = '<div style="background:rgba(217,165,74,0.1);border:1px solid rgba(217,165,74,0.2);border-radius:12px;padding:10px 18px;"><div style="font-size:11px;color:var(--text-gray);font-weight:600;">' + (currentSystemLanguage === 'ar' ? 'إجمالي الأسبوع' : 'Week Total') + '</div><div style="font-size:20px;font-weight:800;color:var(--accent-orange);">' + formatMinutesToHM(totalWeekMinutes) + '</div></div>';
-            summaryHTML += '<div style="background:rgba(62,92,138,0.1);border:1px solid rgba(62,92,138,0.2);border-radius:12px;padding:10px 18px;"><div style="font-size:11px;color:var(--text-gray);font-weight:600;">' + (currentSystemLanguage === 'ar' ? 'الأيام النشطة' : 'Active Days') + '</div><div style="font-size:20px;font-weight:800;color:var(--accent-purple);">' + activeDays + '/7</div></div>';
+            // Compact summary chips preserve the original weekly total / active-days information.
+            const summary = document.createElement('div');
+            summary.className = 'weekly-chart-summary';
+            const summaryItems = [
+                { label: isAr ? 'إجمالي الأسبوع' : 'Week Total', value: formatMinutesToHM(totalWeekMinutes), tone: 'gold' },
+                { label: isAr ? 'الأيام النشطة' : 'Active Days', value: `${activeDays}/7`, tone: 'purple' }
+            ];
             if (isPastWeek) {
-                const archData = getArchivedWeekData(currentViewedWeekOffset);
-                summaryHTML += '<div style="background:rgba(0,210,106,0.08);border:1px solid rgba(0,210,106,0.15);border-radius:12px;padding:10px 18px;"><div style="font-size:11px;color:var(--text-gray);font-weight:600;">' + (currentSystemLanguage === 'ar' ? 'الأرشفة' : 'Archive') + '</div><div style="font-size:14px;font-weight:700;color:' + (archData ? 'var(--success)' : 'var(--text-gray)') + ';">' + (archData ? '✓ ' + (currentSystemLanguage === 'ar' ? 'مؤرشف' : 'Saved') : (currentSystemLanguage === 'ar' ? '—' : '—')) + '</div></div>';
+                const archived = !!getArchivedWeekData(currentViewedWeekOffset);
+                summaryItems.push({ label: isAr ? 'الأرشفة' : 'Archive', value: archived ? (isAr ? 'مؤرشف ✓' : 'Saved ✓') : '—', tone: 'green' });
             }
-            weekSummary.innerHTML = summaryHTML;
-            holder.appendChild(weekSummary);
-
-            // Keep all seven days visible, but place them in a compact two-column grid.
-            const weeklyDaysGrid = document.createElement('div');
-            weeklyDaysGrid.className = 'weekly-days-grid';
-
-            weeklyDataArray.forEach(day => {
-                const dayRow = document.createElement('div');
-                dayRow.className = 'weekly-day-row';
-                dayRow.style.cssText = 'display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.03);';
-
-                const labelCol = document.createElement('div');
-                labelCol.style.cssText = 'width:70px;flex-shrink:0;';
-                const dayLabel = document.createElement('div');
-                dayLabel.className = 'weekly-day-label';
-                dayLabel.style.cssText = 'font-size:13px;font-weight:700;color:' + (day.isToday ? 'var(--accent-orange)' : 'var(--text-light)') + ';';
-                dayLabel.innerText = currentSystemLanguage === 'ar' ? day.dayAR : day.dayEN;
-                const dateLabel = document.createElement('div');
-                dateLabel.style.cssText = 'font-size:10px;color:var(--text-gray);margin-top:2px;';
-                dateLabel.innerText = day.date.toLocaleDateString(currentSystemLanguage === 'ar' ? 'ar-EG' : 'en-US', { month: 'numeric', day: 'numeric' });
-                labelCol.appendChild(dayLabel);
-                labelCol.appendChild(dateLabel);
-
-                const contentCol = document.createElement('div');
-                contentCol.style.cssText = 'flex:1;min-width:0;';
-
-                if (day.totalTime === 0) {
-                    const noData = document.createElement('div');
-                    noData.style.cssText = 'color:var(--text-gray);font-size:12px;font-style:italic;padding:8px 0;';
-                    noData.innerText = currentSystemLanguage === 'ar' ? 'لا توجد جلسات' : 'No sessions';
-                    contentCol.appendChild(noData);
-                } else {
-                    const barTrack = document.createElement('div');
-                    barTrack.className = 'weekly-stacked-track';
-                    barTrack.style.cssText = 'height:28px;border-radius:14px;overflow:hidden;display:flex;width:100%;background:rgba(255,255,255,0.03);';
-
-                    day.segments.forEach(segment => {
-                        const segmentPercent = day.totalTime > 0 ? (segment.time / day.totalTime) * 100 : 0;
-                        const segBlock = document.createElement('div');
-                        segBlock.style.cssText = `height:100%;transition:width 0.5s ease;position:relative;background-color:${getTagColor(segment.tag)};width:${segmentPercent}%;`;
-                        segBlock.setAttribute('data-tooltip', `${segment.tag}: ${segment.time} Min (${Math.round(segmentPercent)}%)`);
-
-                        if (segmentPercent > 15) {
-                            const pctLabel = document.createElement('span');
-                            pctLabel.style.cssText = 'position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.5);';
-                            pctLabel.innerText = Math.round(segmentPercent) + '%';
-                            segBlock.appendChild(pctLabel);
-                        }
-
-                        barTrack.appendChild(segBlock);
-                    });
-
-                    contentCol.appendChild(barTrack);
-
-                    const tagsLegend = document.createElement('div');
-                    tagsLegend.style.cssText = 'display:flex;gap:12px;margin-top:8px;flex-wrap:wrap;';
-
-                    day.segments.forEach(segment => {
-                        const segmentPercent = day.totalTime > 0 ? (segment.time / day.totalTime) * 100 : 0;
-                        const tagItem = document.createElement('div');
-                        tagItem.style.cssText = 'display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-gray);';
-                        tagItem.innerHTML = `
-                            <span style="width:8px;height:8px;border-radius:50%;background-color:${getTagColor(segment.tag)};display:inline-block;"></span>
-                            <span style="font-weight:600;color:var(--text-light);">${segment.tag}</span>
-                            <span>${formatMinutesToHM(segment.time)}</span>
-                            <span style="color:var(--accent-orange);font-weight:700;">(${Math.round(segmentPercent)}%)</span>
-                        `;
-                        tagsLegend.appendChild(tagItem);
-                    });
-
-                    const dayTotal = document.createElement('div');
-                    dayTotal.style.cssText = 'font-size:11px;color:var(--text-gray);margin-top:6px;font-weight:600;';
-                    dayTotal.innerText = `${currentSystemLanguage === 'ar' ? 'الإجمالي' : 'Total'}: ${formatMinutesToHM(day.totalTime)}`;
-
-                    contentCol.appendChild(tagsLegend);
-                    contentCol.appendChild(dayTotal);
-                }
-
-                dayRow.appendChild(labelCol);
-                dayRow.appendChild(contentCol);
-                weeklyDaysGrid.appendChild(dayRow);
+            summaryItems.forEach(item => {
+                const chip = document.createElement('div');
+                chip.className = `weekly-chart-summary-chip tone-${item.tone}`;
+                const label = document.createElement('span');
+                label.className = 'weekly-chart-summary-label';
+                label.textContent = item.label;
+                const value = document.createElement('strong');
+                value.className = 'weekly-chart-summary-value';
+                value.textContent = item.value;
+                chip.append(label, value);
+                summary.appendChild(chip);
             });
+            holder.appendChild(summary);
 
-            holder.appendChild(weeklyDaysGrid);
+            const makeDayColumn = day => {
+                const card = document.createElement('div');
+                card.className = 'weekly-bar-day' + (day.isToday ? ' is-today' : '') + (day.totalTime === 0 ? ' is-empty' : '');
 
-            if (totalWeekMinutes > 0) {
-                const weekDistHeader = document.createElement('div');
-                weekDistHeader.style.cssText = 'font-size:13px;font-weight:700;color:var(--text-light);margin-top:24px;margin-bottom:12px;padding-top:16px;border-top:1px solid var(--border-soft);';
-                weekDistHeader.innerText = currentSystemLanguage === 'ar' ? 'توزيع المواد هذا الأسبوع' : 'Weekly Tag Distribution';
-                holder.appendChild(weekDistHeader);
+                const header = document.createElement('div');
+                header.className = 'weekly-bar-day-header';
+                const dayInfo = document.createElement('div');
+                dayInfo.className = 'weekly-bar-day-info';
+                const dayName = document.createElement('span');
+                dayName.className = 'weekly-bar-day-name';
+                dayName.textContent = isAr ? day.dayAR : day.dayEN;
+                const date = document.createElement('span');
+                date.className = 'weekly-bar-day-date';
+                date.textContent = day.date.toLocaleDateString(isAr ? 'ar-EG' : 'en-US', { month: 'numeric', day: 'numeric' });
+                dayInfo.append(dayName, date);
+                const total = document.createElement('strong');
+                total.className = 'weekly-bar-day-total';
+                total.textContent = day.totalTime > 0 ? formatMinutesToHM(day.totalTime) : '—';
+                header.append(dayInfo, total);
+                card.appendChild(header);
 
-                const weekTagMap = {};
-                weeklyDataArray.forEach(day => {
-                    day.segments.forEach(seg => {
-                        if (weekTagMap[seg.tag]) weekTagMap[seg.tag] += seg.time;
-                        else weekTagMap[seg.tag] = seg.time;
+                const stage = document.createElement('div');
+                stage.className = 'weekly-bar-stage';
+                const track = document.createElement('div');
+                track.className = 'weekly-bar-track';
+                track.setAttribute('role', 'img');
+                track.setAttribute('aria-label', `${isAr ? day.dayAR : day.dayEN}: ${formatMinutesToHM(day.totalTime)}`);
+
+                if (day.totalTime > 0) {
+                    const stack = document.createElement('div');
+                    stack.className = 'weekly-bar-stack';
+                    stack.style.height = `${Math.max(12, (day.totalTime / maxDailyMinutes) * 100)}%`;
+                    // Stack subject segments from the baseline upward; subject labels are embedded when readable.
+                    day.segments.forEach(segment => {
+                        const share = (segment.time / day.totalTime) * 100;
+                        const segmentEl = document.createElement('div');
+                        segmentEl.className = 'weekly-bar-segment';
+                        segmentEl.style.height = `${share}%`;
+                        segmentEl.style.backgroundColor = getTagColor(segment.tag);
+                        const segmentMinutesHeight = (day.totalTime / maxDailyMinutes) * 118 * share / 100;
+                        segmentEl.title = `${segment.tag}: ${formatMinutesToHM(segment.time)} (${Math.round(share)}%)`;
+                        if (segmentMinutesHeight >= 20) {
+                            const segmentLabel = document.createElement('span');
+                            segmentLabel.className = 'weekly-bar-segment-label';
+                            const words = segment.tag.trim().split(/\s+/);
+                            const shortLabel = segment.tag.length <= 9 ? segment.tag : (words.length > 1 ? words.map(word => word[0]).join('').slice(0, 5) : segment.tag.slice(0, 8) + '…');
+                            segmentLabel.textContent = shortLabel;
+                            segmentEl.appendChild(segmentLabel);
+                        }
+                        stack.appendChild(segmentEl);
                     });
+                    track.appendChild(stack);
+                } else {
+                    const emptyMark = document.createElement('span');
+                    emptyMark.className = 'weekly-bar-empty-mark';
+                    emptyMark.textContent = '—';
+                    track.appendChild(emptyMark);
+                }
+                stage.appendChild(track);
+                card.appendChild(stage);
+
+                // Short per-day labels make every studied subject discoverable even for thin bar segments.
+                if (day.segments.length) {
+                    const tagList = document.createElement('div');
+                    tagList.className = 'weekly-bar-day-tags';
+                    day.segments.forEach(segment => {
+                        const tag = document.createElement('span');
+                        tag.className = 'weekly-bar-day-tag';
+                        tag.title = `${segment.tag}: ${formatMinutesToHM(segment.time)}`;
+                        const dot = document.createElement('i');
+                        dot.style.backgroundColor = getTagColor(segment.tag);
+                        const name = document.createElement('span');
+                        name.textContent = segment.tag;
+                        tag.append(dot, name);
+                        tagList.appendChild(tag);
+                    });
+                    card.appendChild(tagList);
+                } else {
+                    const emptyText = document.createElement('div');
+                    emptyText.className = 'weekly-bar-no-study';
+                    emptyText.textContent = isAr ? 'لا توجد جلسات' : 'No study';
+                    card.appendChild(emptyText);
+                }
+                return card;
+            };
+
+            // Four daily columns on the first row, three wider columns centered on the second row.
+            const firstRow = document.createElement('div');
+            firstRow.className = 'weekly-bars-row weekly-bars-row-four';
+            weeklyDataArray.slice(0, 4).forEach(day => firstRow.appendChild(makeDayColumn(day)));
+            const secondRow = document.createElement('div');
+            secondRow.className = 'weekly-bars-row weekly-bars-row-three';
+            weeklyDataArray.slice(4).forEach(day => secondRow.appendChild(makeDayColumn(day)));
+            holder.append(firstRow, secondRow);
+
+            // Compact full-name legend retains the weekly subject totals without the old oversized cards.
+            if (totalWeekMinutes > 0) {
+                const weekTagMap = {};
+                weeklyDataArray.forEach(day => day.segments.forEach(segment => {
+                    weekTagMap[segment.tag] = (weekTagMap[segment.tag] || 0) + segment.time;
+                }));
+                const legend = document.createElement('div');
+                legend.className = 'weekly-bars-legend';
+                Object.entries(weekTagMap).sort((a, b) => b[1] - a[1]).forEach(([tagName, minutes]) => {
+                    const item = document.createElement('span');
+                    item.className = 'weekly-bars-legend-item';
+                    const dot = document.createElement('i');
+                    dot.style.backgroundColor = getTagColor(tagName);
+                    const name = document.createElement('b');
+                    name.textContent = tagName;
+                    const time = document.createElement('small');
+                    time.textContent = formatMinutesToHM(minutes);
+                    item.append(dot, name, time);
+                    legend.appendChild(item);
                 });
-
-                const distGrid = document.createElement('div');
-                distGrid.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;';
-
-                Object.entries(weekTagMap).forEach(([tag, minutes]) => {
-                    const pct = Math.round((minutes / totalWeekMinutes) * 100);
-                    const distItem = document.createElement('div');
-                    distItem.style.cssText = 'background:rgba(255,255,255,0.03);border:1px solid var(--border-soft);border-radius:12px;padding:12px;display:flex;align-items:center;gap:10px;';
-                    distItem.innerHTML = `
-                        <div style="width:36px;height:36px;border-radius:10px;background:${getTagColor(tag)};display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;">${pct}%</div>
-                        <div style="flex:1;min-width:0;">
-                            <div style="font-size:13px;font-weight:700;color:var(--text-light);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${tag}</div>
-                            <div style="font-size:11px;color:var(--text-gray);">${formatMinutesToHM(minutes)}</div>
-                        </div>
-                    `;
-                    distGrid.appendChild(distItem);
-                });
-
-                holder.appendChild(distGrid);
+                holder.appendChild(legend);
             }
         }
 
