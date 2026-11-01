@@ -4584,6 +4584,151 @@ html[data-theme="light"] .ai-error-desc {
         }
     </style>
 
+
+    <style id="analysis-weekly-xy-chart-refinement-v2">
+        /* Weekly Subject Breakdown only — larger chart, closer day columns, compact inline subject totals. */
+        #screen-analysis #weekly-chart-holder .wsc-toolbar {
+            gap:6px;
+            margin-bottom:7px;
+        }
+        #screen-analysis #weekly-chart-holder .wsc-summary {
+            gap:7px !important;
+        }
+        #screen-analysis #weekly-chart-holder .wsc-summary .weekly-chart-summary-chip {
+            padding:6px 9px;
+            gap:7px;
+            border-radius:7px;
+        }
+        #screen-analysis #weekly-chart-holder .wsc-summary .weekly-chart-summary-label {
+            font-size:10.4px;
+        }
+        #screen-analysis #weekly-chart-holder .wsc-summary .weekly-chart-summary-value {
+            font-size:14.3px;
+        }
+        #screen-analysis #weekly-chart-holder .weekly-chart-nav {
+            gap:6px;
+        }
+        #screen-analysis #weekly-chart-holder .weekly-chart-nav-btn {
+            width:31px;
+            height:31px;
+            flex-basis:31px;
+            font-size:17px;
+            border-radius:7px;
+        }
+        #screen-analysis #weekly-chart-holder .weekly-chart-week-badge {
+            font-size:13px;
+        }
+        #screen-analysis #weekly-chart-holder .weekly-chart-week-range {
+            font-size:10.4px;
+        }
+        #screen-analysis #weekly-chart-holder .wsc-y-axis {
+            height:284px;
+        }
+        #screen-analysis #weekly-chart-holder .wsc-columns {
+            gap:2px;
+        }
+        #screen-analysis #weekly-chart-holder .wsc-bar-stack {
+            width:min(73px,95%);
+            max-width:73px;
+            min-width:14px;
+        }
+        /* Show subject + time as a single inline legend, not separate boxed cards. */
+        #screen-analysis #weekly-chart-holder .wsc-subject-totals {
+            display:flex;
+            flex-wrap:wrap;
+            align-items:center;
+            gap:8px;
+            margin-top:6px;
+            padding-top:5px;
+        }
+        #screen-analysis #weekly-chart-holder .wsc-subject-totals-heading {
+            flex:0 0 auto;
+            margin:0;
+            font-size:8px;
+            line-height:1.2;
+            white-space:nowrap;
+        }
+        #screen-analysis #weekly-chart-holder .wsc-subjects-grid {
+            display:flex;
+            flex:1 1 auto;
+            flex-wrap:wrap;
+            align-items:center;
+            gap:8px 13px;
+            min-width:0;
+        }
+        #screen-analysis #weekly-chart-holder .wsc-subject-total {
+            display:inline-flex;
+            flex:0 1 auto;
+            align-items:center;
+            gap:5px;
+            min-width:0;
+            max-width:100%;
+            padding:0;
+            border:0;
+            border-radius:0;
+            background:transparent;
+        }
+        #screen-analysis #weekly-chart-holder .wsc-subject-total-name {
+            flex:0 1 auto;
+            align-items:center;
+            gap:4px;
+            min-width:0;
+            white-space:nowrap;
+        }
+        #screen-analysis #weekly-chart-holder .wsc-subject-total-name b {
+            font-size:9px;
+            line-height:1.2;
+            white-space:nowrap;
+            overflow:visible;
+            overflow-wrap:normal;
+        }
+        #screen-analysis #weekly-chart-holder .wsc-subject-total-name i {
+            width:8px;
+            height:8px;
+            flex-basis:8px;
+        }
+        #screen-analysis #weekly-chart-holder .wsc-subject-total-time {
+            font-size:9px;
+            line-height:1.2;
+        }
+        @media (max-width:600px) {
+            #screen-analysis #weekly-chart-holder .wsc-y-axis {
+                height:284px;
+            }
+            #screen-analysis #weekly-chart-holder .wsc-columns {
+                gap:2px;
+            }
+            #screen-analysis #weekly-chart-holder .wsc-bar-stack {
+                width:94%;
+                min-width:9px;
+            }
+            #screen-analysis #weekly-chart-holder .wsc-summary .weekly-chart-summary-label {
+                font-size:8px;
+            }
+            #screen-analysis #weekly-chart-holder .wsc-summary .weekly-chart-summary-value {
+                font-size:11px;
+            }
+            #screen-analysis #weekly-chart-holder .weekly-chart-nav-btn {
+                width:28px;
+                height:28px;
+                flex-basis:28px;
+                font-size:15px;
+            }
+            #screen-analysis #weekly-chart-holder .weekly-chart-week-badge {
+                font-size:11px;
+            }
+            #screen-analysis #weekly-chart-holder .weekly-chart-week-range {
+                font-size:8px;
+            }
+            #screen-analysis #weekly-chart-holder .wsc-subject-totals {
+                gap:6px;
+            }
+            #screen-analysis #weekly-chart-holder .wsc-subjects-grid {
+                gap:6px 9px;
+            }
+        }
+    </style>
+
 </head>
 <body>
     <div class="toast-container" id="toast-container"></div>
@@ -8268,7 +8413,7 @@ html[data-theme="light"] .ai-error-desc {
             const activeDays = weeklyDataArray.filter(day => day.totalTime > 0).length;
             const maxDailyMinutes = Math.max(0, ...weeklyDataArray.map(day => day.totalTime));
             const scaleMaxMinutes = Math.max(60, Math.ceil(maxDailyMinutes / 60) * 60);
-            const plotHeight = 218;
+            const plotHeight = 284; // +30% chart height for clearer, larger daily bars.
 
             // Week total and active-day summaries remain explicit and independent from the Y-axis scale.
             const summary = document.createElement('div');
