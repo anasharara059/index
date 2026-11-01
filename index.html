@@ -3955,6 +3955,27 @@ html[data-theme="light"] .ai-error-desc {
             #screen-analysis .analysis-period-select { min-width:116px; font-size:10px; }
         }
     </style>
+
+    <style id="timer-tags-panel-style">
+        #screen-timer .timer-tags-context-block { display:flex; flex-direction:column; flex:1; min-height:0; }
+        #screen-timer .timer-tags-header { display:flex; align-items:center; gap:10px; }
+        #screen-timer .timer-tags-actions { margin-inline-start:auto; display:flex; align-items:center; gap:6px; }
+        #screen-timer .timer-tags-action-btn { display:inline-flex; align-items:center; justify-content:center; min-width:28px; min-height:26px; padding:3px 7px; border:1px solid var(--t-hairline, var(--border-soft)); border-radius:3px; background:var(--t-surface-2, transparent); color:var(--t-ink-dim, var(--text-gray)); font:600 13px system-ui,sans-serif; cursor:pointer; }
+        #screen-timer .timer-tags-action-btn:hover { color:var(--t-gold, var(--accent-orange)); border-color:var(--t-gold-soft, var(--accent-orange)); background:var(--t-gold-wash, transparent); }
+        #screen-timer .timer-tags-list { display:flex; flex-direction:column; flex:1; min-height:180px; max-height:clamp(220px, 40vh, 420px); overflow-y:auto; overflow-x:hidden; gap:6px; padding:2px 5px 4px 0; scrollbar-width:thin; }
+        #screen-timer .timer-tag-row { display:flex; align-items:center; gap:10px; min-height:43px; flex:0 0 auto; padding:8px 10px; border:1px solid var(--t-hairline, var(--border-soft)); border-radius:3px; background:var(--t-surface-2, color-mix(in srgb, var(--text-light) 3%, transparent)); color:var(--t-ink, var(--text-light)); cursor:pointer; transition:background .15s ease, border-color .15s ease, opacity .15s ease; }
+        #screen-timer .timer-tag-row:hover { border-color:var(--t-gold-soft, var(--accent-orange)); }
+        #screen-timer .timer-tag-row.selected { border-color:var(--t-gold-soft, var(--accent-orange)); background:var(--t-gold-wash, rgba(217,165,74,.08)); }
+        #screen-timer .timer-tag-row.is-dragging { opacity:.42; border-style:dashed; }
+        #screen-timer .timer-tag-drag-handle { display:inline-flex; align-items:center; justify-content:center; flex:0 0 16px; color:var(--t-ink-dim, var(--text-gray)); cursor:grab; touch-action:none; user-select:none; font-size:17px; line-height:1; }
+        #screen-timer .timer-tag-drag-handle:active { cursor:grabbing; }
+        #screen-timer .timer-tag-color-dot { flex:0 0 9px; width:9px; height:9px; }
+        #screen-timer .timer-tag-name { min-width:0; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:13px; font-weight:600; }
+        #screen-timer .timer-tag-time { flex:0 0 auto; color:var(--t-ink-dim, var(--text-gray)); font-size:11px; font-variant-numeric:tabular-nums; white-space:nowrap; }
+        #screen-timer .timer-tags-empty { padding:22px 12px; border:1px dashed var(--t-hairline, var(--border-soft)); color:var(--t-ink-dim, var(--text-gray)); text-align:center; font-size:12px; line-height:1.6; }
+        @media (max-width:1250px) { #screen-timer .timer-tags-list { max-height:320px; } }
+    </style>
+
 </head>
 <body>
     <div class="toast-container" id="toast-container"></div>
@@ -4098,22 +4119,17 @@ html[data-theme="light"] .ai-error-desc {
                             <div class="lg-mini-bar"><div class="lg-mini-fill" id="lg-chip-fill" style="width:0%;"></div></div>
                         </div>
                         <button class="linked-goal-empty-cta" id="linked-goal-empty-cta" onclick="openGoalModal(currentlySelectedTag)" style="display:none;">+ Link a goal to this subject</button>
-                        <div class="tags-management-section" style="border-top:none; padding-top:2px;">
-                            <div class="tags-label" id="tags-section-header" style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-                                <span>Subjects & Preparations (Click to select):</span>
-                                <button class="manage-hidden-tags-btn" id="manage-hidden-tags-btn" onclick="openManageHiddenTagsModal()" title="Manage Hidden Subjects" style="display:none; background:none; border:1px solid var(--border-soft); border-radius:12px; cursor:pointer; font-size:12px; color:var(--text-gray); padding:2px 8px;">👁️ <span id="hidden-tags-count-badge">0</span></button>
-                            </div>
-                            <div class="tags-list" id="tags-box-wrapper"></div>
-                        </div>
                     </div>
-                    <div class="timer-context-block" style="flex:1; min-height:0;">
-                        <div class="timer-side-panel-header"><span>📝</span><span id="timer-notes-header">Quick Notes</span></div>
-                        <textarea class="timer-notes-textarea" id="timer-quick-notes" placeholder="Jot down anything about this study session..." oninput="saveTimerQuickNotes()"></textarea>
-                        <div class="timer-notes-footer">
-                            <span id="timer-notes-charcount">0 chars</span>
-                            <span id="timer-notes-savestate"></span>
-                            <button class="timer-notes-clear-btn" onclick="clearTimerQuickNotes()" id="timer-notes-clear-btn">🗑</button>
+                    <div class="timer-context-block timer-tags-context-block" style="flex:1; min-height:0;">
+                        <div class="timer-side-panel-header timer-tags-header">
+                            <span>🏷</span>
+                            <span id="chart-distribution-title">Tags</span>
+                            <div class="timer-tags-actions">
+                                <button type="button" class="timer-tags-action-btn" onclick="openTagModal()" title="Add Tag" aria-label="Add Tag">＋</button>
+                                <button type="button" class="timer-tags-action-btn" id="manage-hidden-tags-btn" onclick="openManageHiddenTagsModal()" title="Manage Hidden Tags" aria-label="Manage Hidden Tags" style="display:none;">👁 <span id="hidden-tags-count-badge">0</span></button>
+                            </div>
                         </div>
+                        <div class="analytics-tag-distribution timer-tags-list" id="bars-dynamic-wrapper" role="list" aria-label="Study tags"></div>
                     </div>
                 </div>
                 <div class="timer-screen-layout timer-focal-column">
@@ -4244,14 +4260,10 @@ html[data-theme="light"] .ai-error-desc {
                         <div class="mini-ring-wrapper" aria-hidden="true" style="font-size:25px;color:var(--accent-orange);">▦</div>
                     </div>
                 </div>
-                <div class="charts-double-column">
+                <div class="charts-double-column" style="grid-template-columns:1fr;">
                     <div class="charts-container-box">
                         <div class="charts-box-title" id="chart-weekly-title">Weekly Subject Breakdown</div>
                         <div class="weekly-breakdown-wrapper" id="weekly-chart-holder"></div>
-                    </div>
-                    <div class="charts-container-box">
-                        <div class="charts-box-title" id="chart-distribution-title">Tag Relative Distribution</div>
-                        <div class="analytics-tag-distribution" id="bars-dynamic-wrapper"></div>
                     </div>
                 </div>
 
@@ -5173,7 +5185,7 @@ html[data-theme="light"] .ai-error-desc {
                 logo: "INDEX", navTimer: "Timer", navAnalysis: "Analysis", navGoals: "Subjects", navHabits: "Habits",
                 currentSessionPlaceholder: "Preparing Clinical Session", btnStart: "Start", btnPause: "Pause", btnStop: "Stop", btnFull: "Focus", btnExitFull: "Exit Focus Mode",
                 tagsLbl: "Subjects & Preparations (Click to select):", dashTitle: "Analytics & Progress Rates",
-                chartWeeklyTitle: "Weekly Subject Breakdown", chartDistTitle: "Tag Relative Distribution",
+                chartWeeklyTitle: "Weekly Subject Breakdown", chartDistTitle: "Tags",
                 dayLbl: "Daily Study", weekLbl: "Current Week Progress", monthLbl: "Monthly Statistics",
                 unitHrs: "Hrs", daySubTxt: "Daily progress up by 12%", monthSubTxt: "19 days active streak",
                 histTitle: "Recent Sessions & Lectures Log", thDate: "Date", thTitle: "Session / Lecture Title", thTag: "Tag", thDur: "Duration", thRange: "Time Frame", thAction: "Action",
@@ -5284,7 +5296,7 @@ html[data-theme="light"] .ai-error-desc {
                 logo: "إندكس", navTimer: "المؤقت", navAnalysis: "التحليلات والإحصائيات", navGoals: "المواد", navHabits: "العادات",
                 currentSessionPlaceholder: "تحضير الجلسة السريرية", btnStart: "ابدأ (Start)", btnPause: "مؤقت (Pause)", btnStop: "حفظ وإنهاء (Stop)", btnFull: "تركيز (Focus)", btnExitFull: "خروج من وضع التركيز",
                 tagsLbl: "المواد والتحضيرات الحالية (اضغط للاختيار):", dashTitle: "لوحة التحليلات ومعدلات التقدم",
-                chartWeeklyTitle: "توزيع الجهد الدراسي الأسبوعي", chartDistTitle: "توزيع المواد النسبي",
+                chartWeeklyTitle: "توزيع الجهد الدراسي الأسبوعي", chartDistTitle: "التاجات",
                 dayLbl: "الدراسة اليومية", weekLbl: "تقدم الأسبوع الحالي", monthLbl: "إجمالي هذا الشهر",
                 unitHrs: "ساعة", daySubTxt: "ارتفع بنسبة 12% عن أمس", monthSubTxt: "تم إنجاز 19 يوم دراسة متتالي",
                 histTitle: "سجل الجلسات والمحاضرات الأخيرة", thDate: "التاريخ", thTitle: "اسم الجلسة / المحاضرة", thTag: "التاج المخصص", thDur: "المدة المنقضية", thRange: "النطاق الزمني والوقت", thAction: "حذف الجلسة",
@@ -6096,7 +6108,6 @@ html[data-theme="light"] .ai-error-desc {
             document.getElementById('ctrl-stop').innerText = d.btnStop;
             document.getElementById('ctrl-full').innerText = d.btnFull;
             document.getElementById('fs-exit-btn').innerText = d.btnExitFull;
-            document.getElementById('tags-section-header').innerText = d.tagsLbl;
             document.getElementById('dash-header-title').innerText = d.dashTitle;
             document.getElementById('chart-weekly-title').innerText = d.chartWeeklyTitle;
             document.getElementById('chart-distribution-title').innerText = d.chartDistTitle;
@@ -6590,60 +6601,127 @@ html[data-theme="light"] .ai-error-desc {
             return d;
         }
 
-        function renderTagsChips() {
-            const wrapper = document.getElementById('tags-box-wrapper');
+        function renderTagsChips(minutesByTag = null) {
+            const wrapper = document.getElementById('bars-dynamic-wrapper');
             if (!wrapper) return;
             wrapper.innerHTML = '';
+
             const visibleTags = currentTagsList.filter(t => !hiddenTags.includes(t));
-            
-            // Update hidden tags manager button in header
+            const minutesMap = minutesByTag || archivedSessionsArray.reduce((map, session) => {
+                const tag = session.tag;
+                if (!tag) return map;
+                const mins = parseInt(session.duration, 10) || Math.round((Number(session.durationSeconds) || 0) / 60);
+                map[tag] = (map[tag] || 0) + mins;
+                return map;
+            }, {});
+
             const manageBtn = document.getElementById('manage-hidden-tags-btn');
             const badge = document.getElementById('hidden-tags-count-badge');
             if (manageBtn && badge) {
-                if (hiddenTags.length > 0) {
-                    manageBtn.style.display = 'inline-flex';
-                    badge.innerText = hiddenTags.length;
-                } else {
-                    manageBtn.style.display = 'none';
-                }
+                manageBtn.style.display = hiddenTags.length > 0 ? 'inline-flex' : 'none';
+                badge.innerText = hiddenTags.length;
             }
 
-                        visibleTags.forEach(tag => {
-                const chip = document.createElement('div');
-                chip.className = `mini-tag-chip ${tag === currentlySelectedTag ? 'selected' : ''}`;
-                chip.title = currentSystemLanguage === 'ar' ? 'Ø§Ù†Ù‚Ø± Ù„Ù„Ø§Ø®ØªÙŠØ§Ø± Â· ÙƒÙ„ÙŠÙƒ ÙŠÙ…ÙŠÙ† Ù„Ù„ØªØ¹Ø¯ÙŠÙ„' : 'Click to select Â· Right-click to edit';
-                chip.onclick = () => selectActiveTag(tag);
-                chip.oncontextmenu = (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    openTagSubjectModal(tag, e);
-                };
-                let pressTimer;
-                chip.addEventListener('touchstart', (e) => {
-                    pressTimer = setTimeout(() => { e.preventDefault(); openTagSubjectModal(tag, e); }, 600);
+            if (visibleTags.length === 0) {
+                const empty = document.createElement('div');
+                empty.className = 'timer-tags-empty';
+                empty.innerText = currentSystemLanguage === 'ar' ? 'لا توجد Tags ظاهرة. أضف مادة أو أظهر المواد المخفية.' : 'No visible tags. Add a tag or unhide an existing one.';
+                wrapper.appendChild(empty);
+                return;
+            }
+
+            visibleTags.forEach(tag => {
+                const row = document.createElement('div');
+                row.className = `timer-tag-row${tag === currentlySelectedTag ? ' selected' : ''}`;
+                row.dataset.tag = tag;
+                row.setAttribute('role', 'listitem');
+                row.title = currentSystemLanguage === 'ar' ? 'اضغط لاختيار المادة · اسحب علامة الترتيب لإعادة ترتيبها · كليك يمين للتعديل' : 'Click to select · Drag the grip to reorder · Right-click to edit';
+
+                const handle = document.createElement('span');
+                handle.className = 'timer-tag-drag-handle';
+                handle.textContent = '⠿';
+                handle.title = currentSystemLanguage === 'ar' ? 'اسحب لإعادة الترتيب' : 'Drag to reorder';
+                handle.setAttribute('aria-label', handle.title);
+
+                const dot = document.createElement('span');
+                dot.className = 'tag-color-dot timer-tag-color-dot';
+                dot.style.backgroundColor = getTagColor(tag);
+
+                const name = document.createElement('span');
+                name.className = 'timer-tag-name';
+                name.textContent = tag;
+
+                const duration = document.createElement('span');
+                duration.className = 'timer-tag-time';
+                duration.textContent = formatMinutesToHM(minutesMap[tag] || 0);
+                duration.title = currentSystemLanguage === 'ar' ? 'إجمالي وقت الدراسة المسجل لهذه المادة' : 'All recorded study time for this tag';
+
+                row.append(handle, dot, name, duration);
+                row.addEventListener('click', (event) => {
+                    if (event.target.closest('.timer-tag-drag-handle')) return;
+                    selectActiveTag(tag);
                 });
-                chip.addEventListener('touchend', () => clearTimeout(pressTimer));
-                chip.addEventListener('touchmove', () => clearTimeout(pressTimer));
-
-                const colorDot = document.createElement('span');
-                colorDot.className = 'tag-color-dot';
-                colorDot.style.backgroundColor = getTagColor(tag);
-                const spanName = document.createElement('span');
-                spanName.innerText = tag;
-
-                chip.appendChild(colorDot);
-                chip.appendChild(spanName);
-                wrapper.appendChild(chip);
+                row.addEventListener('contextmenu', (event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    openTagSubjectModal(tag, event);
+                });
+                wrapper.appendChild(row);
             });
-            const addBtnCircle = document.createElement('div');
-            addBtnCircle.className = 'mini-tag-add-btn';
-            addBtnCircle.innerHTML = '+';
-            addBtnCircle.title = currentSystemLanguage === 'ar' ? 'إضافة مادة' : 'Add Subject';
-            addBtnCircle.onclick = () => openTagModal();
-            wrapper.appendChild(addBtnCircle);
+
+            enableTimerTagsDragAndDrop(wrapper);
         }
 
-                function openTagSubjectModal(tagName, event) {
+        function enableTimerTagsDragAndDrop(container) {
+            container.querySelectorAll('.timer-tag-drag-handle').forEach(handle => {
+                handle.addEventListener('pointerdown', (event) => {
+                    if (event.button !== undefined && event.button !== 0) return;
+                    event.preventDefault();
+                    event.stopPropagation();
+                    const row = handle.closest('.timer-tag-row');
+                    if (!row) return;
+                    row.classList.add('is-dragging');
+
+                    const onMove = (moveEvent) => {
+                        const y = moveEvent.clientY;
+                        const siblings = Array.from(container.querySelectorAll('.timer-tag-row:not(.is-dragging)'));
+                        let target = null;
+                        for (const sibling of siblings) {
+                            const rect = sibling.getBoundingClientRect();
+                            if (y < rect.top + rect.height / 2) {
+                                target = sibling;
+                                break;
+                            }
+                        }
+                        if (target) container.insertBefore(row, target);
+                        else container.appendChild(row);
+                    };
+
+                    const onUp = () => {
+                        document.removeEventListener('pointermove', onMove);
+                        document.removeEventListener('pointerup', onUp);
+                        document.removeEventListener('pointercancel', onUp);
+                        row.classList.remove('is-dragging');
+
+                        const reorderedVisibleTags = Array.from(container.querySelectorAll('.timer-tag-row'))
+                            .map(item => item.dataset.tag)
+                            .filter(Boolean);
+                        let visibleIndex = 0;
+                        currentTagsList = currentTagsList.map(tag => hiddenTags.includes(tag)
+                            ? tag
+                            : (reorderedVisibleTags[visibleIndex++] || tag));
+                        dbSet('tags', currentTagsList);
+                        renderTagsChips();
+                    };
+
+                    document.addEventListener('pointermove', onMove);
+                    document.addEventListener('pointerup', onUp, { once: true });
+                    document.addEventListener('pointercancel', onUp, { once: true });
+                });
+            });
+        }
+
+        function openTagSubjectModal(tagName, event) {
             const prev = document.getElementById('tag-subject-modal');
             if (prev) prev.remove();
 
@@ -7400,36 +7478,8 @@ html[data-theme="light"] .ai-error-desc {
                 }
             }
 
-            // Subject / Tag Distribution: Exclude hidden tags from calculation so visible tags sum strictly to 100%
-            const barsContainer = document.getElementById('bars-dynamic-wrapper');
-            if (barsContainer) {
-                barsContainer.innerHTML = '';
-                const visibleTags = currentTagsList.filter(t => !hiddenTags.includes(t));
-                const visibleAccumulatedStudyMinutes = visibleTags.reduce((acc, t) => acc + (tagMinutesSumMap[t] || 0), 0);
-                
-                if (visibleTags.length === 0) {
-                    barsContainer.innerHTML = `<div style="text-align:center; padding:24px; color:var(--text-gray); font-size:12px;">${currentSystemLanguage === 'ar' ? '\u0644\u0627 \u062A\u0648\u062C\u062F \u0645\u0648\u0627\u062F \u062F\u0631\u0627\u0633\u064A\u0629' : 'No subjects available'}</div>`;
-                } else {
-                    visibleTags.forEach(tag => {
-                        let tagMinutes = tagMinutesSumMap[tag] || 0;
-                        let tagPercentage = visibleAccumulatedStudyMinutes > 0 ? Math.round((tagMinutes / visibleAccumulatedStudyMinutes) * 100) : 0;
-                        const item = document.createElement('div');
-                        item.className = 'chart-progress-item';
-                        item.innerHTML = `
-                            <div class="chart-progress-labels" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; font-size:12px;">
-                                <span style="display:flex; align-items:center; gap:8px;">
-                                    <span style="width:10px; height:10px; border-radius:3px; background:${getTagColor(tag)}; display:inline-block; box-shadow:0 0 6px ${getTagColor(tag)}40;"></span>
-                                    <strong style="color:var(--text-light); font-weight:600;">${escapeGoalHtml(tag)}</strong>
-                                </span>
-                                <span style="color:var(--accent-orange); font-weight:700; font-size:11px;">${tagPercentage}% <span style="color:var(--text-gray); font-weight:500;">(${formatMinutesToHM(tagMinutes)})</span></span>
-                            </div>
-                            <div class="chart-progress-rail" style="height:6px; background:rgba(255,255,255,0.06); border-radius:3px; overflow:hidden;">
-                                <div class="chart-progress-fill" style="height:100%; width:${tagPercentage}%; background:${getTagColor(tag)}; border-radius:3px; transition:width 0.4s cubic-bezier(0.4,0,0.2,1);"></div>
-                            </div>`;
-                        barsContainer.appendChild(item);
-                    });
-                }
-            }
+            // Render the same tag data in the Timer panel as a sortable list (no percentages).
+            renderTagsChips(tagMinutesSumMap);
 
             // Render monthly activity heatmap with independent persistent data
             renderStudyTrendChart();
